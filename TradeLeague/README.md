@@ -1,97 +1,336 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# TradeLeague: Social DeFi Gaming on Aptos
 
-# Getting Started
+**TradeLeague** is a comprehensive social trading platform built on Aptos that gamifies DeFi participation through leagues, vault following, and prediction markets. This repository contains the complete implementation including React Native mobile app, Move smart contracts, Node.js backend API, and PostgreSQL database.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🚀 Quick Demo
 
-## Step 1: Start Metro
+TradeLeague transforms complex DeFi into an intuitive, gamified mobile experience where users can:
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **Compete in Leagues**: Join sponsored leagues and climb leaderboards
+- **Follow Top Traders**: Copy successful vault strategies with one tap  
+- **Predict Markets**: Participate in sponsored prediction events
+- **Earn Rewards**: Get rewarded for performance, referrals, and participation
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 📱 Features
 
-```sh
-# Using npm
+### Core Features
+- **League System**: Create/join competitive leagues with leaderboards
+- **Vault Following**: Copy trade successful DeFi strategies 
+- **Prediction Markets**: Bet on price movements and market outcomes
+- **Social Portfolio**: Track performance and share achievements
+- **Real-time Updates**: Live leaderboards and market data via WebSocket
+
+### Sponsor Integrations
+- **Circle**: Programmable wallets and USDC infrastructure
+- **Hyperion**: CLMM liquidity strategies and composability
+- **Merkle Trade**: Perpetual futures trading
+- **Tapp Exchange**: Hook-based programmable liquidity
+- **Panora**: Price feeds and prediction data
+- **Kana Labs**: Cross-chain liquidity aggregation
+- **Nodit**: Enterprise Aptos infrastructure
+- **Ekiden**: On-chain derivatives platform
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   React Native  │────│   Backend API   │────│ Aptos Testnet   │
+│   Mobile App    │    │   (Node.js)     │    │ Move Contracts  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │              ┌─────────────────┐             │
+         └──────────────│  PostgreSQL DB  │─────────────┘
+                        └─────────────────┘
+```
+
+### Components
+
+1. **📱 React Native App** (`/TradeLeague/`)
+   - TypeScript-based mobile app with beautiful UI
+   - Tab navigation: League, Trade, Predict, You
+   - Real-time updates via WebSocket
+   - Aptos SDK integration
+
+2. **⛓️ Move Smart Contracts** (`/TradeLeague/contracts/`)
+   - `league_registry.move`: League creation and management
+   - `vault_manager.move`: Trading vault operations
+   - `prediction_market.move`: Prediction market logic
+   - `prize_router.move`: Reward distribution system
+
+3. **🔧 Backend API** (`/TradeLeague/backend/`)
+   - Express.js REST API with TypeScript
+   - JWT authentication with wallet signatures
+   - Real-time WebSocket server
+   - Aptos blockchain event processing
+
+4. **💾 Database** (`/TradeLeague/backend/database/`)
+   - PostgreSQL with comprehensive schema
+   - 11 tables with proper relationships
+   - Automatic triggers and functions
+   - Performance optimized indexes
+
+## 🛠️ Setup & Installation
+
+### Prerequisites
+- Node.js 18+
+- React Native CLI
+- PostgreSQL 14+
+- iOS development setup (Xcode)
+- Aptos CLI (optional)
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/ellisosborn03/TradeLeague.git
+cd TradeLeague
+```
+
+### 2. Setup Mobile App
+```bash
+cd TradeLeague
+npm install
+
+# Install iOS dependencies
+cd ios && pod install && cd ..
+
+# Start Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
+# Run on iOS simulator (in another terminal)
+npx react-native run-ios
 ```
 
-## Step 2: Build and run your app
+### 3. Setup Backend
+```bash
+cd backend
+npm install
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+# Setup environment variables
+cp .env.example .env
+# Edit .env with your configuration
 
-### Android
+# Build TypeScript
+npm run build
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+# Start development server
+npm run dev
 ```
 
-### iOS
+### 4. Setup Database
+```bash
+# Create PostgreSQL database
+createdb tradeleague
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+# Run schema setup
+psql -d tradeleague -f backend/database/schema.sql
 ```
 
-Then, and every time you update your native dependencies, run:
+### 5. Deploy Smart Contracts (Optional)
+```bash
+cd contracts
 
-```sh
-bundle exec pod install
+# Initialize Aptos CLI
+aptos init
+
+# Compile contracts
+aptos move compile
+
+# Deploy to testnet
+aptos move publish --named-addresses tradeleague=<your-address>
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## 📋 Environment Configuration
 
-```sh
-# Using npm
-npm run ios
+### Backend Environment Variables
+```env
+# Server
+PORT=3000
+NODE_ENV=development
+JWT_SECRET=your-secret-key
 
-# OR using Yarn
-yarn ios
+# Database
+DB_HOST=localhost
+DB_NAME=tradeleague
+DB_USER=postgres
+DB_PASSWORD=your-password
+
+# Aptos
+APTOS_FULLNODE_URL=https://fullnode.testnet.aptoslabs.com/v1
+TRADELEAGUE_MODULE_ADDRESS=0x1
+
+# Partners (get from respective platforms)
+CIRCLE_API_KEY=your-circle-key
+HYPERION_API_KEY=your-hyperion-key
+MERKLE_API_KEY=your-merkle-key
+# ... etc
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 🧪 Testing
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### Run Mobile App Tests
+```bash
+cd TradeLeague
+npm test
+```
 
-## Step 3: Modify your app
+### Run Backend Tests
+```bash
+cd backend
+npm test
+```
 
-Now that you have successfully run the app, let's make changes!
+### Manual Testing Checklist
+- [ ] App launches and navigation works
+- [ ] User can create/join leagues
+- [ ] Vault following interface functional
+- [ ] Prediction markets display correctly
+- [ ] Portfolio tracking works
+- [ ] WebSocket real-time updates
+- [ ] Backend API endpoints respond
+- [ ] Database operations complete
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+## 📚 API Documentation
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### Authentication
+```bash
+POST /api/auth/wallet-login
+POST /api/auth/create-account
+GET /api/auth/me
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### Leagues
+```bash
+GET /api/leagues
+POST /api/leagues
+GET /api/leagues/:id
+POST /api/leagues/:id/join
+GET /api/leagues/:id/leaderboard
+```
 
-## Congratulations! :tada:
+### Vaults
+```bash
+GET /api/vaults
+POST /api/vaults/:id/follow
+GET /api/vaults/:id/performance
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+### Predictions
+```bash
+GET /api/predictions
+POST /api/predictions/:id/predict
+GET /api/predictions/:id/odds
+```
 
-### Now what?
+### Users
+```bash
+GET /api/users/profile
+GET /api/users/leaderboard
+```
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+### WebSocket Events
+```bash
+# Subscribe to channels
+{"type": "subscribe", "channel": "leagues"}
+{"type": "subscribe", "channel": "vault:123"}
+{"type": "subscribe", "channel": "prediction:456"}
 
-# Troubleshooting
+# Receive updates
+{"type": "leaderboard_update", "data": {...}}
+{"type": "vault_update", "data": {...}}
+{"type": "market_update", "data": {...}}
+```
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## 🎨 Design System
 
-# Learn More
+### Colors
+```typescript
+const Colors = {
+  primary: '#6C5CE7',    // TradeLeague Purple
+  secondary: '#00B894',   // Success Green  
+  danger: '#FF6B6B',     // Loss Red
+  background: '#0A0E27',  // Deep Navy
+  surface: '#151A3A',    // Card Background
+};
+```
 
-To learn more about React Native, take a look at the following resources:
+### Typography
+```typescript
+const Typography = {
+  h1: { fontSize: 32, fontWeight: '600' },
+  h2: { fontSize: 24, fontWeight: '600' },
+  body: { fontSize: 16, fontWeight: '400' },
+  caption: { fontSize: 12, fontWeight: '400' },
+};
+```
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 🔗 Smart Contract Addresses
+
+### Testnet Deployments
+```
+League Registry: 0x1::tradeleague_league_registry
+Vault Manager: 0x1::tradeleague_vault_manager  
+Prediction Market: 0x1::tradeleague_prediction_market
+Prize Router: 0x1::tradeleague_prize_router
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+### Development Guidelines
+- Follow TypeScript strict mode
+- Use ESLint and Prettier for code formatting
+- Write tests for new features
+- Update documentation
+- Follow Move coding standards for smart contracts
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🏆 Hackathon Demo
+
+### 90-Second Demo Script
+
+**0:00-0:10** - App opens to League page with live leaderboard
+> "TradeLeague brings social trading to Aptos testnet"
+
+**0:10-0:25** - Join Circle League sponsored event  
+> "Compete in sponsored leagues with real prizes"
+
+**0:25-0:40** - Navigate to Trade tab, follow top-performing vault
+> "Copy successful traders with one tap"
+
+**0:40-0:55** - Enter Panora price prediction market
+> "Predict markets powered by ecosystem partners"
+
+**0:55-1:10** - Check portfolio gains in You tab
+> "Track performance and claim rewards"
+
+**1:10-1:25** - Generate social sharing card with QR code
+> "Invite friends to grow your league"
+
+**1:25-1:30** - Close with ecosystem integration highlights
+> "TradeLeague: Where DeFi meets social gaming"
+
+### Key Metrics for Judges
+- ✅ **Innovation**: Novel social approach to DeFi onboarding
+- ✅ **Technical Excellence**: Complete full-stack implementation
+- ✅ **User Experience**: Beautiful, intuitive mobile interface  
+- ✅ **Ecosystem Integration**: 8+ Aptos partner integrations
+- ✅ **Market Potential**: Clear path from testnet to mainnet
+
+## 📞 Support
+
+- **GitHub Issues**: [Create an issue](https://github.com/ellisosborn03/TradeLeague/issues)
+- **Email**: team@tradeleague.xyz
+- **Discord**: Join our community server
+
+---
+
+**Built with ❤️ for the Aptos ecosystem**
+
+*TradeLeague democratizes DeFi access by transforming complex financial primitives into an intuitive, gamified mobile experience. Join the revolution! 🚀*
