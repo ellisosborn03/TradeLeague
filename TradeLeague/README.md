@@ -326,8 +326,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **GitHub Issues**: [Create an issue](https://github.com/ellisosborn03/TradeLeague/issues)
-- **Email**: team@tradeleague.xyz
-- **Discord**: Join our community server
 
 ---
 
