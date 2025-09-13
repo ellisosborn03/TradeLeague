@@ -96,14 +96,24 @@ TradeLeague creates a unified social trading experience that:
 
 #### 3.1.3 Sponsored Events
 - **Circle League:** Weekly competition for highest USDC volume
-- **Hyperion Week:** Trading competition on Hyperion DEX
-- **Merkle Masters:** Perps trading leaderboard
-- **Display:** Banner carousel with countdown timers
+- **Hyperion Masters:** CLMM liquidity provision and composability challenges
+- **Tapp Innovation:** Best custom hook strategy contest
+- **Kana Cross-Chain:** Multi-chain arbitrage competition
+- **Merkle Masters:** Perpetuals trading leaderboard
+- **Nodit Analytics:** Best on-chain analysis competition
+- **Display:** Banner carousel with countdown timers and partner branding
 
 ### 3.2 Trade Page
-**Purpose:** Vault discovery and copy trading interface
+**Purpose:** Advanced trading with specialized platform features
 
-#### 3.2.1 Vault Browser
+#### 3.2.1 Platform Features Tabs
+- **All Vaults:** General vault discovery and copy trading
+- **Hyperion CLMM:** Concentrated liquidity strategies and composability solutions
+- **Tapp Hooks:** Dynamic fee pools and custom trading strategies  
+- **Kana Bridge:** Cross-chain asset management and swaps
+- **Traditional:** Standard orderbook and AMM trading
+
+#### 3.2.2 Vault Browser
 - **Card Layout:**
   ```
   [Vault Name]
@@ -142,9 +152,15 @@ TradeLeague creates a unified social trading experience that:
   - Max capacity
 
 ### 3.3 Predict Page
-**Purpose:** Sponsored prediction markets for engagement
+**Purpose:** Multi-platform prediction markets and derivatives
 
-#### 3.3.1 Market Types
+#### 3.3.1 Platform Tabs
+- **Panora Markets:** Price predictions and oracle-based betting
+- **Ekiden Derivatives:** Futures and options prediction markets
+- **Cross-Chain Events:** Multi-chain outcome predictions via Kana Labs
+- **Perpetuals:** Merkle Trade leverage and funding rate predictions
+
+#### 3.3.2 Market Types
 - **Price Predictions (Panora):**
   - Will APT be above $X by Friday?
   - Binary Yes/No format
@@ -206,7 +222,21 @@ TradeLeague creates a unified social trading experience that:
   - Rewards claimed
   - Sortable by date/type/amount
 
-#### 3.4.3 Social Features
+#### 3.4.3 Educational Hub
+- **Platform Education:**
+  - **Hyperion Guide:** "Understanding Concentrated Liquidity" with interactive examples
+  - **Tapp.Exchange Tutorial:** "Building Your First Hook Strategy" 
+  - **Kana Labs Overview:** "Cross-Chain Trading Made Simple"
+  - **Nodit Analytics:** "Reading On-Chain Data Like a Pro"
+  - **Link Collection:** Direct links to partner platforms and documentation
+
+- **Strategy Learning:**
+  - Video tutorials from successful vault managers
+  - Risk management best practices
+  - Market analysis tools and techniques
+  - DeFi concept explanations with real examples
+
+#### 3.4.4 Social Features
 - **Share Card Generation:**
   - Leaderboard position
   - Performance metrics
@@ -501,24 +531,57 @@ CREATE TABLE predictions (
   - Session management with 24h expiry
 
 ### 5.2 Hyperion Integration
-**Purpose:** Hybrid orderbook/AMM trading venue
+**Purpose:** Concentrated Liquidity Market Maker (CLMM) with advanced SDK
+**Website:** https://hyperion.xyz/
 
-#### Implementation:
+#### Key Features:
+- **Concentrated Liquidity:** Capital efficiency up to 4000x
+- **Composability Solutions:** Build on top of CLMM infrastructure
+- **Advanced SDK:** Full-featured development toolkit
+- **Liquidity Optimization:** Automated range management
+
+#### SDK Implementation:
 ```typescript
-interface HyperionVault {
-  async executeTrade(params: {
-    pair: string,
-    side: 'buy' | 'sell',
-    amount: number,
-    orderType: 'market' | 'limit',
-    limitPrice?: number
-  }): Promise<TradeResult>
+interface HyperionSDK {
+  // CLMM Operations
+  async createConcentratedPosition(params: {
+    pool: string,
+    lowerTick: number,
+    upperTick: number,
+    liquidity: number,
+    token0Amount: number,
+    token1Amount: number
+  }): Promise<PositionNFT>
   
-  async getPositions(): Promise<Position[]>
+  async adjustRange(params: {
+    positionId: number,
+    newLowerTick: number,
+    newUpperTick: number
+  }): Promise<TransactionResult>
   
-  async calculatePnL(): Promise<PnLReport>
+  // Composability Features
+  async deployStrategy(params: {
+    strategyType: 'RangeOrder' | 'Momentum' | 'MeanReversion',
+    parameters: StrategyParams
+  }): Promise<StrategyContract>
+  
+  // Analytics
+  async getPositionMetrics(positionId: number): Promise<{
+    currentValue: number,
+    fees24h: number,
+    impermanentLoss: number,
+    apr: number
+  }>
+  
+  async simulatePosition(params: SimulationParams): Promise<SimulationResult>
 }
 ```
+
+#### TradeLeague Composability Solutions:
+1. **Auto-Range Vault:** Automatically adjusts liquidity ranges based on volatility
+2. **Fee Harvester:** Compounds earned fees back into positions
+3. **Delta-Neutral Strategy:** Maintains market-neutral exposure
+4. **Liquidity Mining Optimizer:** Maximizes rewards across multiple pools
 
 ### 5.3 Merkle Trade Integration
 **Purpose:** Perpetual futures strategies
@@ -529,14 +592,51 @@ interface HyperionVault {
 - Funding rate optimization
 - Cross-margin management
 
-### 5.4 Tapp Exchange Integration
-**Purpose:** Programmable liquidity strategies
+### 5.4 Tapp.Exchange Integration
+**Purpose:** Innovative pools with composable hooks and dynamic fees
+**Documentation:** https://github.com/tapp-exchange/hook-documentation
+
+#### Key Features:
+- **Dynamic Fee System:** Adaptive fees based on market conditions
+- **Composable Hooks:** Custom logic for advanced strategies
+- **Tapp Points:** Reward layer for liquidity providers
+- **Managed Custody:** Security handled by Tapp.Exchange
 
 #### Hooks Implementation:
-- Pre-trade validation
-- Post-trade rebalancing
-- Impermanent loss protection
-- Yield optimization
+```typescript
+interface TappHook {
+  // Hook lifecycle methods
+  beforeSwap(params: SwapParams): ValidationResult
+  afterSwap(params: SwapParams, result: SwapResult): void
+  beforeAddLiquidity(params: LiquidityParams): ValidationResult
+  afterAddLiquidity(params: LiquidityParams, result: LPTokens): void
+  
+  // Custom strategies
+  dynamicFeeCalculation(params: {
+    volume24h: number,
+    volatility: number,
+    liquidity: number
+  }): number
+  
+  rebalanceStrategy(params: {
+    currentRatio: number,
+    targetRatio: number,
+    slippage: number
+  }): RebalanceAction[]
+}
+```
+
+#### TradeLeague Custom Hooks:
+1. **Smart Rebalancing Hook:** Automatically rebalances vault positions
+2. **IL Protection Hook:** Hedges against impermanent loss
+3. **Yield Optimizer Hook:** Compounds rewards and optimizes APY
+4. **Risk Manager Hook:** Enforces position limits and stop losses
+
+#### Tapp Points Integration:
+- Users earn Tapp Points for providing liquidity
+- Bonus multipliers for TradeLeague vaults
+- Points displayed in portfolio dashboard
+- Redeemable for trading fee discounts
 
 ### 5.5 Panora Integration
 **Purpose:** Price feeds and prediction data
@@ -551,27 +651,108 @@ interface PanoraOracle {
 ```
 
 ### 5.6 Kana Labs Integration
-**Purpose:** Cross-chain deposit/withdrawal
+**Purpose:** Cross-chain liquidity aggregation and bridging
+**Website:** https://kanalabs.io/
+
+#### Key Features:
+- Multi-chain liquidity aggregation across 100+ chains
+- Smart routing for optimal swap rates
+- Cross-chain trading without leaving the app
+- Seamless USDC bridging to/from Aptos
+
+#### Implementation:
+```typescript
+interface KanaLabsIntegration {
+  async aggregateSwap(params: {
+    fromChain: string,
+    toChain: string,
+    fromToken: string,
+    toToken: string,
+    amount: number,
+    slippage: number
+  }): Promise<SwapResult>
+  
+  async getBestRoute(params: {
+    chains: string[],
+    inputToken: string,
+    outputToken: string,
+    amount: number
+  }): Promise<Route[]>
+  
+  async bridgeAssets(params: {
+    sourceChain: string,
+    destChain: 'aptos',
+    token: string,
+    amount: number
+  }): Promise<BridgeReceipt>
+}
+```
 
 #### Bridge Flow:
-1. Initiate deposit on source chain
-2. Lock funds in escrow
-3. Mint wrapped tokens on Aptos
-4. Credit user account
-5. Enable trading
+1. Initiate cross-chain swap via Kana API
+2. Smart routing finds optimal path
+3. Execute multi-hop swaps if needed
+4. Bridge assets to Aptos
+5. Credit user TradeLeague account
+6. Enable immediate trading
 
 ### 5.7 Nodit Integration
-**Purpose:** Real-time indexing and leaderboard updates
+**Purpose:** Enterprise-grade Aptos infrastructure and data indexing
+**Developer Portal:** https://developer.nodit.io/reference/aptos-quickstart
+
+#### Core Services:
+- **High-Performance RPC:** 99.99% uptime guaranteed
+- **Real-time Indexing:** Sub-second data updates
+- **Historical Data API:** Complete transaction history
+- **WebSocket Streams:** Live event subscriptions
+- **Analytics Dashboard:** On-chain metrics and insights
+
+#### Implementation:
+```typescript
+interface NoditProvider {
+  // RPC Methods
+  async getAccount(address: string): Promise<AccountData>
+  async getTransactions(params: {
+    address: string,
+    limit: number,
+    offset: number
+  }): Promise<Transaction[]>
+  
+  // Indexer Methods
+  async queryEvents(params: {
+    module: string,
+    event_type: string,
+    start_time: number,
+    end_time: number
+  }): Promise<Event[]>
+  
+  // WebSocket Subscriptions
+  subscribe(channel: 'transactions' | 'events' | 'blocks', 
+           filter: FilterParams,
+           callback: (data: any) => void): Subscription
+}
+```
 
 #### WebSocket Events:
 ```typescript
-ws.on('score_update', (data: {
-  user_id: string,
-  league_id: string,
-  new_score: number,
-  rank_change: number
-}) => {
-  updateLeaderboard(data)
+// Real-time leaderboard updates
+nodit.subscribe('events', {
+  module: 'tradeleague::league_registry',
+  event_type: 'ScoreUpdateEvent'
+}, (event) => {
+  updateLeaderboard({
+    user_id: event.user,
+    league_id: event.league,
+    new_score: event.score,
+    rank_change: event.rank_delta
+  })
+})
+
+// Transaction monitoring
+nodit.subscribe('transactions', {
+  function: 'tradeleague::vault_manager::execute_trade'
+}, (tx) => {
+  processVaultTrade(tx)
 })
 ```
 
