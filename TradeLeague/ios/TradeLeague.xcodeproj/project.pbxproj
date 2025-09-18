@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		761780EF2CA45674006654EE /* TradeLeagueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EE2CA45674006654EE /* TradeLeagueApp.swift */; };
 		761780F12CA45674006654EE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780F02CA45674006654EE /* ContentView.swift */; };
@@ -17,7 +18,6 @@
 		761780FB2CA45674006654EE /* PredictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780FA2CA45674006654EE /* PredictView.swift */; };
 		761780FD2CA45674006654EE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780FC2CA45674006654EE /* ProfileView.swift */; };
 		761780FF2CA45674006654EE /* TradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780FE2CA45674006654EE /* TradeView.swift */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B36BBE2B210D8AC686A8D619 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
@@ -162,7 +162,6 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = "";
 						LastSwiftMigration = 1120;
 					};
 				};
@@ -227,7 +226,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 6K653PRL57;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TradeLeague/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -236,9 +235,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tradeleague.app;
 				PRODUCT_NAME = TradeLeague;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -263,9 +260,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tradeleague.app;
 				PRODUCT_NAME = TradeLeague;
 				SWIFT_VERSION = 5.0;
@@ -346,9 +341,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -422,9 +415,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
