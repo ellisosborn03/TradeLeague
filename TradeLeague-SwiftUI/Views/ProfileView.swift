@@ -10,11 +10,11 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: Theme.Spacing.lg) {
                         // Profile Header
                         if let user = user {
                             ProfileHeader(user: user, portfolio: portfolio) {
@@ -36,6 +36,7 @@ struct ProfileView: View {
                             }
                             .pickerStyle(SegmentedPickerStyle())
                             .padding(.horizontal)
+                            .animation(Theme.Animation.fast, value: selectedSegment)
 
                             // Content based on selected segment
                             Group {
@@ -141,84 +142,76 @@ struct ProfileHeader: View {
     let onSettingsTap: () -> Void
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Theme.Spacing.md) {
             HStack {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                     Text("You")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primaryText)
+                        .font(Theme.Typography.heading1)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                     Text("Track your performance")
-                        .font(.subheadline)
-                        .foregroundColor(.secondaryText)
+                        .font(Theme.Typography.caption)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
+                .sharpPageTransition()
 
                 Spacer()
 
                 Button(action: onSettingsTap) {
                     Image(systemName: "gearshape.fill")
                         .font(.title2)
-                        .foregroundColor(.primaryBlue)
+                        .foregroundColor(Theme.ColorPalette.primary)
                 }
             }
 
             // User Info Card
-            HStack(spacing: 16) {
-                // Avatar
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [.primaryBlue, .chartPurple],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+            PressableCard {
+                HStack(spacing: Theme.Spacing.md) {
+                    // Avatar
+                    Circle()
+                        .fill(Theme.ColorPalette.gradientPrimary)
+                        .frame(width: 60, height: 60)
+                        .overlay(
+                            Text(String(user.username.prefix(1)).uppercased())
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
                         )
-                    )
-                    .frame(width: 60, height: 60)
-                    .overlay(
-                        Text(String(user.username.prefix(1)).uppercased())
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                    )
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(user.username)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primaryText)
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                        Text(user.username)
+                            .font(Theme.Typography.heading2)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
 
-                    if let rank = user.rank {
-                        Text("Rank #\(rank)")
-                            .font(.subheadline)
-                            .foregroundColor(.primaryBlue)
+                        if let rank = user.rank {
+                            RankView(rank: rank, isUp: true)
+                        }
+
+                        Text("Total Volume: $\(Int(user.totalVolume / 1000))K")
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
                     }
 
-                    Text("Total Volume: $\(Int(user.totalVolume / 1000))K")
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
-                }
+                    Spacer()
 
-                Spacer()
-
-                // Invite Code
-                VStack {
-                    Text("Invite Code")
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
-                    Text(user.inviteCode)
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primaryBlue)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.primaryBlue.opacity(0.1))
-                        .cornerRadius(8)
+                    // Invite Code
+                    VStack(spacing: Theme.Spacing.xxs) {
+                        Text("Invite Code")
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        Text(user.inviteCode)
+                            .font(Theme.Typography.mono)
+                            .fontWeight(.bold)
+                            .foregroundColor(Theme.ColorPalette.primary)
+                            .padding(.horizontal, Theme.Spacing.sm)
+                            .padding(.vertical, Theme.Spacing.xs)
+                            .background(Theme.ColorPalette.primary.opacity(0.1))
+                            .cornerRadius(Theme.Radius.sm)
+                    }
                 }
+                .padding(Theme.Spacing.md)
+                .glassCard()
             }
-            .padding()
-            .background(Color.surfaceColor)
-            .cornerRadius(16)
         }
     }
 }
@@ -227,25 +220,24 @@ struct PortfolioSummaryCard: View {
     let portfolio: Portfolio
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             Text("Portfolio")
-                .font(.headline)
-                .foregroundColor(.primaryText)
+                .font(Theme.Typography.heading2)
+                .foregroundColor(Theme.ColorPalette.textPrimary)
 
             // Total Value
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 Text("Total Value")
-                    .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .font(Theme.Typography.caption)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
 
                 Text("$\(portfolio.totalValue, specifier: "%.2f")")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primaryText)
+                    .font(Theme.Typography.heading1)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
             }
 
             // Performance metrics
-            HStack(spacing: 20) {
+            HStack(spacing: Theme.Spacing.lg) {
                 PerformanceMetricCard(
                     title: "Today",
                     value: portfolio.todayChange,
@@ -259,9 +251,8 @@ struct PortfolioSummaryCard: View {
                 )
             }
         }
-        .padding()
-        .background(Color.surfaceColor)
-        .cornerRadius(16)
+        .padding(Theme.Spacing.md)
+        .glassCard()
     }
 }
 

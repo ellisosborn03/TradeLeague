@@ -9,23 +9,23 @@ struct PredictView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     // Header
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         HStack {
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text("Predict")
-                                    .font(.largeTitle)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primaryText)
+                                    .font(Theme.Typography.heading1)
+                                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                                 Text("Predict market outcomes")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondaryText)
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                             }
+                            .sharpPageTransition()
 
                             Spacer()
                         }
@@ -111,12 +111,13 @@ struct MarketsView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(markets) { market in
+            LazyVStack(spacing: Theme.Spacing.sm) {
+                ForEach(Array(markets.enumerated()), id: \.element.id) { index, market in
                     PredictionMarketCard(market: market) {
                         onMarketTap(market)
                     }
                     .padding(.horizontal)
+                    .animation(Theme.Animation.base.delay(Double(index) * 0.03), value: markets)
                 }
             }
             .padding(.vertical)
@@ -129,18 +130,18 @@ struct MyPredictionsView: View {
 
     var body: some View {
         if predictions.isEmpty {
-            VStack(spacing: 16) {
-                Image(systemName: "crystal.ball")
+            VStack(spacing: Theme.Spacing.md) {
+                Image(systemName: "sparkles")
                     .font(.system(size: 60))
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.primary.opacity(0.5))
 
                 Text("No Predictions Yet")
-                    .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .font(Theme.Typography.heading2)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 Text("Make your first prediction on market outcomes to start earning")
-                    .font(.subheadline)
-                    .foregroundColor(.secondaryText)
+                    .font(Theme.Typography.body)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }
@@ -164,16 +165,16 @@ struct PredictionMarketCard: View {
     let onTap: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 12) {
+        PressableCard {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 // Header
                 HStack {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         HStack {
                             Text(market.sponsor)
-                                .font(.caption)
+                                .font(Theme.Typography.caption)
                                 .fontWeight(.semibold)
-                                .foregroundColor(.primaryBlue)
+                                .foregroundColor(Theme.ColorPalette.primary)
 
                             Spacer()
 
@@ -181,51 +182,49 @@ struct PredictionMarketCard: View {
                         }
 
                         Text(market.question)
-                            .font(.headline)
-                            .fontWeight(.medium)
-                            .foregroundColor(.primaryText)
+                            .font(Theme.Typography.body)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
                             .multilineTextAlignment(.leading)
                     }
                 }
 
                 // Outcomes
-                VStack(spacing: 8) {
+                VStack(spacing: Theme.Spacing.xs) {
                     ForEach(market.outcomes) { outcome in
                         OutcomeRow(outcome: outcome, totalStaked: market.totalStaked)
                     }
                 }
 
                 Divider()
-                    .background(Color.borderColor)
+                    .background(Theme.ColorPalette.divider)
 
                 // Footer
                 HStack {
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         Text("Total Pool")
-                            .font(.caption)
-                            .foregroundColor(.secondaryText)
-                        Text("$\(Int(market.totalStaked))")
-                            .font(.headline)
-                            .foregroundColor(.primaryText)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        MetricNumber(value: Int(market.totalStaked))
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
                     }
 
                     Spacer()
 
-                    VStack(alignment: .trailing) {
+                    VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
                         Text("Resolves")
-                            .font(.caption)
-                            .foregroundColor(.secondaryText)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
                         Text(market.resolutionTime, style: .relative)
-                            .font(.caption)
-                            .foregroundColor(.tertiaryText)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary.opacity(0.7))
                     }
                 }
             }
-            .padding()
-            .background(Color.surfaceColor)
-            .cornerRadius(16)
+            .padding(Theme.Spacing.md)
+            .glassCard()
         }
-        .buttonStyle(PlainButtonStyle())
+        .onTapGesture(perform: onTap)
     }
 }
 
@@ -271,25 +270,25 @@ struct CategoryBadge: View {
     var badgeColor: Color {
         switch category {
         case .price:
-            return .successGreen
+            return Theme.ColorPalette.success
         case .volume:
-            return .primaryBlue
+            return Theme.ColorPalette.primary
         case .crossChain:
-            return .warningYellow
+            return Theme.ColorPalette.secondary
         case .derivatives:
-            return .chartPurple
+            return Theme.ColorPalette.primary.opacity(0.8)
         }
     }
 
     var body: some View {
         Text(category.rawValue)
-            .font(.caption)
+            .font(Theme.Typography.caption)
             .fontWeight(.semibold)
             .foregroundColor(.white)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
+            .padding(.horizontal, Theme.Spacing.xs)
+            .padding(.vertical, Theme.Spacing.xxs)
             .background(badgeColor)
-            .cornerRadius(8)
+            .cornerRadius(Theme.Radius.sm)
     }
 }
 
