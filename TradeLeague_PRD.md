@@ -1088,3 +1088,250 @@ track('invite_sent', { channel: 'sms' | 'link' })
 - Next Review: Post-MVP Launch
 
 ---
+
+## 6.5 iOS UI Design Specification (Strava-Orange Inspired)
+
+### Core Aesthetic
+
+**Design Language:** Sporty, energetic, bold — orange as the hero color, softened with whites, greys, and translucent glass panels.
+
+**Tone:** Dynamic and motivating, with a competitive edge (leaderboards and live updates feel like sports scores).
+
+**Interaction Style:** Glass cards, smooth gradients, high-contrast typography, bold orange CTAs.
+
+### Color Palette
+```css
+--primary: #FC5200;      /* Strava Orange */
+--secondary: #FF7A33;    /* Gradient variation */
+--background: #FFFFFF;   /* Clean white */
+--surface: rgba(255,255,255,0.6); /* Glass blur */
+--text-primary: #111111;
+--text-secondary: #666666;
+--divider: #E0E0E0;
+```
+
+**Usage:**
+- Orange → CTAs, active tabs, graph highlights
+- White → Main page backgrounds
+- Grey → Labels, muted elements
+- Glass → Leaderboards, trade cards, prediction markets
+
+### Typography
+```css
+--heading-1: 700 32px/40px 'SF Pro Display';
+--heading-2: 600 24px/32px 'SF Pro Display';
+--body: 400 16px/24px 'SF Pro Text';
+--caption: 400 14px/20px 'SF Pro Text';
+--mono: 500 14px/20px 'SF Mono';
+```
+
+- Headlines: Bold, in black or orange
+- Numbers/Metrics: Monospaced, bold (like live sports data)
+- Body Text: Neutral grey for instructions
+
+### Layout & Components
+
+**Hero Section:** White base with angled orange gradient stripe; central glass leaderboard card; bold orange CTA.
+
+**Leaderboards & Cards:** White glass with blur and light grey borders; hover/active → orange glow with smooth scale-up.
+
+**Navigation:**
+- Top nav: White background, black text, orange active state.
+- Bottom nav (League, Trade, Predict, You): Glass bar with orange icons.
+
+### Motion & Transitions
+
+- Page transitions: Fade-slide with orange sweep.
+- Hover/active states: Light orange highlight + small scale-up.
+- Loading: Skeleton shimmer in orange/grey.
+- Success: Pulse glow on CTAs, subtle orange-white confetti.
+
+### Glass Defaults
+
+- Cards: rgba(255,255,255,0.5) with backdrop-filter: blur(20px)
+- Borders: 1px solid rgba(255,255,255,0.4) + faint shadow
+- Layering: Overlapping translucent cards for depth
+
+### Gradients & Overlays
+
+- CTA Buttons: linear-gradient(90deg, #FC5200, #FF7A33)
+- Highlight Stripes: Orange gradient diagonals behind cards
+- Charts: Orange line with soft white glow, grey gridlines
+
+### Accessibility
+
+- Black/orange on white for high contrast
+- Glass retains enough opacity for readability
+- Reduced motion toggle disables animations
+
+## 6.6 Motion & Animation (Pow-powered)
+
+### Goals
+
+- Feel fast, sporty, and precise (no bouncy, rubbery lag).
+- Celebrate wins; stay minimal elsewhere.
+- Never block taps; all animations are interruptible and spring back to "real time."
+
+**Library:** Pow by EmergeTools ([GitHub](https://github.com/EmergeTools/Pow))
+
+### Global Motion Tokens
+
+#### Durations
+- xfast: 120ms   (tiny affordances: tab icon taps, button press)
+- fast:  180ms   (card hovers, chip selects)
+- base:  240ms   (page transitions, list inserts/removes)
+- slow:  320ms   (hero/celebration accents, modal present)
+
+#### Easing / Springs (Pow presets or custom)
+- snap:         critically-damped snap-in for small UI feedback
+- sharpSpring:  response 0.42, dampingRatio 0.82 (default)
+- glide:        response 0.30, dampingRatio 0.78 (scroll-linked)
+- settle:       response 0.22, dampingRatio 0.90 (final settle)
+
+#### Staggers
+- listEnter: 30ms between siblings (max 6 items)
+- confettiBurst: 12–18ms randomized
+
+### Page Transitions (League / Trade / Predict / You)
+
+- **In:** fade+slide 8–12pt from the trailing edge, base duration, sharpSpring.
+- **Out:** quick fade 0.12s; content scales to 0.985 to imply depth.
+- **Hero Stripe:** a subtle orange sweep (8% opacity) runs diagonally over 220ms on first appearance only.
+
+### Cards & Leaderboards
+
+- **Hover/Active:** scale 1.00 → 1.02 (xfast, snap), shadow elevation +1; orange rim glow fades in 140ms.
+- **Insert/Remove:** vertical slide 10–14pt with spring sharpSpring; cross-fade text.
+- **Live Rank Change:** number flips with y-axis 3D turn (max 8°), duration 160ms, snap. Green arrow ticks up; red ticks down.
+
+### Charts & Metrics
+
+- **Line draw:** 240ms reveal on first load; thereafter morph with glide.
+- **Number roll:** monospaced counter tween with per-digit spring (xfast); no blur.
+- **Gain/Loss flash:** 80ms flash on series color, immediately settles.
+
+### Buttons & CTAs
+
+- **Press:** scale 0.98 → 1.00 on release (xfast), shadow lifts.
+- **Success Pulse:** 2 pulses over 360ms total; then settle.
+- **Disabled → Enabled:** 140ms tint/opacity crossfade.
+
+### Loading & Skeletons
+
+- **Shimmer:** left→right 900ms, subtle orange/grey gradient, 12% amplitude.
+- **Defer:** content appears in small groups (3–5 elements) with 30ms stagger.
+
+### Celebration Moments
+
+**Win / Payout / New Rank:** micro-confetti (orange/white), 650ms total, 24 particles max; haptic .success. Snapshot card gently pops (1.00 → 1.04 → 1.00).
+
+### Reduced Motion
+
+If Reduce Motion is on: replace movement with opacity/scale ≤ 1% changes; disable confetti and 3D flips; keep focus outlines and color feedback intact.
+
+### Pow Integration (SwiftUI examples)
+
+Assumes Pow is added via Swift Package Manager.
+
+#### 1) Sharp, interruptible page transition
+```swift
+import SwiftUI
+import Pow
+
+struct PageTransition: ViewModifier {
+    @State private var appear = false
+    func body(content: Content) -> some View {
+        content
+            .opacity(appear ? 1 : 0)
+            .offset(x: appear ? 0 : 12, y: 0)
+            .animation(.spring(response: 0.24, dampingRatio: 0.82), value: appear)
+            .onAppear { appear = true }
+    }
+}
+extension View {
+    func sharpPageTransition() -> some View {
+        modifier(PageTransition())
+    }
+}
+```
+
+#### 2) Live rank change "flip" and arrow tick
+```swift
+struct RankView: View {
+    @State var rank: Int
+    @State private var tilt = false
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text("#\(rank)")
+                .font(.system(.title3, design: .rounded).weight(.bold))
+                .rotation3DEffect(.degrees(tilt ? 0 : 8),
+                                  axis: (x: 0, y: 1, z: 0))
+                .animation(.spring(response: 0.16, dampingRatio: 1.0), value: tilt)
+
+            Image(systemName: "arrowtriangle.up.fill") // or .down.fill
+                .scaleEffect(tilt ? 1.0 : 0.8)
+                .animation(.spring(response: 0.14, dampingRatio: 0.9), value: tilt)
+        }
+        .onChange(of: rank) { _ in
+            tilt.toggle()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) { tilt.toggle() }
+        }
+    }
+}
+```
+
+#### 3) Card press feedback (snap)
+```swift
+struct PressableCard<Content: View>: View {
+    @GestureState private var isPressed = false
+    let content: () -> Content
+
+    var body: some View {
+        content()
+            .scaleEffect(isPressed ? 0.98 : 1)
+            .animation(.spring(response: 0.12, dampingRatio: 1.0), value: isPressed)
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .updating($isPressed) { _, state, _ in state = true }
+            )
+    }
+}
+```
+
+#### 4) Number roll (per-digit spring)
+```swift
+struct MetricNumber: View {
+    let value: Int
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(String(value)), id: \.self) { ch in
+                Text(String(ch))
+                    .font(.system(.title2, design: .monospaced).weight(.bold))
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .animation(.spring(response: 0.12, dampingRatio: 0.95), value: value)
+            }
+        }
+    }
+}
+```
+
+#### 5) Confetti celebration (lightweight)
+
+Use Pow's particle utilities or a simple CAEmitterLayer wrapper; cap particles to ≤24 and lifespan ≤0.65s. Trigger only on truly meaningful milestones (league win, payout claimed, new personal best).
+
+### Performance Budget & QA
+
+- **Frame rate:** 120 fps on ProMotion, 60 fps otherwise; frame time ≤ 8ms target.
+- **Overdraw:** ≤ 3×; avoid nested blurs; reuse glass layers.
+- **Haptics:** .light for taps, .medium for commit, .success for celebrations; never layer multiple haptics.
+- **Accessibility checks:** VoiceOver focus doesn't move during animation; reduced-motion path verified.
+- **Test matrix:** iPhone 12, 13, 15 Pro (ProMotion), low-power mode on/off, dark/light, Reduce Motion on/off.
+
+### Developer notes
+
+- Keep animations cancelable: use state-driven springs rather than fixed timers.
+- Prefer spring(response:dampingRatio:) over cubic-bezier for "sporty" feel.
+- Limit simultaneous animating layers to ≤ 5 per screen.
+
+---

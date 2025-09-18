@@ -9,23 +9,23 @@ struct TradeView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     // Header
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         HStack {
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text("Trade")
-                                    .font(.largeTitle)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primaryText)
+                                    .font(Theme.Typography.heading1)
+                                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                                 Text("Follow top trading vaults")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondaryText)
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                             }
+                            .sharpPageTransition()
 
                             Spacer()
                         }
@@ -36,6 +36,7 @@ struct TradeView: View {
                             Text("Following").tag(1)
                         }
                         .pickerStyle(SegmentedPickerStyle())
+                        .animation(Theme.Animation.fast, value: selectedSegment)
                     }
                     .padding(.horizontal)
                     .padding(.bottom)
@@ -130,12 +131,13 @@ struct DiscoverVaultsView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(vaults) { vault in
+            LazyVStack(spacing: Theme.Spacing.sm) {
+                ForEach(Array(vaults.enumerated()), id: \.element.id) { index, vault in
                     VaultCard(vault: vault) {
                         onVaultTap(vault)
                     }
                     .padding(.horizontal)
+                    .animation(Theme.Animation.base.delay(Double(index) * 0.03), value: vaults)
                 }
             }
             .padding(.vertical)
@@ -183,54 +185,54 @@ struct VaultCard: View {
     let onTap: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 12) {
+        PressableCard {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 // Header
                 HStack {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         Text(vault.name)
-                            .font(.headline)
+                            .font(Theme.Typography.body)
                             .fontWeight(.bold)
-                            .foregroundColor(.primaryText)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
 
                         HStack {
                             Text("by \(vault.manager.username)")
-                                .font(.caption)
-                                .foregroundColor(.secondaryText)
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
 
                             Text("•")
-                                .foregroundColor(.secondaryText)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
 
                             Text(vault.venue.rawValue)
-                                .font(.caption)
-                                .foregroundColor(.primaryBlue)
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.primary)
                         }
                     }
 
                     Spacer()
 
-                    VStack(alignment: .trailing) {
+                    VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
                         RiskLevelBadge(riskLevel: vault.riskLevel)
 
                         Text("\(vault.followers) followers")
-                            .font(.caption)
-                            .foregroundColor(.secondaryText)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
                     }
                 }
 
                 // Strategy and description
                 Text(vault.strategy.rawValue)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primaryBlue)
+                    .font(Theme.Typography.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Theme.ColorPalette.primary)
 
                 Text(vault.description)
-                    .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .font(Theme.Typography.caption)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
                     .lineLimit(2)
 
                 // Performance metrics
-                HStack(spacing: 20) {
+                HStack(spacing: Theme.Spacing.lg) {
                     PerformanceMetric(
                         title: "All Time",
                         value: vault.allTimeReturn,
@@ -251,26 +253,25 @@ struct VaultCard: View {
                 }
 
                 Divider()
-                    .background(Color.borderColor)
+                    .background(Theme.ColorPalette.divider)
 
                 // Follow button
                 HStack {
                     Text("Performance Fee: \(Int(vault.performanceFee))%")
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .font(Theme.Typography.caption)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
 
                     Spacer()
 
                     Text("Follow")
-                        .font(.headline)
-                        .foregroundColor(.primaryBlue)
+                        .font(Theme.Typography.button)
+                        .foregroundColor(Theme.ColorPalette.primary)
                 }
             }
-            .padding()
-            .background(Color.surfaceColor)
-            .cornerRadius(16)
+            .padding(Theme.Spacing.md)
+            .glassCard()
         }
-        .buttonStyle(PlainButtonStyle())
+        .onTapGesture(perform: onTap)
     }
 }
 
@@ -341,23 +342,23 @@ struct RiskLevelBadge: View {
     var badgeColor: Color {
         switch riskLevel {
         case .conservative:
-            return .successGreen
+            return Theme.ColorPalette.success
         case .moderate:
-            return .warningYellow
+            return Theme.ColorPalette.secondary
         case .aggressive:
-            return .dangerRed
+            return Theme.ColorPalette.error
         }
     }
 
     var body: some View {
         Text(riskLevel.rawValue)
-            .font(.caption)
+            .font(Theme.Typography.caption)
             .fontWeight(.semibold)
             .foregroundColor(.white)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
+            .padding(.horizontal, Theme.Spacing.xs)
+            .padding(.vertical, Theme.Spacing.xxs)
             .background(badgeColor)
-            .cornerRadius(8)
+            .cornerRadius(Theme.Radius.sm)
     }
 }
 
@@ -375,36 +376,41 @@ struct PerformanceMetric: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
             Text(title)
-                .font(.caption)
-                .foregroundColor(.secondaryText)
+                .font(Theme.Typography.caption)
+                .foregroundColor(Theme.ColorPalette.textSecondary)
 
             HStack(spacing: 2) {
                 if !prefix.isEmpty {
                     Text(prefix)
-                        .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .font(Theme.Typography.mono)
+                        .fontWeight(.bold)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                 }
 
                 if value >= 1000000 {
                     Text("\(value / 1000000, specifier: "%.1f")M")
-                        .font(.headline)
-                        .foregroundColor(isPercentage ? (value >= 0 ? .successGreen : .dangerRed) : .primaryText)
+                        .font(Theme.Typography.mono)
+                        .fontWeight(.bold)
+                        .foregroundColor(isPercentage ? (value >= 0 ? Theme.ColorPalette.success : Theme.ColorPalette.error) : Theme.ColorPalette.textPrimary)
                 } else if value >= 1000 {
                     Text("\(value / 1000, specifier: "%.1f")K")
-                        .font(.headline)
-                        .foregroundColor(isPercentage ? (value >= 0 ? .successGreen : .dangerRed) : .primaryText)
+                        .font(Theme.Typography.mono)
+                        .fontWeight(.bold)
+                        .foregroundColor(isPercentage ? (value >= 0 ? Theme.ColorPalette.success : Theme.ColorPalette.error) : Theme.ColorPalette.textPrimary)
                 } else {
                     Text("\(value, specifier: "%.1f")")
-                        .font(.headline)
-                        .foregroundColor(isPercentage ? (value >= 0 ? .successGreen : .dangerRed) : .primaryText)
+                        .font(Theme.Typography.mono)
+                        .fontWeight(.bold)
+                        .foregroundColor(isPercentage ? (value >= 0 ? Theme.ColorPalette.success : Theme.ColorPalette.error) : Theme.ColorPalette.textPrimary)
                 }
 
                 if isPercentage {
                     Text("%")
-                        .font(.headline)
-                        .foregroundColor(value >= 0 ? .successGreen : .dangerRed)
+                        .font(Theme.Typography.mono)
+                        .fontWeight(.bold)
+                        .foregroundColor(value >= 0 ? Theme.ColorPalette.success : Theme.ColorPalette.error)
                 }
             }
         }

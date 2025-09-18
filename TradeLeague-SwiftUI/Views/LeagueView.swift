@@ -8,22 +8,21 @@ struct LeagueView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 ScrollView {
-                    LazyVStack(spacing: 16) {
+                    LazyVStack(spacing: Theme.Spacing.md) {
                         // Header with create button
                         HStack {
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text("Leagues")
-                                    .font(.largeTitle)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primaryText)
+                                    .font(Theme.Typography.heading1)
+                                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                                 Text("Compete in sponsored leagues")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondaryText)
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                             }
 
                             Spacer()
@@ -33,10 +32,11 @@ struct LeagueView: View {
                             } label: {
                                 Image(systemName: "plus.circle.fill")
                                     .font(.title2)
-                                    .foregroundColor(.primaryBlue)
+                                    .foregroundColor(Theme.ColorPalette.primary)
                             }
                         }
                         .padding(.horizontal)
+                        .sharpPageTransition()
 
                         // Featured League (if any)
                         if let featuredLeague = leagues.first {
@@ -45,12 +45,13 @@ struct LeagueView: View {
                         }
 
                         // Active Leagues
-                        LazyVStack(spacing: 12) {
-                            ForEach(leagues) { league in
+                        LazyVStack(spacing: Theme.Spacing.sm) {
+                            ForEach(Array(leagues.enumerated()), id: \.element.id) { index, league in
                                 LeagueCard(league: league) {
                                     selectedLeague = league
                                 }
                                 .padding(.horizontal)
+                                .animation(Theme.Animation.base.delay(Double(index) * 0.03), value: leagues)
                             }
                         }
                     }
@@ -108,74 +109,56 @@ struct FeaturedLeagueCard: View {
     let league: League
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("🏆 Featured")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.warningYellow)
+        PressableCard {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                HStack {
+                    Text("🏆 Featured")
+                        .font(Theme.Typography.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Theme.ColorPalette.secondary)
 
-                Spacer()
+                    Spacer()
 
-                if let sponsor = league.sponsorName {
-                    Text(sponsor)
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
-                }
-            }
-
-            Text(league.name)
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(.primaryText)
-
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("Prize Pool")
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
-                    Text("$\(Int(league.prizePool))")
-                        .font(.headline)
-                        .foregroundColor(.successGreen)
+                    if let sponsor = league.sponsorName {
+                        Text(sponsor)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                    }
                 }
 
-                Spacer()
+                Text(league.name)
+                    .font(Theme.Typography.heading2)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
-                VStack(alignment: .trailing) {
-                    Text("Entry Fee")
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
-                    Text("$\(Int(league.entryFee))")
-                        .font(.headline)
-                        .foregroundColor(.primaryText)
+                HStack {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                        Text("Prize Pool")
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        MetricNumber(value: Int(league.prizePool))
+                            .foregroundColor(Theme.ColorPalette.success)
+                    }
+
+                    Spacer()
+
+                    VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
+                        Text("Entry Fee")
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        Text("$\(Int(league.entryFee))")
+                            .font(Theme.Typography.mono)
+                            .fontWeight(.bold)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+                    }
+                }
+
+                PrimaryButton(title: "Join League") {
+                    // Join league action
                 }
             }
-
-            Button {
-                // Join league action
-            } label: {
-                Text("Join League")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(
-                        LinearGradient(
-                            colors: [.primaryBlue, Color.primaryBlue.opacity(0.8)],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .cornerRadius(12)
-            }
+            .padding(Theme.Spacing.md)
+            .glassCard(isActive: true)
         }
-        .padding()
-        .background(Color.surfaceColor)
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primaryBlue.opacity(0.3), lineWidth: 1)
-        )
     }
 }
 
@@ -185,56 +168,57 @@ struct LeagueCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 12) {
+            HStack(spacing: Theme.Spacing.sm) {
                 // League icon or sponsor logo
                 Circle()
-                    .fill(Color.primaryBlue.opacity(0.2))
+                    .fill(Theme.ColorPalette.primary.opacity(0.15))
                     .frame(width: 50, height: 50)
                     .overlay(
                         Text("🏆")
                             .font(.title2)
                     )
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                     Text(league.name)
-                        .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .font(Theme.Typography.body)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                         .multilineTextAlignment(.leading)
 
                     HStack {
                         Text("$\(Int(league.prizePool)) pool")
-                            .font(.caption)
-                            .foregroundColor(.successGreen)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.success)
 
                         Text("•")
-                            .foregroundColor(.secondaryText)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
 
                         Text("\(league.participants.count)/\(league.maxParticipants) players")
-                            .font(.caption)
-                            .foregroundColor(.secondaryText)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
                     }
 
                     if let endTime = league.endTime {
                         Text("Ends \(endTime, style: .relative)")
-                            .font(.caption)
-                            .foregroundColor(.tertiaryText)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary.opacity(0.7))
                     }
                 }
 
                 Spacer()
 
-                VStack {
+                VStack(spacing: Theme.Spacing.xxs) {
                     Text("$\(Int(league.entryFee))")
-                        .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .font(Theme.Typography.mono)
+                        .fontWeight(.bold)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                     Text("entry")
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .font(Theme.Typography.caption)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
             }
-            .padding()
-            .background(Color.surfaceColor)
-            .cornerRadius(12)
+            .padding(Theme.Spacing.md)
+            .glassCard()
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -251,66 +235,61 @@ struct CreateLeagueView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
-                VStack(spacing: 20) {
-                    VStack(alignment: .leading, spacing: 16) {
+                VStack(spacing: Theme.Spacing.lg) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         Text("Create League")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primaryText)
+                            .font(Theme.Typography.heading1)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
 
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                             Text("League Name")
-                                .foregroundColor(.secondaryText)
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
                             TextField("Enter league name", text: $leagueName)
                                 .textFieldStyle(CustomTextFieldStyle())
                         }
 
-                        HStack(spacing: 16) {
-                            VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: Theme.Spacing.md) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                                 Text("Entry Fee")
-                                    .foregroundColor(.secondaryText)
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                                 TextField("$0", text: $entryFee)
                                     .textFieldStyle(CustomTextFieldStyle())
                                     .keyboardType(.numberPad)
                             }
 
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                                 Text("Prize Pool")
-                                    .foregroundColor(.secondaryText)
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                                 TextField("$0", text: $prizePool)
                                     .textFieldStyle(CustomTextFieldStyle())
                                     .keyboardType(.numberPad)
                             }
                         }
 
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                             Text("Max Participants")
-                                .foregroundColor(.secondaryText)
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
                             TextField("100", text: $maxParticipants)
                                 .textFieldStyle(CustomTextFieldStyle())
                                 .keyboardType(.numberPad)
                         }
 
                         Toggle("Public League", isOn: $isPublic)
-                            .foregroundColor(.primaryText)
+                            .font(Theme.Typography.body)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
                     }
 
                     Spacer()
 
-                    Button {
-                        // Create league action
+                    PrimaryButton(title: "Create League") {
                         dismiss()
-                    } label: {
-                        Text("Create League")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.primaryBlue)
-                            .cornerRadius(12)
                     }
                     .disabled(leagueName.isEmpty)
                 }
@@ -322,7 +301,7 @@ struct CreateLeagueView: View {
                     Button("Cancel") {
                         dismiss()
                     }
-                    .foregroundColor(.primaryBlue)
+                    .foregroundColor(Theme.ColorPalette.primary)
                 }
             }
         }
@@ -332,85 +311,75 @@ struct CreateLeagueView: View {
 struct LeagueDetailView: View {
     let league: League
     @Environment(\.dismiss) private var dismiss
+    @State private var currentRanks: [Int] = []
 
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
                         // Header
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                             if let sponsor = league.sponsorName {
                                 Text(sponsor)
-                                    .font(.subheadline)
-                                    .foregroundColor(.primaryBlue)
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.primary)
                             }
 
                             Text(league.name)
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
-                                .foregroundColor(.primaryText)
+                                .font(Theme.Typography.heading1)
+                                .foregroundColor(Theme.ColorPalette.textPrimary)
+                                .sharpPageTransition()
 
-                            HStack(spacing: 20) {
-                                VStack(alignment: .leading) {
+                            HStack(spacing: Theme.Spacing.lg) {
+                                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                     Text("Prize Pool")
-                                        .font(.caption)
-                                        .foregroundColor(.secondaryText)
-                                    Text("$\(Int(league.prizePool))")
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.successGreen)
+                                        .font(Theme.Typography.caption)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                                    MetricNumber(value: Int(league.prizePool))
+                                        .foregroundColor(Theme.ColorPalette.success)
                                 }
 
-                                VStack(alignment: .leading) {
+                                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                     Text("Entry Fee")
-                                        .font(.caption)
-                                        .foregroundColor(.secondaryText)
+                                        .font(Theme.Typography.caption)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                                     Text("$\(Int(league.entryFee))")
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.primaryText)
+                                        .font(Theme.Typography.heading2)
+                                        .foregroundColor(Theme.ColorPalette.textPrimary)
                                 }
                             }
                         }
-                        .padding()
-                        .background(Color.surfaceColor)
-                        .cornerRadius(16)
+                        .padding(Theme.Spacing.md)
+                        .glassCard()
 
                         // Leaderboard
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                             Text("Leaderboard")
-                                .font(.headline)
-                                .foregroundColor(.primaryText)
+                                .font(Theme.Typography.heading2)
+                                .foregroundColor(Theme.ColorPalette.textPrimary)
 
                             if league.participants.isEmpty {
                                 Text("No participants yet")
-                                    .foregroundColor(.secondaryText)
+                                    .font(Theme.Typography.body)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                                     .padding()
                             } else {
-                                ForEach(league.participants) { participant in
-                                    LeaderboardRow(participant: participant)
+                                ForEach(Array(league.participants.enumerated()), id: \.element.id) { index, participant in
+                                    LeaderboardRow(participant: participant, rank: index + 1)
+                                        .animation(Theme.Animation.base.delay(Double(index) * 0.03), value: league.participants)
                                 }
                             }
                         }
-                        .padding()
-                        .background(Color.surfaceColor)
-                        .cornerRadius(16)
+                        .padding(Theme.Spacing.md)
+                        .glassCard()
 
                         // Join button
-                        Button {
+                        PrimaryButton(title: "Join League - $\(Int(league.entryFee))") {
                             // Join league action
-                        } label: {
-                            Text("Join League - $\(Int(league.entryFee))")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.primaryBlue)
-                                .cornerRadius(12)
                         }
                     }
                     .padding()
@@ -422,7 +391,7 @@ struct LeagueDetailView: View {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(.primaryBlue)
+                    .foregroundColor(Theme.ColorPalette.primary)
                 }
             }
         }
@@ -431,49 +400,56 @@ struct LeagueDetailView: View {
 
 struct LeaderboardRow: View {
     let participant: LeagueParticipant
+    let rank: Int
 
     var body: some View {
         HStack {
             // Rank
-            Text("#\(participant.rank)")
-                .font(.headline)
-                .fontWeight(.bold)
-                .foregroundColor(.primaryText)
-                .frame(width: 40)
+            RankView(rank: rank, isUp: participant.percentageGain >= 0)
+                .frame(width: 60)
 
             // User info
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 Text(participant.user.username)
-                    .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .font(Theme.Typography.body)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
                 Text("$\(Int(participant.currentScore))")
-                    .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .font(Theme.Typography.caption)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
             }
 
             Spacer()
 
             // Performance
-            VStack(alignment: .trailing) {
-                Text("+\(participant.percentageGain, specifier: "%.1f")%")
-                    .font(.headline)
-                    .foregroundColor(participant.percentageGain >= 0 ? .successGreen : .dangerRed)
+            VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
+                Text("\(participant.percentageGain >= 0 ? "+" : "")\(participant.percentageGain, specifier: "%.1f")%")
+                    .font(Theme.Typography.mono)
+                    .fontWeight(.bold)
+                    .foregroundColor(participant.percentageGain >= 0 ? Theme.ColorPalette.success : Theme.ColorPalette.error)
                 Text("gain")
-                    .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .font(Theme.Typography.caption)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, Theme.Spacing.xs)
     }
 }
 
 struct CustomTextFieldStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
-            .padding()
-            .background(Color.surfaceLight)
-            .cornerRadius(8)
-            .foregroundColor(.primaryText)
+            .padding(Theme.Spacing.sm)
+            .font(Theme.Typography.body)
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                    .fill(Theme.ColorPalette.surface)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                            .stroke(Theme.ColorPalette.divider, lineWidth: 1)
+                    )
+            )
+            .foregroundColor(Theme.ColorPalette.textPrimary)
     }
 }
 
