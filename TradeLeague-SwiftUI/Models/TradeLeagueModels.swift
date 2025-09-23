@@ -210,11 +210,24 @@ struct LeaguePlayer: Identifiable, Codable, Equatable {
     let id: String
     let username: String
     let avatar: String
-    let points: Int
+    let profit: Double // Changed from points to profit
     let rank: Int
 }
 
 enum LeagueScope: CaseIterable {
     case global
     case local
+}
+
+// MARK: - Sponsored League Models
+struct SponsoredLeague: Identifiable, Codable, Equatable {
+    let id: String
+    let sponsorName: String
+    let sponsorLogo: String
+    let leagueName: String
+    let prizePool: Double
+    let entryFee: Double
+    let participants: [LeaguePlayer]
+    let isExpanded: Bool
+    let endDate: Date
 }

@@ -2,23 +2,23 @@ import SwiftUI
 
 struct Theme {
     enum ColorPalette {
-        static let primary = Color(hex: "FC5200")
-        static let secondary = Color(hex: "FF7A33")
-        static let background = Color.white
-        static let surface = Color.white.opacity(0.6)
-        static let textPrimary = Color(hex: "111111")
-        static let textSecondary = Color(hex: "666666")
-        static let divider = Color(hex: "E0E0E0")
-        static let success = Color(hex: "00C851")
-        static let error = Color(hex: "FF4444")
+        static let primary: Color = Color(hex: "FC5200")
+        static let secondary: Color = Color(hex: "FF7A33")
+        static let background: Color = Color.white
+        static let surface: Color = Color.white.opacity(0.6)
+        static let textPrimary: Color = Color(hex: "111111")
+        static let textSecondary: Color = Color(hex: "666666")
+        static let divider: Color = Color(hex: "E0E0E0")
+        static let success: Color = Color(hex: "00C851")
+        static let error: Color = Color(hex: "FF4444")
 
         // Additional colors for compatibility
-        static let successGreen = success
-        static let dangerRed = error
-        static let primaryBlue = Color(hex: "007AFF")
-        static let warningYellow = Color(hex: "FFCC00")
-        static let chartPurple = Color(hex: "AF52DE")
-        static let darkBackground = Color(hex: "1C1C1E")
+        static let successGreen: Color = success
+        static let dangerRed: Color = error
+        static let primaryBlue: Color = Color(hex: "007AFF")
+        static let warningYellow: Color = Color(hex: "FFCC00")
+        static let chartPurple: Color = Color(hex: "AF52DE")
+        static let darkBackground: Color = Color(hex: "1C1C1E")
 
         static let gradientPrimary = LinearGradient(
             colors: [primary, secondary],
@@ -26,8 +26,8 @@ struct Theme {
             endPoint: .trailing
         )
 
-        static let glassSurface = Color.white.opacity(0.5)
-        static let glassBorder = Color.white.opacity(0.4)
+        static let glassSurface: Color = Color.white.opacity(0.5)
+        static let glassBorder: Color = Color.white.opacity(0.4)
     }
 
     enum Typography {
