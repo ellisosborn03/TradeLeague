@@ -101,6 +101,32 @@ struct LeagueView: View {
                         }
                     }
                     .padding(.vertical)
+
+                    // Powered by Aptos Footer
+                    HStack(spacing: Theme.Spacing.xs) {
+                        Text("Powered by")
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+
+                        AsyncImage(url: URL(string: "https://cryptologos.cc/logos/aptos-apt-logo.svg")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            Text("Aptos")
+                                .font(Theme.Typography.caption)
+                                .fontWeight(.medium)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
+                        }
+                        .frame(width: 16, height: 16)
+
+                        Text("Aptos")
+                            .font(Theme.Typography.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                    }
+                    .padding(.top, Theme.Spacing.lg)
+                    .padding(.bottom, Theme.Spacing.md)
                 }
             }
             .onAppear {
@@ -124,11 +150,11 @@ struct LeagueView: View {
                 prizePool: 10000,
                 entryFee: 100,
                 participants: [
-                    LeaguePlayer(id: "1", username: "Alex Chen", avatar: "👨🏻‍💼", profit: 2847.23, rank: 1),
-                    LeaguePlayer(id: "2", username: "Sarah Kim", avatar: "👩🏻‍💻", profit: 1923.45, rank: 2),
-                    LeaguePlayer(id: "3", username: "Marcus Johnson", avatar: "👨🏿‍🚀", profit: 1456.78, rank: 3),
-                    LeaguePlayer(id: "4", username: "Elena Rodriguez", avatar: "👩🏽‍🔬", profit: -234.56, rank: 4),
-                    LeaguePlayer(id: "5", username: "David Park", avatar: "👨🏻‍🎨", profit: -567.89, rank: 5)
+                    LeaguePlayer(id: "1", username: "Alex Chen", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2847.23, rank: 1),
+                    LeaguePlayer(id: "2", username: "Sarah Kim", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1923.45, rank: 2),
+                    LeaguePlayer(id: "3", username: "Marcus Johnson", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1456.78, rank: 3),
+                    LeaguePlayer(id: "4", username: "Elena Rodriguez", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: -234.56, rank: 4),
+                    LeaguePlayer(id: "5", username: "David Park", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: -567.89, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date()
@@ -141,11 +167,11 @@ struct LeagueView: View {
                 prizePool: 7500,
                 entryFee: 75,
                 participants: [
-                    LeaguePlayer(id: "6", username: "Rachel Wong", avatar: "👩🏻‍⚕️", profit: 3245.67, rank: 1),
-                    LeaguePlayer(id: "7", username: "James Miller", avatar: "👨🏼‍🏫", profit: 2134.89, rank: 2),
-                    LeaguePlayer(id: "8", username: "Priya Sharma", avatar: "👩🏽‍💼", profit: 1876.34, rank: 3),
-                    LeaguePlayer(id: "9", username: "Tom Anderson", avatar: "👨🏻‍🔧", profit: 987.12, rank: 4),
-                    LeaguePlayer(id: "10", username: "Lisa Zhang", avatar: "👩🏻‍🎓", profit: -123.45, rank: 5)
+                    LeaguePlayer(id: "6", username: "Rachel Wong", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", profit: 3245.67, rank: 1),
+                    LeaguePlayer(id: "7", username: "James Miller", avatar: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=150&h=150&fit=crop&crop=face", profit: 2134.89, rank: 2),
+                    LeaguePlayer(id: "8", username: "Priya Sharma", avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face", profit: 1876.34, rank: 3),
+                    LeaguePlayer(id: "9", username: "Tom Anderson", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face", profit: 987.12, rank: 4),
+                    LeaguePlayer(id: "10", username: "Lisa Zhang", avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a2c9f9?w=150&h=150&fit=crop&crop=face", profit: -123.45, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
@@ -158,11 +184,11 @@ struct LeagueView: View {
                 prizePool: 5000,
                 entryFee: 50,
                 participants: [
-                    LeaguePlayer(id: "11", username: "Kevin Liu", avatar: "👨🏻‍💻", profit: 1987.65, rank: 1),
-                    LeaguePlayer(id: "12", username: "Emma Thompson", avatar: "👩🏼‍🚀", profit: 1543.21, rank: 2),
-                    LeaguePlayer(id: "13", username: "Carlos Ruiz", avatar: "👨🏽‍🔬", profit: 1234.56, rank: 3),
-                    LeaguePlayer(id: "14", username: "Sophie Martin", avatar: "👩🏻‍🎨", profit: 876.43, rank: 4),
-                    LeaguePlayer(id: "15", username: "Michael Brown", avatar: "👨🏿‍💼", profit: -345.67, rank: 5)
+                    LeaguePlayer(id: "11", username: "Kevin Liu", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&h=150&fit=crop&crop=face", profit: 1987.65, rank: 1),
+                    LeaguePlayer(id: "12", username: "Emma Thompson", avatar: "https://images.unsplash.com/photo-1541534401786-2077eed87a74?w=150&h=150&fit=crop&crop=face", profit: 1543.21, rank: 2),
+                    LeaguePlayer(id: "13", username: "Carlos Ruiz", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=face", profit: 1234.56, rank: 3),
+                    LeaguePlayer(id: "14", username: "Sophie Martin", avatar: "https://images.unsplash.com/photo-1507120410856-1f35574c3b45?w=150&h=150&fit=crop&crop=face", profit: 876.43, rank: 4),
+                    LeaguePlayer(id: "15", username: "Michael Brown", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: -345.67, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()
@@ -175,11 +201,11 @@ struct LeagueView: View {
                 prizePool: 3000,
                 entryFee: 25,
                 participants: [
-                    LeaguePlayer(id: "16", username: "Anna Petrov", avatar: "👩🏻‍⚕️", profit: 1456.78, rank: 1),
-                    LeaguePlayer(id: "17", username: "Jake Wilson", avatar: "👨🏼‍🏫", profit: 1234.56, rank: 2),
-                    LeaguePlayer(id: "18", username: "Maya Patel", avatar: "👩🏽‍💻", profit: 987.65, rank: 3),
-                    LeaguePlayer(id: "19", username: "Ryan O'Connor", avatar: "👨🏻‍🚀", profit: 543.21, rank: 4),
-                    LeaguePlayer(id: "20", username: "Zoe Davis", avatar: "👩🏼‍🔬", profit: -234.56, rank: 5)
+                    LeaguePlayer(id: "16", username: "Anna Petrov", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: 1456.78, rank: 1),
+                    LeaguePlayer(id: "17", username: "Jake Wilson", avatar: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=150&h=150&fit=crop&crop=face", profit: 1234.56, rank: 2),
+                    LeaguePlayer(id: "18", username: "Maya Patel", avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face", profit: 987.65, rank: 3),
+                    LeaguePlayer(id: "19", username: "Ryan O'Connor", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face", profit: 543.21, rank: 4),
+                    LeaguePlayer(id: "20", username: "Zoe Davis", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=face", profit: -234.56, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 2, to: Date()) ?? Date()
@@ -189,12 +215,12 @@ struct LeagueView: View {
 
     private func loadFriendsLeaderboard() {
         friendsLeaderboard = [
-            LeaguePlayer(id: "f1", username: "John Smith", avatar: "👨🏻‍💼", profit: 2345.67, rank: 1),
-            LeaguePlayer(id: "f2", username: "Maria Garcia", avatar: "👩🏽‍💻", profit: 1876.43, rank: 2),
-            LeaguePlayer(id: "f3", username: "Chris Lee", avatar: "👨🏻‍🚀", profit: 1234.89, rank: 3),
-            LeaguePlayer(id: "f4", username: "Amy Chen", avatar: "👩🏻‍🔬", profit: 987.65, rank: 4),
-            LeaguePlayer(id: "f5", username: "Robert Kim", avatar: "👨🏻‍🎨", profit: 543.21, rank: 5),
-            LeaguePlayer(id: "f6", username: "Lisa Wang", avatar: "👩🏻‍⚕️", profit: 234.56, rank: 6)
+            LeaguePlayer(id: "f1", username: "John Smith", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2345.67, rank: 1),
+            LeaguePlayer(id: "f2", username: "Maria Garcia", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1876.43, rank: 2),
+            LeaguePlayer(id: "f3", username: "Chris Lee", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1234.89, rank: 3),
+            LeaguePlayer(id: "f4", username: "Amy Chen", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: 987.65, rank: 4),
+            LeaguePlayer(id: "f5", username: "Robert Kim", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: 543.21, rank: 5),
+            LeaguePlayer(id: "f6", username: "Lisa Wang", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", profit: 234.56, rank: 6)
         ]
     }
 }
@@ -300,16 +326,10 @@ struct PodiumPlayerView: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
             // Avatar
-            Text(player.avatar)
-                .font(.system(size: 32))
-                .frame(width: 50, height: 50)
-                .background(
+            AvatarView(avatarURL: player.avatar, size: 50)
+                .overlay(
                     Circle()
-                        .fill(Theme.ColorPalette.surface)
-                        .overlay(
-                            Circle()
-                                .stroke(rankColor, lineWidth: 2)
-                        )
+                        .stroke(rankColor, lineWidth: 2)
                 )
 
             // Name
@@ -469,14 +489,38 @@ struct CompanyLogoView: View {
     let company: String
 
     var body: some View {
-        ZStack {
-            Circle()
-                .fill(logoBackgroundColor)
-                .frame(width: 40, height: 40)
+        AsyncImage(url: URL(string: logoURL)) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        } placeholder: {
+            // Fallback to text logo while loading
+            ZStack {
+                Circle()
+                    .fill(logoBackgroundColor)
+                    .frame(width: 40, height: 40)
 
-            Text(logoText)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundColor(logoTextColor)
+                Text(logoText)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.white)
+            }
+        }
+        .frame(width: 40, height: 40)
+        .clipShape(Circle())
+        .background(
+            Circle()
+                .fill(Color.white)
+                .frame(width: 44, height: 44)
+        )
+    }
+
+    private var logoURL: String {
+        switch company {
+        case "circle": return "https://cryptologos.cc/logos/usd-coin-usdc-logo.svg"
+        case "hyperion": return "https://cryptologos.cc/logos/hyperion-hyn-logo.svg"
+        case "merkle": return "https://aptosfoundation.org/_next/image?url=%2Fecosystem%2Flogos%2Fmerkletrade.png&w=384&q=75"
+        case "tapp": return "https://aptosfoundation.org/_next/image?url=%2Fecosystem%2Flogos%2Ftapp.png&w=384&q=75"
+        default: return ""
         }
     }
 
@@ -490,10 +534,6 @@ struct CompanyLogoView: View {
         }
     }
 
-    private var logoTextColor: Color {
-        return .white
-    }
-
     private var logoText: String {
         switch company {
         case "circle": return "C"
@@ -502,6 +542,29 @@ struct CompanyLogoView: View {
         case "tapp": return "T"
         default: return "?"
         }
+    }
+}
+
+struct AvatarView: View {
+    let avatarURL: String
+    let size: CGFloat
+
+    var body: some View {
+        AsyncImage(url: URL(string: avatarURL)) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } placeholder: {
+            Circle()
+                .fill(Theme.ColorPalette.surface)
+                .overlay(
+                    Image(systemName: "person.fill")
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                        .font(.system(size: size * 0.4))
+                )
+        }
+        .frame(width: size, height: size)
+        .clipShape(Circle())
     }
 }
 
@@ -519,13 +582,7 @@ struct LeaderboardRowView: View {
                 .frame(width: 24)
 
             // Avatar
-            Text(player.avatar)
-                .font(.title3)
-                .frame(width: 32, height: 32)
-                .background(
-                    Circle()
-                        .fill(Theme.ColorPalette.surface)
-                )
+            AvatarView(avatarURL: player.avatar, size: 32)
 
             // Username
             Text(player.username)
@@ -564,6 +621,7 @@ struct RoundedCorner: Shape {
         return Path(path.cgPath)
     }
 }
+
 
 #Preview {
     LeagueView()

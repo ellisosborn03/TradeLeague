@@ -50,6 +50,31 @@ struct ProfileView: View {
                             }
                             .padding(.top)
                         }
+
+                        // Powered by Aptos Footer
+                        HStack(spacing: Theme.Spacing.xs) {
+                            Text("Powered by")
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
+
+                            AsyncImage(url: URL(string: "https://cryptologos.cc/logos/aptos-apt-logo.svg")) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            } placeholder: {
+                                Text("Aptos")
+                                    .font(Theme.Typography.caption)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                            }
+                            .frame(width: 16, height: 16)
+
+                            Text("Aptos")
+                                .font(Theme.Typography.caption)
+                                .fontWeight(.medium)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
+                        }
+                        .padding(.top, Theme.Spacing.lg)
                     }
                     .padding()
                 }
