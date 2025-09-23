@@ -197,6 +197,8 @@ struct PredictionMarketCard: View {
                 HStack {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         HStack {
+                            SponsorLogoView.small(market.sponsor)
+                            
                             Text(market.sponsor)
                                 .font(Theme.Typography.caption)
                                 .fontWeight(.semibold)

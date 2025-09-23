@@ -165,6 +165,128 @@ struct ShimmerEffect: ViewModifier {
     }
 }
 
+struct SponsorLogoView: View {
+    let sponsorName: String
+    let size: CGSize
+    
+    init(sponsorName: String, size: CGSize = CGSize(width: 24, height: 24)) {
+        self.sponsorName = sponsorName
+        self.size = size
+    }
+    
+    var body: some View {
+        Group {
+            if let logoName = localImageName {
+                // Use local asset image if available
+                Image(logoName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: size.width, height: size.height)
+                    .clipShape(RoundedRectangle(cornerRadius: size.width * 0.1))
+            } else {
+                // Fallback to branded circular icon
+                ZStack {
+                    Circle()
+                        .fill(logoBackgroundColor)
+                        .frame(width: size.width, height: size.height)
+                    
+                    Image(systemName: logoIcon)
+                        .font(.system(size: size.width * 0.5, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+            }
+        }
+    }
+    
+    private var localImageName: String? {
+        switch sponsorName.lowercased() {
+        case "hyperion":
+            return "hyperion-logo"
+        case "merkle", "merkle trade":
+            return "merkle-logo"
+        case "tapp", "tapp exchange", "tapp network":
+            return "tapp-logo"
+        case "panora":
+            return "panora-logo"
+        case "circle":
+            return nil // Will use fallback for now
+        case "kana", "kana labs":
+            return nil // Will use fallback for now
+        case "nodit":
+            return nil // Will use fallback for now
+        case "ekiden":
+            return nil // Will use fallback for now
+        default:
+            return nil
+        }
+    }
+    
+    private var logoBackgroundColor: Color {
+        switch sponsorName.lowercased() {
+        case "circle":
+            return Color(hex: "007AFF") // USDC Blue
+        case "hyperion":
+            return Color(hex: "6366F1") // Hyperion Purple
+        case "merkle", "merkle trade":
+            return Color(hex: "10B981") // Merkle Green
+        case "tapp", "tapp exchange", "tapp network":
+            return Color(hex: "F59E0B") // Tapp Orange
+        case "panora":
+            return Color(hex: "8B5CF6") // Panora Purple
+        case "kana", "kana labs":
+            return Color(hex: "06B6D4") // Kana Cyan
+        case "nodit":
+            return Color(hex: "374151") // Nodit Gray
+        case "ekiden":
+            return Color(hex: "DC2626") // Ekiden Red
+        default:
+            return Theme.ColorPalette.primary
+        }
+    }
+    
+    private var logoIcon: String {
+        switch sponsorName.lowercased() {
+        case "circle":
+            return "dollarsign.circle.fill"
+        case "hyperion":
+            return "chart.line.uptrend.xyaxis"
+        case "merkle", "merkle trade":
+            return "chart.bar.xaxis"
+        case "tapp", "tapp exchange", "tapp network":
+            return "link.circle.fill"
+        case "panora":
+            return "chart.xyaxis.line"
+        case "kana", "kana labs":
+            return "arrow.triangle.swap"
+        case "nodit":
+            return "server.rack"
+        case "ekiden":
+            return "function"
+        default:
+            return "building.2.crop.circle"
+        }
+    }
+}
+
+// Extension to make it easier to use in other views
+extension SponsorLogoView {
+    static func small(_ sponsorName: String) -> SponsorLogoView {
+        SponsorLogoView(sponsorName: sponsorName, size: CGSize(width: 16, height: 16))
+    }
+    
+    static func medium(_ sponsorName: String) -> SponsorLogoView {
+        SponsorLogoView(sponsorName: sponsorName, size: CGSize(width: 24, height: 24))
+    }
+    
+    static func large(_ sponsorName: String) -> SponsorLogoView {
+        SponsorLogoView(sponsorName: sponsorName, size: CGSize(width: 32, height: 32))
+    }
+    
+    static func xlarge(_ sponsorName: String) -> SponsorLogoView {
+        SponsorLogoView(sponsorName: sponsorName, size: CGSize(width: 48, height: 48))
+    }
+}
+
 extension View {
     func sharpPageTransition() -> some View {
         modifier(PageTransition())

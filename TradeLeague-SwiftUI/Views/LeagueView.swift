@@ -16,21 +16,21 @@ struct LeagueView: View {
                     VStack(spacing: Theme.Spacing.lg) {
                         // Header with animated transition
                         VStack(spacing: Theme.Spacing.md) {
-                            HStack {
-                                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                                    Text("Leagues")
-                                        .font(Theme.Typography.heading1)
-                                        .foregroundColor(Theme.ColorPalette.textPrimary)
+                        HStack {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                                Text("Leagues")
+                                    .font(Theme.Typography.heading1)
+                                    .foregroundColor(Theme.ColorPalette.textPrimary)
                                         .sharpPageTransition()
 
                                     Text("Compete in sponsored challenges")
-                                        .font(Theme.Typography.caption)
-                                        .foregroundColor(Theme.ColorPalette.textSecondary)
-                                }
-
-                                Spacer()
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                             }
-                            .padding(.horizontal)
+
+                            Spacer()
+                        }
+                        .padding(.horizontal)
 
                             // Scope Toggle with orange theme
                             HStack(spacing: 0) {
@@ -294,7 +294,7 @@ struct PodiumView: View {
 
     var body: some View {
         HStack(alignment: .bottom, spacing: Theme.Spacing.sm) {
-            Spacer()
+                Spacer()
 
             // 2nd Place
             if topPlayers.count > 1 {
@@ -336,13 +336,13 @@ struct PodiumPlayerView: View {
             Text(player.username)
                 .font(Theme.Typography.caption)
                 .fontWeight(.semibold)
-                .foregroundColor(Theme.ColorPalette.textPrimary)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
 
             // Profit
             Text("\(player.profit >= 0 ? "+" : "")$\(player.profit, specifier: "%.0f")")
-                .font(Theme.Typography.caption)
+                                .font(Theme.Typography.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(player.profit >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
 
@@ -389,8 +389,8 @@ struct SponsoredLeagueCard: View {
 
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         Text(league.sponsorName)
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
                         Text(league.leagueName)
                             .font(Theme.Typography.body)
                             .fontWeight(.semibold)
@@ -433,12 +433,12 @@ struct SponsoredLeagueCard: View {
                         VStack(spacing: Theme.Spacing.xs) {
                             HStack {
                                 Text("LEADERBOARD")
-                                    .font(Theme.Typography.caption)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                                        .font(Theme.Typography.caption)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                                 Spacer()
                                 Text("PROFIT/LOSS")
-                                    .font(Theme.Typography.caption)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                                        .font(Theme.Typography.caption)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                             }
                             .padding(.horizontal)
 
@@ -457,7 +457,7 @@ struct SponsoredLeagueCard: View {
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
                             Text("Ends in \(timeUntilEnd(league.endDate))")
                                 .font(Theme.Typography.caption)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                         }
 
                         Spacer()
@@ -489,39 +489,21 @@ struct CompanyLogoView: View {
     let company: String
 
     var body: some View {
-        AsyncImage(url: URL(string: logoURL)) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        } placeholder: {
-            // Fallback to text logo while loading
-            ZStack {
-                Circle()
-                    .fill(logoBackgroundColor)
-                    .frame(width: 40, height: 40)
-
-                Text(logoText)
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.white)
-            }
+        ZStack {
+            Circle()
+                .fill(logoBackgroundColor)
+                .frame(width: 40, height: 40)
+            
+            Image(systemName: fallbackIcon)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(.white)
         }
-        .frame(width: 40, height: 40)
         .clipShape(Circle())
         .background(
             Circle()
                 .fill(Color.white)
                 .frame(width: 44, height: 44)
         )
-    }
-
-    private var logoURL: String {
-        switch company {
-        case "circle": return "https://cryptologos.cc/logos/usd-coin-usdc-logo.svg"
-        case "hyperion": return "https://cryptologos.cc/logos/hyperion-hyn-logo.svg"
-        case "merkle": return "https://aptosfoundation.org/_next/image?url=%2Fecosystem%2Flogos%2Fmerkletrade.png&w=384&q=75"
-        case "tapp": return "https://aptosfoundation.org/_next/image?url=%2Fecosystem%2Flogos%2Ftapp.png&w=384&q=75"
-        default: return ""
-        }
     }
 
     private var logoBackgroundColor: Color {
@@ -533,14 +515,14 @@ struct CompanyLogoView: View {
         default: return Theme.ColorPalette.primary
         }
     }
-
-    private var logoText: String {
+    
+    private var fallbackIcon: String {
         switch company {
-        case "circle": return "C"
-        case "hyperion": return "H"
-        case "merkle": return "M"
-        case "tapp": return "T"
-        default: return "?"
+        case "circle": return "dollarsign.circle.fill"
+        case "hyperion": return "chart.line.uptrend.xyaxis"
+        case "merkle": return "chart.bar.xaxis"
+        case "tapp": return "link.circle.fill"
+        default: return "building.2.crop.circle"
         }
     }
 }
@@ -586,8 +568,8 @@ struct LeaderboardRowView: View {
 
             // Username
             Text(player.username)
-                .font(Theme.Typography.body)
-                .foregroundColor(Theme.ColorPalette.textPrimary)
+                    .font(Theme.Typography.body)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
             Spacer()
 
