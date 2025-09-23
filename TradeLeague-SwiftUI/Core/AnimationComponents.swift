@@ -7,7 +7,7 @@ struct PageTransition: ViewModifier {
         content
             .opacity(appear ? 1 : 0)
             .offset(x: appear ? 0 : 12, y: 0)
-            .animation(.spring(response: 0.24, dampingRatio: 0.82), value: appear)
+            .animation(.spring(duration: 0.24, bounce: 0.18), value: appear)
             .onAppear { appear = true }
     }
 }
@@ -23,7 +23,7 @@ struct PressableCard<Content: View>: View {
                     radius: isPressed ? 8 : 4,
                     x: 0,
                     y: isPressed ? 4 : 2)
-            .animation(.spring(response: 0.12, dampingRatio: 1.0), value: isPressed)
+            .animation(.spring(duration: 0.12, bounce: 0), value: isPressed)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .updating($isPressed) { _, state, _ in state = true }
@@ -64,13 +64,13 @@ struct RankView: View {
                 .fontWeight(.bold)
                 .rotation3DEffect(.degrees(tilt ? 0 : 8),
                                   axis: (x: 0, y: 1, z: 0))
-                .animation(.spring(response: 0.16, dampingRatio: 1.0), value: tilt)
+                .animation(.spring(duration: 0.16, bounce: 0), value: tilt)
 
             Image(systemName: isUp ? "arrowtriangle.up.fill" : "arrowtriangle.down.fill")
                 .foregroundColor(isUp ? Theme.ColorPalette.success : Theme.ColorPalette.error)
                 .font(.system(size: 10))
                 .scaleEffect(tilt ? 1.0 : 0.8)
-                .animation(.spring(response: 0.14, dampingRatio: 0.9), value: tilt)
+                .animation(.spring(duration: 0.14, bounce: 0.1), value: tilt)
         }
         .onChange(of: rank) { _ in
             tilt.toggle()
@@ -92,7 +92,7 @@ struct MetricNumber: View {
                         insertion: .move(edge: .bottom).combined(with: .opacity),
                         removal: .move(edge: .top).combined(with: .opacity)
                     ))
-                    .animation(.spring(response: 0.12, dampingRatio: 0.95), value: value)
+                    .animation(.spring(duration: 0.12, bounce: 0.05), value: value)
             }
         }
     }
@@ -107,7 +107,7 @@ struct PrimaryButton: View {
     var body: some View {
         Button(action: {
             action()
-            withAnimation(.spring(response: 0.18, dampingRatio: 0.6)) {
+            withAnimation(.spring(duration: 0.18, bounce: 0.4)) {
                 success = true
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.36) {

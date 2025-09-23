@@ -4,7 +4,7 @@ import SwiftUI
 struct TradeLeagueApp: App {
     var body: some Scene {
         WindowGroup {
-            SimpleContentView()
+            ContentView()
                 .preferredColorScheme(.light)
         }
     }

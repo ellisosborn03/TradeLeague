@@ -265,19 +265,19 @@ struct PerformanceMetricCard: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.caption)
-                .foregroundColor(.secondaryText)
+                .foregroundColor(Theme.ColorPalette.textSecondary)
 
             Text("$\(value, specifier: "%.0f")")
                 .font(.headline)
-                .foregroundColor(value >= 0 ? .successGreen : .dangerRed)
+                .foregroundColor(value >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
 
             Text("\(percentage >= 0 ? "+" : "")\(percentage, specifier: "%.1f")%")
                 .font(.caption)
-                .foregroundColor(percentage >= 0 ? .successGreen : .dangerRed)
+                .foregroundColor(percentage >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color.surfaceLight)
+        .background(Theme.ColorPalette.surface)
         .cornerRadius(12)
     }
 }
@@ -292,7 +292,7 @@ struct HoldingsView: View {
                 if !portfolio.vaultFollowings.isEmpty {
                     Text("Vault Holdings")
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                         .padding(.horizontal)
 
                     ForEach(portfolio.vaultFollowings) { following in
@@ -305,7 +305,7 @@ struct HoldingsView: View {
                 if !portfolio.predictions.isEmpty {
                     Text("Active Predictions")
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                         .padding(.horizontal)
                         .padding(.top)
 
@@ -333,11 +333,11 @@ struct VaultHoldingCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(following.vault.name)
                     .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 Text("by \(following.vault.manager.username)")
                     .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
             }
 
             Spacer()
@@ -345,15 +345,15 @@ struct VaultHoldingCard: View {
             VStack(alignment: .trailing, spacing: 4) {
                 Text("$\(following.currentValue, specifier: "%.0f")")
                     .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 Text("\(following.pnlPercentage >= 0 ? "+" : "")\(following.pnlPercentage, specifier: "%.1f")%")
                     .font(.caption)
-                    .foregroundColor(following.pnlPercentage >= 0 ? .successGreen : .dangerRed)
+                    .foregroundColor(following.pnlPercentage >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
             }
         }
         .padding()
-        .background(Color.surfaceColor)
+        .background(Theme.ColorPalette.surface)
         .cornerRadius(12)
     }
 }
@@ -366,13 +366,13 @@ struct PredictionHoldingCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(prediction.market.question)
                     .font(.subheadline)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
                     .lineLimit(1)
 
                 let outcome = prediction.market.outcomes[prediction.outcomeIndex]
                 Text("Predicted: \(outcome.label)")
                     .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
             }
 
             Spacer()
@@ -380,15 +380,15 @@ struct PredictionHoldingCard: View {
             VStack(alignment: .trailing, spacing: 4) {
                 Text("$\(prediction.potentialPayout, specifier: "%.0f")")
                     .font(.headline)
-                    .foregroundColor(.successGreen)
+                    .foregroundColor(Theme.ColorPalette.successGreen)
 
                 Text("potential")
                     .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
             }
         }
         .padding()
-        .background(Color.surfaceColor)
+        .background(Theme.ColorPalette.surface)
         .cornerRadius(12)
     }
 }
@@ -398,15 +398,15 @@ struct EmptyHoldingsView: View {
         VStack(spacing: 16) {
             Image(systemName: "chart.pie")
                 .font(.system(size: 60))
-                .foregroundColor(.secondaryText)
+                .foregroundColor(Theme.ColorPalette.textSecondary)
 
             Text("No Holdings")
                 .font(.headline)
-                .foregroundColor(.primaryText)
+                .foregroundColor(Theme.ColorPalette.textPrimary)
 
             Text("Start following vaults or making predictions to see your holdings here")
                 .font(.subheadline)
-                .foregroundColor(.secondaryText)
+                .foregroundColor(Theme.ColorPalette.textSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
         }
@@ -423,15 +423,15 @@ struct RewardsView: View {
                 VStack(spacing: 16) {
                     Image(systemName: "gift")
                         .font(.system(size: 60))
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
 
                     Text("No Rewards")
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                     Text("Participate in leagues and refer friends to earn rewards")
                         .font(.subheadline)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                 }
@@ -463,17 +463,17 @@ struct RewardCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(reward.description)
                     .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 HStack {
                     Text(reward.type.rawValue)
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
 
                     if let expiresAt = reward.expiresAt, reward.claimedAt == nil {
                         Text("• Expires \(expiresAt, style: .relative)")
                             .font(.caption)
-                            .foregroundColor(.dangerRed)
+                            .foregroundColor(Theme.ColorPalette.dangerRed)
                     }
                 }
             }
@@ -484,36 +484,36 @@ struct RewardCard: View {
                 Text("$\(Int(reward.amount))")
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundColor(.successGreen)
+                    .foregroundColor(Theme.ColorPalette.successGreen)
 
                 if reward.claimedAt == nil {
                     Button("Claim") {
                         // Claim reward action
                     }
                     .font(.caption)
-                    .foregroundColor(.primaryBlue)
+                    .foregroundColor(Theme.ColorPalette.primaryBlue)
                 } else {
                     Text("Claimed")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
             }
         }
         .padding()
-        .background(Color.surfaceColor)
+        .background(Theme.ColorPalette.surface)
         .cornerRadius(12)
     }
 
     private var rewardTypeColor: Color {
         switch reward.type {
         case .league:
-            return .warningYellow
+            return Theme.ColorPalette.warningYellow
         case .prediction:
-            return .primaryBlue
+            return Theme.ColorPalette.primaryBlue
         case .referral:
-            return .successGreen
+            return Theme.ColorPalette.successGreen
         case .achievement:
-            return .chartPurple
+            return Theme.ColorPalette.chartPurple
         }
     }
 
@@ -540,15 +540,15 @@ struct ActivityView: View {
                 VStack(spacing: 16) {
                     Image(systemName: "clock")
                         .font(.system(size: 60))
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
 
                     Text("No Activity")
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                     Text("Your trading activity will appear here")
                         .font(.subheadline)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                 }
@@ -580,19 +580,19 @@ struct TransactionCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(transaction.description)
                     .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 HStack {
                     Text(transaction.type.rawValue)
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
 
                     Text("•")
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
 
                     Text(transaction.timestamp, style: .relative)
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
             }
 
@@ -601,28 +601,28 @@ struct TransactionCard: View {
             VStack(alignment: .trailing) {
                 Text("$\(Int(transaction.amount))")
                     .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 StatusBadge(status: transaction.status)
             }
         }
         .padding()
-        .background(Color.surfaceColor)
+        .background(Theme.ColorPalette.surface)
         .cornerRadius(12)
     }
 
     private var transactionTypeColor: Color {
         switch transaction.type {
         case .deposit:
-            return .successGreen
+            return Theme.ColorPalette.successGreen
         case .withdraw:
-            return .dangerRed
+            return Theme.ColorPalette.dangerRed
         case .follow, .unfollow:
-            return .primaryBlue
+            return Theme.ColorPalette.primaryBlue
         case .prediction:
-            return .chartPurple
+            return Theme.ColorPalette.chartPurple
         case .reward:
-            return .warningYellow
+            return Theme.ColorPalette.warningYellow
         }
     }
 
@@ -661,11 +661,11 @@ struct StatusBadge: View {
     private var statusColor: Color {
         switch status {
         case .pending:
-            return .warningYellow
+            return Theme.ColorPalette.warningYellow
         case .success:
-            return .successGreen
+            return Theme.ColorPalette.successGreen
         case .failed:
-            return .dangerRed
+            return Theme.ColorPalette.dangerRed
         }
     }
 }
@@ -676,14 +676,14 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.darkBackground
                     .ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Settings")
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                     VStack(spacing: 12) {
                         SettingsRow(
@@ -726,22 +726,24 @@ struct SettingsView: View {
                     } label: {
                         Text("Disconnect Wallet")
                             .font(.headline)
-                            .foregroundColor(.dangerRed)
+                            .foregroundColor(Theme.ColorPalette.dangerRed)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.dangerRed.opacity(0.1))
+                            .background(Theme.ColorPalette.dangerRed.opacity(0.1))
                             .cornerRadius(12)
                     }
                 }
                 .padding()
             }
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(.primaryBlue)
+                    .foregroundColor(Theme.ColorPalette.primaryBlue)
                 }
             }
         }
@@ -755,31 +757,33 @@ struct SettingsRow: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            action()
+        } label: {
             HStack {
                 Image(systemName: icon)
                     .font(.title2)
-                    .foregroundColor(.primaryBlue)
+                    .foregroundColor(Theme.ColorPalette.primaryBlue)
                     .frame(width: 24)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                     Text(subtitle)
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
             }
             .padding()
-            .background(Color.surfaceColor)
+            .background(Theme.ColorPalette.surface)
             .cornerRadius(12)
         }
         .buttonStyle(PlainButtonStyle())

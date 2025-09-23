@@ -17,6 +17,8 @@
 		E01F5D462C9A8BCF004A2B1E /* PredictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01F5D452C9A8BCF004A2B1E /* PredictView.swift */; };
 		E01F5D482C9A8BDF004A2B1E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01F5D472C9A8BDF004A2B1E /* ProfileView.swift */; };
 		E01F5D4A2C9A8BEF004A2B1E /* AptosService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01F5D492C9A8BEF004A2B1E /* AptosService.swift */; };
+		E01F5D512C9A8C3F004A2B1E /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01F5D502C9A8C3F004A2B1E /* Theme.swift */; };
+		E01F5D532C9A8C4F004A2B1E /* AnimationComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01F5D522C9A8C4F004A2B1E /* AnimationComponents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		E01F5D452C9A8BCF004A2B1E /* PredictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictView.swift; sourceTree = "<group>"; };
 		E01F5D472C9A8BDF004A2B1E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		E01F5D492C9A8BEF004A2B1E /* AptosService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AptosService.swift; sourceTree = "<group>"; };
+		E01F5D502C9A8C3F004A2B1E /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		E01F5D522C9A8C4F004A2B1E /* AnimationComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationComponents.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +78,6 @@
 				E01F5D332C9A8B70004A2B1E /* TradeLeague.entitlements */,
 				E01F5D342C9A8B70004A2B1E /* Preview Content */,
 			);
-			path = TradeLeague;
 			sourceTree = "<group>";
 		};
 		E01F5D342C9A8B70004A2B1E /* Preview Content */ = {
@@ -88,6 +91,8 @@
 		E01F5D3C2C9A8B7F004A2B1E /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				E01F5D502C9A8C3F004A2B1E /* Theme.swift */,
+				E01F5D522C9A8C4F004A2B1E /* AnimationComponents.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -200,6 +205,8 @@
 				E01F5D402C9A8B9F004A2B1E /* TradeLeagueModels.swift in Sources */,
 				E01F5D302C9A8B6F004A2B1E /* ContentView.swift in Sources */,
 				E01F5D2E2C9A8B6F004A2B1E /* TradeLeagueApp.swift in Sources */,
+				E01F5D512C9A8C3F004A2B1E /* Theme.swift in Sources */,
+				E01F5D532C9A8C4F004A2B1E /* AnimationComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

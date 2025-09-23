@@ -11,6 +11,24 @@ TradeLeague transforms complex DeFi into an intuitive, gamified mobile experienc
 - **Predict Markets**: Participate in sponsored prediction events
 - **Earn Rewards**: Get rewarded for performance, referrals, and participation
 
+## 🏆 CTRL+Move Hackathon Integration
+
+**TradeLeague is built for CTRL+Move** - the premier Aptos hackathon focused on real DeFi utility and breakthrough design (August 4 - October 3, 2025).
+
+### Perfect Hackathon Alignment
+- ✅ **Real Utility**: Transforms complex DeFi into intuitive mobile experiences
+- ✅ **Breakthrough Design**: Gamified social trading with cross-platform competitions
+- ✅ **Performance-Driven**: Built on Aptos's parallel execution and sub-second finality
+- ✅ **Ecosystem Integration**: Deep integration with Merkle Trade, Hyperion, and Tapp Exchange
+
+### Featured Competitions
+- **Merkle Perpetuals Championship**: Weekly leveraged trading competitions with risk management scoring
+- **Hyperion CLMM Masters**: Monthly concentrated liquidity strategy competitions
+- **Tapp Innovation Sprints**: Bi-weekly custom hook development challenges
+- **Cross-Platform Grand Prix**: Monthly championship combining all platforms
+
+📄 **[View Complete CTRL+Move Strategy →](../CTRL_MOVE_HACKATHON.md)**
+
 ## 📱 Features
 
 ### Core Features

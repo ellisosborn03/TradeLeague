@@ -236,7 +236,7 @@ struct OutcomeRow: View {
         HStack {
             Text(outcome.label)
                 .font(.subheadline)
-                .foregroundColor(.primaryText)
+                .foregroundColor(Theme.ColorPalette.textPrimary)
 
             Spacer()
 
@@ -244,13 +244,13 @@ struct OutcomeRow: View {
                 Text("\(outcome.probability * 100, specifier: "%.0f")%")
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 // Probability bar
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
                         Rectangle()
-                            .fill(Color.borderColor)
+                            .fill(Theme.ColorPalette.divider)
                             .frame(height: 4)
 
                         Rectangle()
@@ -301,11 +301,11 @@ struct PredictionCard: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(prediction.market.sponsor)
                         .font(.caption)
-                        .foregroundColor(.primaryBlue)
+                        .foregroundColor(Theme.ColorPalette.primaryBlue)
 
                     Text(prediction.market.question)
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                         .lineLimit(2)
                 }
 
@@ -315,19 +315,19 @@ struct PredictionCard: View {
                     Text(prediction.won == true ? "WON" : "LOST")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(prediction.won == true ? .successGreen : .dangerRed)
+                        .foregroundColor(prediction.won == true ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background((prediction.won == true ? Color.successGreen : Color.dangerRed).opacity(0.2))
+                        .background((prediction.won == true ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed).opacity(0.2))
                         .cornerRadius(8)
                 } else {
                     Text("PENDING")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.warningYellow)
+                        .foregroundColor(Theme.ColorPalette.warningYellow)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.warningYellow.opacity(0.2))
+                        .background(Theme.ColorPalette.warningYellow.opacity(0.2))
                         .cornerRadius(8)
                 }
             }
@@ -336,7 +336,7 @@ struct PredictionCard: View {
                 let selectedOutcome = prediction.market.outcomes[prediction.outcomeIndex]
                 Text("Predicted: \(selectedOutcome.label)")
                     .font(.subheadline)
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
 
                 Spacer()
             }
@@ -345,35 +345,35 @@ struct PredictionCard: View {
                 VStack(alignment: .leading) {
                     Text("Staked")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                     Text("$\(Int(prediction.stake))")
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                 }
 
                 VStack(alignment: .leading) {
                     Text("Potential Payout")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                     Text("$\(Int(prediction.potentialPayout))")
                         .font(.headline)
-                        .foregroundColor(.successGreen)
+                        .foregroundColor(Theme.ColorPalette.successGreen)
                 }
 
                 if !prediction.settled {
                     VStack(alignment: .leading) {
                         Text("Resolves")
                             .font(.caption)
-                            .foregroundColor(.secondaryText)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
                         Text(prediction.market.resolutionTime, style: .relative)
                             .font(.caption)
-                            .foregroundColor(.tertiaryText)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
                     }
                 }
             }
         }
         .padding()
-        .background(Color.surfaceColor)
+        .background(Theme.ColorPalette.surface)
         .cornerRadius(16)
     }
 }
@@ -387,7 +387,7 @@ struct PredictionMarketDetailView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.darkBackground
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -397,7 +397,7 @@ struct PredictionMarketDetailView: View {
                             HStack {
                                 Text(market.sponsor)
                                     .font(.subheadline)
-                                    .foregroundColor(.primaryBlue)
+                                    .foregroundColor(Theme.ColorPalette.primaryBlue)
 
                                 Spacer()
 
@@ -407,16 +407,16 @@ struct PredictionMarketDetailView: View {
                             Text(market.question)
                                 .font(.title2)
                                 .fontWeight(.bold)
-                                .foregroundColor(.primaryText)
+                                .foregroundColor(Theme.ColorPalette.textPrimary)
 
                             HStack {
                                 VStack(alignment: .leading) {
                                     Text("Total Pool")
                                         .font(.caption)
-                                        .foregroundColor(.secondaryText)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                                     Text("$\(Int(market.totalStaked))")
                                         .font(.headline)
-                                        .foregroundColor(.primaryText)
+                                        .foregroundColor(Theme.ColorPalette.textPrimary)
                                 }
 
                                 Spacer()
@@ -424,22 +424,22 @@ struct PredictionMarketDetailView: View {
                                 VStack(alignment: .trailing) {
                                     Text("Resolves")
                                         .font(.caption)
-                                        .foregroundColor(.secondaryText)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                                     Text(market.resolutionTime, style: .relative)
                                         .font(.headline)
-                                        .foregroundColor(.primaryText)
+                                        .foregroundColor(Theme.ColorPalette.textPrimary)
                                 }
                             }
                         }
                         .padding()
-                        .background(Color.surfaceColor)
+                        .background(Theme.ColorPalette.surface)
                         .cornerRadius(16)
 
                         // Outcomes
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Outcomes")
                                 .font(.headline)
-                                .foregroundColor(.primaryText)
+                                .foregroundColor(Theme.ColorPalette.textPrimary)
 
                             ForEach(market.outcomes) { outcome in
                                 OutcomeDetailCard(
@@ -458,29 +458,31 @@ struct PredictionMarketDetailView: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 Text("Make Prediction")
                                     .font(.headline)
-                                    .foregroundColor(.primaryText)
+                                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                                 Text("Predicting: \(outcome.label)")
                                     .font(.subheadline)
-                                    .foregroundColor(.primaryBlue)
+                                    .foregroundColor(Theme.ColorPalette.primaryBlue)
 
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text("Stake Amount")
-                                        .foregroundColor(.secondaryText)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                                     TextField("Enter amount in USDC", text: $stakeAmount)
                                         .textFieldStyle(CustomTextFieldStyle())
+                                        #if os(iOS)
                                         .keyboardType(.numberPad)
+                                        #endif
                                 }
 
                                 if let stake = Double(stakeAmount), stake > 0 {
                                     let payout = stake / outcome.probability
                                     HStack {
                                         Text("Potential Payout:")
-                                            .foregroundColor(.secondaryText)
+                                            .foregroundColor(Theme.ColorPalette.textSecondary)
                                         Spacer()
                                         Text("$\(payout, specifier: "%.2f")")
                                             .fontWeight(.bold)
-                                            .foregroundColor(.successGreen)
+                                            .foregroundColor(Theme.ColorPalette.successGreen)
                                     }
                                 }
 
@@ -492,26 +494,28 @@ struct PredictionMarketDetailView: View {
                                         .foregroundColor(.white)
                                         .frame(maxWidth: .infinity)
                                         .padding()
-                                        .background(Color.primaryBlue)
+                                        .background(Theme.ColorPalette.primaryBlue)
                                         .cornerRadius(12)
                                 }
                                 .disabled(stakeAmount.isEmpty || selectedOutcome == nil)
                             }
                             .padding()
-                            .background(Color.surfaceColor)
+                            .background(Theme.ColorPalette.surface)
                             .cornerRadius(16)
                         }
                     }
                     .padding()
                 }
             }
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(.primaryBlue)
+                    .foregroundColor(Theme.ColorPalette.primaryBlue)
                 }
             }
         }
@@ -525,17 +529,19 @@ struct OutcomeDetailCard: View {
     let onTap: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
+        Button {
+            onTap()
+        } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(outcome.label)
                         .font(.headline)
                         .fontWeight(.medium)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                     Text("$\(Int(outcome.totalStaked)) staked")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
 
                 Spacer()
@@ -548,15 +554,15 @@ struct OutcomeDetailCard: View {
 
                     Text("probability")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
             }
             .padding()
-            .background(isSelected ? Color.primaryBlue.opacity(0.1) : Color.surfaceColor)
+            .background(isSelected ? Theme.ColorPalette.primaryBlue.opacity(0.1) : Theme.ColorPalette.surface)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.primaryBlue : Color.clear, lineWidth: 2)
+                    .stroke(isSelected ? Theme.ColorPalette.primaryBlue : Color.clear, lineWidth: 2)
             )
         }
         .buttonStyle(PlainButtonStyle())

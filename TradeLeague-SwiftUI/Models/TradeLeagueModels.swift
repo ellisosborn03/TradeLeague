@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - User Models
-struct User: Identifiable, Codable {
+struct User: Identifiable, Codable, Equatable {
     let id: String
     let walletAddress: String
     let username: String
@@ -14,7 +14,7 @@ struct User: Identifiable, Codable {
 }
 
 // MARK: - League Models
-struct League: Identifiable, Codable {
+struct League: Identifiable, Codable, Equatable {
     let id: String
     let name: String
     let creatorId: String
@@ -29,7 +29,7 @@ struct League: Identifiable, Codable {
     let sponsorLogo: String?
 }
 
-struct LeagueParticipant: Identifiable, Codable {
+struct LeagueParticipant: Identifiable, Codable, Equatable {
     let id: String
     let userId: String
     let user: User
@@ -40,7 +40,7 @@ struct LeagueParticipant: Identifiable, Codable {
 }
 
 // MARK: - Vault Models
-struct Vault: Identifiable, Codable {
+struct Vault: Identifiable, Codable, Equatable {
     let id: String
     let managerId: String
     let manager: User
@@ -89,7 +89,7 @@ struct VaultFollowing: Identifiable, Codable {
 }
 
 // MARK: - Prediction Models
-struct PredictionMarket: Identifiable, Codable {
+struct PredictionMarket: Identifiable, Codable, Equatable {
     let id: String
     let sponsor: String
     let sponsorLogo: String
@@ -115,7 +115,7 @@ enum PredictionCategory: String, CaseIterable, Codable {
     case derivatives = "Derivatives"
 }
 
-struct PredictionOutcome: Identifiable, Codable {
+struct PredictionOutcome: Identifiable, Codable, Equatable {
     let id = UUID()
     let index: Int
     let label: String

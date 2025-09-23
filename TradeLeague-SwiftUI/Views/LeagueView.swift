@@ -259,7 +259,9 @@ struct CreateLeagueView: View {
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
                                 TextField("$0", text: $entryFee)
                                     .textFieldStyle(CustomTextFieldStyle())
-                                    .keyboardType(.numberPad)
+                                    #if os(iOS)
+                                    .keyboardType(.decimalPad)
+                                    #endif
                             }
 
                             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -268,7 +270,9 @@ struct CreateLeagueView: View {
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
                                 TextField("$0", text: $prizePool)
                                     .textFieldStyle(CustomTextFieldStyle())
-                                    .keyboardType(.numberPad)
+                                    #if os(iOS)
+                                    .keyboardType(.decimalPad)
+                                    #endif
                             }
                         }
 
@@ -278,7 +282,9 @@ struct CreateLeagueView: View {
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
                             TextField("100", text: $maxParticipants)
                                 .textFieldStyle(CustomTextFieldStyle())
+                                #if os(iOS)
                                 .keyboardType(.numberPad)
+                                #endif
                         }
 
                         Toggle("Public League", isOn: $isPublic)
@@ -295,14 +301,25 @@ struct CreateLeagueView: View {
                 }
                 .padding()
             }
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
+                #if os(iOS)
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
                         dismiss()
                     }
                     .foregroundColor(Theme.ColorPalette.primary)
                 }
+                #else
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .foregroundColor(Theme.ColorPalette.primary)
+                }
+                #endif
             }
         }
     }
@@ -385,14 +402,25 @@ struct LeagueDetailView: View {
                     .padding()
                 }
             }
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
+                #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
                     .foregroundColor(Theme.ColorPalette.primary)
                 }
+                #else
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                    .foregroundColor(Theme.ColorPalette.primary)
+                }
+                #endif
             }
         }
     }

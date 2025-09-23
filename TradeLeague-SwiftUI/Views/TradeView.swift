@@ -153,15 +153,15 @@ struct FollowingVaultsView: View {
             VStack(spacing: 16) {
                 Image(systemName: "chart.line.uptrend.xyaxis")
                     .font(.system(size: 60))
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
 
                 Text("No Vaults Followed")
                     .font(.headline)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
 
                 Text("Discover and follow top performing vaults to copy their strategies")
                     .font(.subheadline)
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }
@@ -285,11 +285,11 @@ struct FollowingCard: View {
                     Text(following.vault.name)
                         .font(.headline)
                         .fontWeight(.bold)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                     Text("Following since \(following.followedAt, style: .date)")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                 }
 
                 Spacer()
@@ -298,40 +298,40 @@ struct FollowingCard: View {
                     // Unfollow action
                 }
                 .font(.caption)
-                .foregroundColor(.dangerRed)
+                .foregroundColor(Theme.ColorPalette.dangerRed)
             }
 
             HStack(spacing: 20) {
                 VStack(alignment: .leading) {
                     Text("Invested")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                     Text("$\(Int(following.amount))")
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                 }
 
                 VStack(alignment: .leading) {
                     Text("Current Value")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                     Text("$\(Int(following.currentValue))")
                         .font(.headline)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
                 }
 
                 VStack(alignment: .leading) {
                     Text("P&L")
                         .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
                     Text("\(following.pnlPercentage >= 0 ? "+" : "")\(following.pnlPercentage, specifier: "%.1f")%")
                         .font(.headline)
-                        .foregroundColor(following.pnlPercentage >= 0 ? .successGreen : .dangerRed)
+                        .foregroundColor(following.pnlPercentage >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
                 }
             }
         }
         .padding()
-        .background(Color.surfaceColor)
+        .background(Theme.ColorPalette.surface)
         .cornerRadius(16)
     }
 }
@@ -425,7 +425,7 @@ struct VaultDetailView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.darkBackground
+                Theme.ColorPalette.darkBackground
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -437,11 +437,11 @@ struct VaultDetailView: View {
                                     Text(vault.name)
                                         .font(.largeTitle)
                                         .fontWeight(.bold)
-                                        .foregroundColor(.primaryText)
+                                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
                                     Text("Managed by \(vault.manager.username)")
                                         .font(.subheadline)
-                                        .foregroundColor(.secondaryText)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                                 }
 
                                 Spacer()
@@ -450,17 +450,17 @@ struct VaultDetailView: View {
                             }
 
                             Text(vault.description)
-                                .foregroundColor(.secondaryText)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
                         }
                         .padding()
-                        .background(Color.surfaceColor)
+                        .background(Theme.ColorPalette.surface)
                         .cornerRadius(16)
 
                         // Performance
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Performance")
                                 .font(.headline)
-                                .foregroundColor(.primaryText)
+                                .foregroundColor(Theme.ColorPalette.textPrimary)
 
                             HStack(spacing: 20) {
                                 PerformanceMetric(
@@ -486,34 +486,36 @@ struct VaultDetailView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text("Followers")
                                         .font(.caption)
-                                        .foregroundColor(.secondaryText)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
                                     Text("\(vault.followers)")
                                         .font(.headline)
-                                        .foregroundColor(.primaryText)
+                                        .foregroundColor(Theme.ColorPalette.textPrimary)
                                 }
                             }
                         }
                         .padding()
-                        .background(Color.surfaceColor)
+                        .background(Theme.ColorPalette.surface)
                         .cornerRadius(16)
 
                         // Follow section
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Follow Vault")
                                 .font(.headline)
-                                .foregroundColor(.primaryText)
+                                .foregroundColor(Theme.ColorPalette.textPrimary)
 
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Amount to Follow")
-                                    .foregroundColor(.secondaryText)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                                 TextField("Enter amount in USDC", text: $followAmount)
                                     .textFieldStyle(CustomTextFieldStyle())
+                                    #if os(iOS)
                                     .keyboardType(.numberPad)
+                                    #endif
                             }
 
                             Text("Performance Fee: \(Int(vault.performanceFee))%")
                                 .font(.caption)
-                                .foregroundColor(.secondaryText)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
 
                             Button {
                                 // Follow vault action
@@ -523,25 +525,27 @@ struct VaultDetailView: View {
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.primaryBlue)
+                                    .background(Theme.ColorPalette.primaryBlue)
                                     .cornerRadius(12)
                             }
                             .disabled(followAmount.isEmpty)
                         }
                         .padding()
-                        .background(Color.surfaceColor)
+                        .background(Theme.ColorPalette.surface)
                         .cornerRadius(16)
                     }
                     .padding()
                 }
             }
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(.primaryBlue)
+                    .foregroundColor(Theme.ColorPalette.primaryBlue)
                 }
             }
         }
