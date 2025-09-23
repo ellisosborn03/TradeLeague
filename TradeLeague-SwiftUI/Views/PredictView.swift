@@ -12,30 +12,37 @@ struct PredictView: View {
                 Theme.ColorPalette.background
                     .ignoresSafeArea()
 
+                // Particle background
+                HeroParticles(particleCount: 25)
+                    .opacity(0.3)
+
                 VStack(spacing: 0) {
                     // Header
                     VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         HStack {
                             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text("Predict")
-                                    .font(Theme.Typography.heading1)
+                                    .font(Theme.Typography.displayM)
+                                    .fontWeight(.bold)
+                                    .tracking(-1.0)
                                     .foregroundColor(Theme.ColorPalette.textPrimary)
+                                    .reveal(delay: 0.1)
 
                                 Text("Predict market outcomes")
-                                    .font(Theme.Typography.caption)
+                                    .font(Theme.Typography.bodyS)
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
+                                    .reveal(delay: 0.2)
                             }
-                            .sharpPageTransition()
 
                             Spacer()
                         }
 
                         // Segment control
-                        Picker("View", selection: $selectedSegment) {
-                            Text("Markets").tag(0)
-                            Text("My Predictions").tag(1)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
+                        CustomSegmentToggle(
+                            options: [0, 1],
+                            optionLabels: [0: "MARKETS", 1: "MY PREDICTIONS"],
+                            selection: $selectedSegment
+                        )
                     }
                     .padding(.horizontal)
                     .padding(.bottom)
@@ -191,7 +198,7 @@ struct PredictionMarketCard: View {
     let onTap: () -> Void
 
     var body: some View {
-        PressableCard {
+        OptimizedPressableCard(action: onTap) {
             VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 // Header
                 HStack {
@@ -233,7 +240,7 @@ struct PredictionMarketCard: View {
                         Text("Total Pool")
                             .font(Theme.Typography.caption)
                             .foregroundColor(Theme.ColorPalette.textSecondary)
-                        MetricNumber(value: Int(market.totalStaked))
+                        CountUpText(target: market.totalStaked, fontSize: Theme.Typography.body)
                             .foregroundColor(Theme.ColorPalette.textPrimary)
                     }
 
@@ -250,9 +257,8 @@ struct PredictionMarketCard: View {
                 }
             }
             .padding(Theme.Spacing.md)
-            .glassCard()
+            .optimizedGlassCard(style: .glass)
         }
-        .onTapGesture(perform: onTap)
     }
 }
 
@@ -401,8 +407,8 @@ struct PredictionCard: View {
             }
         }
         .padding()
-        .background(Theme.ColorPalette.surface)
-        .cornerRadius(16)
+        .optimizedGlassCard(style: .elevated)
+        .reveal(delay: 0.3)
     }
 }
 
@@ -460,8 +466,7 @@ struct PredictionMarketDetailView: View {
                             }
                         }
                         .padding()
-                        .background(Theme.ColorPalette.surface)
-                        .cornerRadius(16)
+                        .optimizedGlassCard(style: .elevated)
 
                         // Outcomes
                         VStack(alignment: .leading, spacing: 12) {
@@ -524,22 +529,13 @@ struct PredictionMarketDetailView: View {
                                     }
                                 }
 
-                                Button {
+                                OptimizedPrimaryButton(title: "Place Prediction") {
                                     // Make prediction action
-                                } label: {
-                                    Text("Place Prediction")
-                                        .font(.headline)
-                                        .foregroundColor(.white)
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(Theme.ColorPalette.primaryBlue)
-                                        .cornerRadius(12)
                                 }
                                 .disabled(stakeAmount.isEmpty || selectedOutcome == nil)
                             }
                             .padding()
-                            .background(Theme.ColorPalette.surface)
-                            .cornerRadius(16)
+                            .optimizedGlassCard(style: .elevated)
                         }
                     }
                     .padding()

@@ -12,31 +12,37 @@ struct TradeView: View {
                 Theme.ColorPalette.background
                     .ignoresSafeArea()
 
+                // Particle background
+                HeroParticles(particleCount: 35)
+                    .opacity(0.3)
+
                 VStack(spacing: 0) {
                     // Header
                     VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         HStack {
                             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text("Trade")
-                                    .font(Theme.Typography.heading1)
+                                    .font(Theme.Typography.displayM)
+                                    .fontWeight(.bold)
+                                    .tracking(-1.0)
                                     .foregroundColor(Theme.ColorPalette.textPrimary)
+                                    .reveal(delay: 0.1)
 
                                 Text("Follow top trading vaults")
-                                    .font(Theme.Typography.caption)
+                                    .font(Theme.Typography.bodyS)
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
+                                    .reveal(delay: 0.2)
                             }
-                            .sharpPageTransition()
 
                             Spacer()
                         }
 
                         // Segment control
-                        Picker("View", selection: $selectedSegment) {
-                            Text("Discover").tag(0)
-                            Text("Following").tag(1)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .animation(Theme.Animation.fast, value: selectedSegment)
+                        CustomSegmentToggle(
+                            options: [0, 1],
+                            optionLabels: [0: "DISCOVER", 1: "FOLLOWING"],
+                            selection: $selectedSegment
+                        )
                     }
                     .padding(.horizontal)
                     .padding(.bottom)
@@ -211,7 +217,7 @@ struct VaultCard: View {
     let onTap: () -> Void
 
     var body: some View {
-        PressableCard {
+        OptimizedPressableCard(action: onTap) {
             VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 // Header
                 HStack {
@@ -295,9 +301,8 @@ struct VaultCard: View {
                 }
             }
             .padding(Theme.Spacing.md)
-            .glassCard()
+            .optimizedGlassCard(style: .glass)
         }
-        .onTapGesture(perform: onTap)
     }
 }
 
@@ -332,8 +337,7 @@ struct FollowingCard: View {
                     Text("Invested")
                         .font(.caption)
                         .foregroundColor(Theme.ColorPalette.textSecondary)
-                    Text("$\(Int(following.amount))")
-                        .font(.headline)
+                    CountUpText(target: Double(following.amount), fontSize: Theme.Typography.body)
                         .foregroundColor(Theme.ColorPalette.textPrimary)
                 }
 
@@ -341,8 +345,7 @@ struct FollowingCard: View {
                     Text("Current Value")
                         .font(.caption)
                         .foregroundColor(Theme.ColorPalette.textSecondary)
-                    Text("$\(Int(following.currentValue))")
-                        .font(.headline)
+                    CountUpText(target: Double(following.currentValue), fontSize: Theme.Typography.body)
                         .foregroundColor(Theme.ColorPalette.textPrimary)
                 }
 
@@ -479,8 +482,7 @@ struct VaultDetailView: View {
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
                         }
                         .padding()
-                        .background(Theme.ColorPalette.surface)
-                        .cornerRadius(16)
+                        .optimizedGlassCard(style: .elevated)
 
                         // Performance
                         VStack(alignment: .leading, spacing: 12) {
@@ -520,8 +522,7 @@ struct VaultDetailView: View {
                             }
                         }
                         .padding()
-                        .background(Theme.ColorPalette.surface)
-                        .cornerRadius(16)
+                        .optimizedGlassCard(style: .elevated)
 
                         // Follow section
                         VStack(alignment: .leading, spacing: 12) {
@@ -553,22 +554,13 @@ struct VaultDetailView: View {
                                 .font(.caption)
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
 
-                            Button {
+                            OptimizedPrimaryButton(title: "Follow Vault") {
                                 // Follow vault action
-                            } label: {
-                                Text("Follow Vault")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Theme.ColorPalette.primaryBlue)
-                                    .cornerRadius(12)
                             }
                             .disabled(followAmount.isEmpty)
                         }
                         .padding()
-                        .background(Theme.ColorPalette.surface)
-                        .cornerRadius(16)
+                        .optimizedGlassCard(style: .elevated)
                     }
                     .padding()
                 }

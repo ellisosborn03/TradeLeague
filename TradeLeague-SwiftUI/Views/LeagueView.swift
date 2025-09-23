@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LeagueView: View {
-    @State private var selectedScope: LeagueScope = .global
+    @State private var selectedScope: LeagueScope = .local
     @State private var sponsoredLeagues: [SponsoredLeague] = []
     @State private var expandedLeagues: Set<String> = []
     @State private var friendsLeaderboard: [LeaguePlayer] = []
@@ -12,6 +12,10 @@ struct LeagueView: View {
                 Theme.ColorPalette.background
                     .ignoresSafeArea()
 
+                // Particle background
+                HeroParticles(particleCount: 40)
+                    .opacity(0.4)
+
                 ScrollView {
                     VStack(spacing: Theme.Spacing.lg) {
                         // Header with animated transition
@@ -19,13 +23,16 @@ struct LeagueView: View {
                         HStack {
                             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text("Leagues")
-                                    .font(Theme.Typography.heading1)
+                                    .font(Theme.Typography.displayM)
+                                    .fontWeight(.bold)
+                                    .tracking(-1.0)
                                     .foregroundColor(Theme.ColorPalette.textPrimary)
-                                        .sharpPageTransition()
+                                    .reveal(delay: 0.1)
 
                                     Text("Compete in sponsored challenges")
-                                    .font(Theme.Typography.caption)
+                                    .font(Theme.Typography.bodyS)
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
+                                    .reveal(delay: 0.2)
                             }
 
                             Spacer()
@@ -33,59 +40,10 @@ struct LeagueView: View {
                         .padding(.horizontal)
 
                             // Scope Toggle with orange theme
-                            HStack(spacing: 0) {
-                                Button(action: {
-                                    withAnimation(Theme.Animation.fast) {
-                                        selectedScope = .global
-                                    }
-                                }) {
-                                    Text("GLOBAL")
-                                        .font(Theme.Typography.caption)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(selectedScope == .global ? .white : Theme.ColorPalette.textSecondary)
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, Theme.Spacing.sm)
-                                        .background(
-                                            selectedScope == .global ?
-                                            AnyShapeStyle(Theme.ColorPalette.gradientPrimary) :
-                                            AnyShapeStyle(Color.clear)
-                                        )
-                                }
-
-                                Button(action: {
-                                    withAnimation(Theme.Animation.fast) {
-                                        selectedScope = .local
-                                    }
-                                }) {
-                                    Text("FRIENDS")
-                                        .font(Theme.Typography.caption)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(selectedScope == .local ? .white : Theme.ColorPalette.textSecondary)
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, Theme.Spacing.sm)
-                                        .background(
-                                            selectedScope == .local ?
-                                            AnyShapeStyle(Theme.ColorPalette.gradientPrimary) :
-                                            AnyShapeStyle(Color.clear)
-                                        )
-                                }
-                            }
-                            .background(Theme.ColorPalette.surface)
-                            .cornerRadius(Theme.Radius.full)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Theme.Radius.full)
-                                    .stroke(
-                                        selectedScope == .local ?
-                                        Theme.ColorPalette.primary :
-                                        Theme.ColorPalette.divider,
-                                        lineWidth: selectedScope == .local ? 2 : 1
-                                    )
-                                    .shadow(
-                                        color: selectedScope == .local ?
-                                        Theme.ColorPalette.primary.opacity(0.3) :
-                                        Color.clear,
-                                        radius: 4
-                                    )
+                            CustomSegmentToggle(
+                                options: [LeagueScope.local, LeagueScope.global],
+                                optionLabels: [.local: "FRIENDS", .global: "GLOBAL"],
+                                selection: $selectedScope
                             )
                             .padding(.horizontal)
                         }
@@ -279,7 +237,8 @@ struct FriendsLeaderboardView: View {
                     ForEach(Array(players.dropFirst(3).enumerated()), id: \.element.id) { index, player in
                         LeaderboardRowView(player: player, rank: index + 4)
                             .padding(.horizontal)
-                            .glassCard()
+                            .optimizedGlassCard(style: .flat)
+                            .reveal(delay: Double(index) * 0.05)
                             .animation(Theme.Animation.base.delay(Double(index) * 0.03), value: players)
                     }
                 }
@@ -314,7 +273,8 @@ struct PodiumView: View {
             Spacer()
         }
         .padding()
-        .glassCard()
+        .optimizedGlassCard(style: .elevated)
+        .reveal(delay: 0.3)
     }
 }
 
@@ -400,9 +360,7 @@ struct SponsoredLeagueCard: View {
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
-                        Text("$\(Int(league.prizePool))")
-                            .font(Theme.Typography.body)
-                            .fontWeight(.bold)
+                        CountUpText(target: Double(league.prizePool), fontSize: Theme.Typography.body)
                             .foregroundColor(Theme.ColorPalette.textPrimary)
                         Text("Prize Pool")
                             .font(Theme.Typography.caption)
@@ -416,7 +374,7 @@ struct SponsoredLeagueCard: View {
                         .animation(Theme.Animation.fast, value: isExpanded)
                 }
                 .padding(Theme.Spacing.md)
-                .glassCard(isActive: isExpanded)
+                .optimizedGlassCard(isActive: isExpanded, style: .glass)
             }
             .buttonStyle(PlainButtonStyle())
 
@@ -462,7 +420,7 @@ struct SponsoredLeagueCard: View {
 
                         Spacer()
 
-                        PrimaryButton(title: "Join League") {
+                        OptimizedPrimaryButton(title: "Join League") {
                             // Join league action
                         }
                     }

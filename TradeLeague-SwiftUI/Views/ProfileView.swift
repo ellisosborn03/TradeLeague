@@ -13,6 +13,10 @@ struct ProfileView: View {
                 Theme.ColorPalette.background
                     .ignoresSafeArea()
 
+                // Particle background
+                HeroParticles(particleCount: 30)
+                    .opacity(0.3)
+
                 ScrollView {
                     VStack(spacing: Theme.Spacing.lg) {
                         // Profile Header
@@ -29,14 +33,12 @@ struct ProfileView: View {
 
                         // Segment Control
                         VStack(spacing: 0) {
-                            Picker("View", selection: $selectedSegment) {
-                                Text("Holdings").tag(0)
-                                Text("Rewards").tag(1)
-                                Text("Activity").tag(2)
-                            }
-                            .pickerStyle(SegmentedPickerStyle())
+                            CustomSegmentToggle(
+                                options: [0, 1, 2],
+                                optionLabels: [0: "HOLDINGS", 1: "REWARDS", 2: "ACTIVITY"],
+                                selection: $selectedSegment
+                            )
                             .padding(.horizontal)
-                            .animation(Theme.Animation.fast, value: selectedSegment)
 
                             // Content based on selected segment
                             Group {
@@ -171,14 +173,17 @@ struct ProfileHeader: View {
             HStack {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                     Text("You")
-                        .font(Theme.Typography.heading1)
+                        .font(Theme.Typography.displayM)
+                        .fontWeight(.bold)
+                        .tracking(-1.0)
                         .foregroundColor(Theme.ColorPalette.textPrimary)
+                        .reveal(delay: 0.1)
 
                     Text("Track your performance")
-                        .font(Theme.Typography.caption)
+                        .font(Theme.Typography.bodyS)
                         .foregroundColor(Theme.ColorPalette.textSecondary)
+                        .reveal(delay: 0.2)
                 }
-                .sharpPageTransition()
 
                 Spacer()
 
@@ -190,7 +195,7 @@ struct ProfileHeader: View {
             }
 
             // User Info Card
-            PressableCard {
+            OptimizedPressableCard {
                 HStack(spacing: Theme.Spacing.md) {
                     // Avatar
                     Circle()
@@ -235,7 +240,7 @@ struct ProfileHeader: View {
                     }
                 }
                 .padding(Theme.Spacing.md)
-                .glassCard()
+                .optimizedGlassCard(style: .glass)
             }
         }
     }
@@ -256,8 +261,7 @@ struct PortfolioSummaryCard: View {
                     .font(Theme.Typography.caption)
                     .foregroundColor(Theme.ColorPalette.textSecondary)
 
-                Text("$\(portfolio.totalValue, specifier: "%.2f")")
-                    .font(Theme.Typography.heading1)
+                CountUpText(target: portfolio.totalValue, fontSize: Theme.Typography.displayS)
                     .foregroundColor(Theme.ColorPalette.textPrimary)
             }
 
@@ -277,7 +281,8 @@ struct PortfolioSummaryCard: View {
             }
         }
         .padding(Theme.Spacing.md)
-        .glassCard()
+        .optimizedGlassCard(style: .glass)
+        .reveal(delay: 0.3)
     }
 }
 
@@ -302,8 +307,7 @@ struct PerformanceMetricCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Theme.ColorPalette.surface)
-        .cornerRadius(12)
+        .optimizedGlassCard(style: .flat)
     }
 }
 
@@ -415,8 +419,7 @@ struct VaultHoldingCard: View {
             }
         }
         .padding()
-        .background(Theme.ColorPalette.surface)
-        .cornerRadius(12)
+        .optimizedGlassCard(style: .flat)
     }
 }
 
@@ -450,8 +453,7 @@ struct PredictionHoldingCard: View {
             }
         }
         .padding()
-        .background(Theme.ColorPalette.surface)
-        .cornerRadius(12)
+        .optimizedGlassCard(style: .flat)
     }
 }
 
@@ -562,8 +564,7 @@ struct RewardCard: View {
             }
         }
         .padding()
-        .background(Theme.ColorPalette.surface)
-        .cornerRadius(12)
+        .optimizedGlassCard(style: .flat)
     }
 
     private var rewardTypeColor: Color {
@@ -669,8 +670,7 @@ struct TransactionCard: View {
             }
         }
         .padding()
-        .background(Theme.ColorPalette.surface)
-        .cornerRadius(12)
+        .optimizedGlassCard(style: .flat)
     }
 
     private var transactionTypeColor: Color {
@@ -914,7 +914,8 @@ struct PieChartView: View {
                 }
             }
             .padding()
-            .glassCard()
+            .optimizedGlassCard(style: .elevated)
+            .reveal(delay: 0.4)
         }
     }
 
