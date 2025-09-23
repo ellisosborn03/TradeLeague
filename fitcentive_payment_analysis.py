@@ -162,3 +162,4 @@ print(f"Most Users: {df.loc[df['Unique_Paid_Users'].idxmax(), 'Region']} ({df['U
 print(f"Highest RPU: {df.loc[df['Revenue_Per_User'].idxmax(), 'Region']} (${df['Revenue_Per_User'].max():.2f})")
 
 plt.show()
+
