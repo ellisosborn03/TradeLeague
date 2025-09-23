@@ -92,7 +92,7 @@ struct VaultFollowing: Identifiable, Codable {
 struct PredictionMarket: Identifiable, Codable, Equatable {
     let id: String
     let sponsor: String
-    let sponsorLogo: String
+    let sponsorLogo: String?
     let question: String
     let outcomes: [PredictionOutcome]
     let totalStaked: Double
@@ -188,4 +188,19 @@ enum TransactionStatus: String, CaseIterable, Codable {
     case pending = "Pending"
     case success = "Success"
     case failed = "Failed"
+}
+
+// MARK: - Token Allocation Models
+struct TokenAllocation: Identifiable, Codable {
+    let id = UUID()
+    let symbol: String
+    let name: String
+    let color: String
+    let percentage: Double
+    let amount: Double
+}
+
+struct PortfolioAllocation: Codable {
+    let tokens: [TokenAllocation]
+    let totalValue: Double
 }

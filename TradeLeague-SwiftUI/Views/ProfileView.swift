@@ -284,9 +284,30 @@ struct PerformanceMetricCard: View {
 
 struct HoldingsView: View {
     let portfolio: Portfolio?
+    @State private var portfolioAllocation: PortfolioAllocation = PortfolioAllocation(
+        tokens: [
+            TokenAllocation(symbol: "APT", name: "Aptos", color: "#0D47A1", percentage: 25.0, amount: 3125.0),
+            TokenAllocation(symbol: "USDC", name: "USDC (on Aptos)", color: "#B0BEC5", percentage: 20.0, amount: 2500.0),
+            TokenAllocation(symbol: "EKID", name: "Ekiden", color: "#FB8C00", percentage: 15.0, amount: 1875.0),
+            TokenAllocation(symbol: "PORA", name: "Panora", color: "#1ABC9C", percentage: 20.0, amount: 2500.0),
+            TokenAllocation(symbol: "RION", name: "Hyperion", color: "#8E44AD", percentage: 20.0, amount: 2500.0)
+        ],
+        totalValue: 12500.0
+    )
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
+            // Token Allocation Section
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Token Allocation")
+                    .font(Theme.Typography.heading2)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
+                    .padding(.horizontal)
+
+                PieChartView(allocation: portfolioAllocation)
+                    .padding(.horizontal)
+            }
+
             if let portfolio = portfolio {
                 // Vault Holdings
                 if !portfolio.vaultFollowings.isEmpty {
@@ -294,6 +315,7 @@ struct HoldingsView: View {
                         .font(.headline)
                         .foregroundColor(Theme.ColorPalette.textPrimary)
                         .padding(.horizontal)
+                        .padding(.top)
 
                     ForEach(portfolio.vaultFollowings) { following in
                         VaultHoldingCard(following: following)
@@ -316,7 +338,22 @@ struct HoldingsView: View {
                 }
 
                 if portfolio.vaultFollowings.isEmpty && portfolio.predictions.isEmpty {
-                    EmptyHoldingsView()
+                    // Show empty state only for vault/prediction holdings, not token allocation
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Vault Holdings")
+                            .font(.headline)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+                            .padding(.horizontal)
+                            .padding(.top)
+
+                        Text("Active Predictions")
+                            .font(.headline)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+                            .padding(.horizontal)
+                            .padding(.top)
+
+                        EmptyHoldingsView()
+                    }
                 }
             } else {
                 EmptyHoldingsView()
@@ -787,6 +824,134 @@ struct SettingsRow: View {
             .cornerRadius(12)
         }
         .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct PieChartView: View {
+    let allocation: PortfolioAllocation
+    @State private var animatedPercentages: [Double] = []
+
+    var body: some View {
+        VStack(spacing: 16) {
+            // Pie Chart
+            ZStack {
+                Circle()
+                    .stroke(Theme.ColorPalette.surface, lineWidth: 2)
+                    .frame(width: 200, height: 200)
+
+                ForEach(Array(allocation.tokens.enumerated()), id: \.element.id) { index, token in
+                    PieSlice(
+                        startAngle: startAngle(for: index),
+                        endAngle: endAngle(for: index),
+                        color: Color(hex: token.color) ?? Theme.ColorPalette.primary
+                    )
+                    .frame(width: 200, height: 200)
+                }
+
+                // Center hole
+                Circle()
+                    .fill(Theme.ColorPalette.background)
+                    .frame(width: 100, height: 100)
+
+                // Total value in center
+                VStack {
+                    Text("Total")
+                        .font(Theme.Typography.caption)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                    Text("$\(allocation.totalValue, specifier: "%.0f")")
+                        .font(Theme.Typography.heading2)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
+                }
+            }
+
+            // Legend
+            VStack(spacing: 8) {
+                ForEach(allocation.tokens) { token in
+                    HStack {
+                        Circle()
+                            .fill(Color(hex: token.color) ?? Theme.ColorPalette.primary)
+                            .frame(width: 12, height: 12)
+
+                        Text(token.symbol)
+                            .font(Theme.Typography.body)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                        Spacer()
+
+                        Text("\(token.percentage, specifier: "%.0f")%")
+                            .font(Theme.Typography.body)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+
+                        Text("$\(token.amount, specifier: "%.0f")")
+                            .font(Theme.Typography.body)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+                    }
+                }
+            }
+            .padding()
+            .glassCard()
+        }
+    }
+
+    private func startAngle(for index: Int) -> Angle {
+        let previousPercentages = allocation.tokens.prefix(index).map { $0.percentage }.reduce(0, +)
+        return Angle.degrees(previousPercentages * 3.6 - 90) // -90 to start from top
+    }
+
+    private func endAngle(for index: Int) -> Angle {
+        let currentAndPreviousPercentages = allocation.tokens.prefix(index + 1).map { $0.percentage }.reduce(0, +)
+        return Angle.degrees(currentAndPreviousPercentages * 3.6 - 90)
+    }
+}
+
+struct PieSlice: View {
+    let startAngle: Angle
+    let endAngle: Angle
+    let color: Color
+
+    var body: some View {
+        Path { path in
+            let center = CGPoint(x: 100, y: 100)
+            let radius: CGFloat = 100
+
+            path.move(to: center)
+            path.addArc(
+                center: center,
+                radius: radius,
+                startAngle: startAngle,
+                endAngle: endAngle,
+                clockwise: false
+            )
+            path.closeSubpath()
+        }
+        .fill(color)
+    }
+}
+
+extension Color {
+    init?(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            return nil
+        }
+
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
 
