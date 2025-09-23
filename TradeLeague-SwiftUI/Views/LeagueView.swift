@@ -1,483 +1,211 @@
 import SwiftUI
 
 struct LeagueView: View {
-    @State private var selectedLeague: League?
-    @State private var leagues: [League] = []
-    @State private var showCreateLeague = false
+    @State private var selectedScope: LeagueScope = .global
+    @State private var topPlayers: [LeaguePlayer] = []
+    @State private var leaderboard: [LeaguePlayer] = []
 
     var body: some View {
         NavigationView {
             ZStack {
-                Theme.ColorPalette.background
+                Color.white
                     .ignoresSafeArea()
 
                 ScrollView {
-                    LazyVStack(spacing: Theme.Spacing.md) {
-                        // Header with create button
-                        HStack {
-                            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                                Text("Leagues")
-                                    .font(Theme.Typography.heading1)
-                                    .foregroundColor(Theme.ColorPalette.textPrimary)
-
-                                Text("Compete in sponsored leagues")
-                                    .font(Theme.Typography.caption)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
-                            }
-
-                            Spacer()
-
-                            Button {
-                                showCreateLeague = true
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.title2)
-                                    .foregroundColor(Theme.ColorPalette.primary)
-                            }
-                        }
-                        .padding(.horizontal)
-                        .sharpPageTransition()
-
-                        // Featured League (if any)
-                        if let featuredLeague = leagues.first {
-                            FeaturedLeagueCard(league: featuredLeague)
+                    VStack(spacing: 20) {
+                        // Header
+                        VStack(spacing: 16) {
+                            Text("TOP PLAYERS")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.horizontal)
-                        }
 
-                        // Active Leagues
-                        LazyVStack(spacing: Theme.Spacing.sm) {
-                            ForEach(Array(leagues.enumerated()), id: \.element.id) { index, league in
-                                LeagueCard(league: league) {
-                                    selectedLeague = league
+                            // Scope Toggle
+                            HStack(spacing: 0) {
+                                Button(action: { selectedScope = .global }) {
+                                    Text("GLOBAL")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(selectedScope == .global ? .white : .gray)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                        .background(
+                                            selectedScope == .global ? Color.black : Color.clear
+                                        )
                                 }
-                                .padding(.horizontal)
-                                .animation(Theme.Animation.base.delay(Double(index) * 0.03), value: leagues)
+
+                                Button(action: { selectedScope = .local }) {
+                                    Text("LOCAL")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(selectedScope == .local ? .white : .gray)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                        .background(
+                                            selectedScope == .local ? Color.black : Color.clear
+                                        )
+                                }
+                            }
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(20)
+                            .padding(.horizontal)
+                        }
+
+                        // Top 3 Players
+                        if topPlayers.count >= 3 {
+                            HStack(spacing: 20) {
+                                Spacer()
+
+                                // 2nd Place
+                                TopPlayerCard(player: topPlayers[1], rank: 2)
+
+                                // 1st Place (slightly raised)
+                                TopPlayerCard(player: topPlayers[0], rank: 1)
+                                    .offset(y: -10)
+
+                                // 3rd Place
+                                TopPlayerCard(player: topPlayers[2], rank: 3)
+
+                                Spacer()
+                            }
+                            .padding(.horizontal)
+                        }
+
+                        // Leaderboard
+                        VStack(spacing: 12) {
+                            HStack {
+                                Text("PLAYER")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                                Spacer()
+                                Text("POINTS")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding(.horizontal)
+
+                            ForEach(Array(leaderboard.dropFirst(3).enumerated()), id: \.element.id) { index, player in
+                                LeaderboardRowView(player: player, rank: index + 4)
+                                    .padding(.horizontal)
                             }
                         }
+                        .padding(.top, 20)
                     }
                     .padding(.vertical)
                 }
             }
             .onAppear {
-                loadLeagues()
-            }
-            .sheet(isPresented: $showCreateLeague) {
-                CreateLeagueView()
-            }
-            .sheet(item: $selectedLeague) { league in
-                LeagueDetailView(league: league)
+                loadPlayers()
             }
         }
     }
 
-    private func loadLeagues() {
+    private func loadPlayers() {
         // Mock data - replace with actual API call
-        leagues = [
-            League(
-                id: "1",
-                name: "Circle USDC Challenge",
-                creatorId: "sponsor1",
-                entryFee: 100,
-                prizePool: 10000,
-                startTime: Date(),
-                endTime: Calendar.current.date(byAdding: .day, value: 7, to: Date()),
-                isPublic: true,
-                maxParticipants: 100,
-                participants: [],
-                sponsorName: "Circle",
-                sponsorLogo: "circle-logo"
-            ),
-            League(
-                id: "2",
-                name: "Hyperion Liquidity Masters",
-                creatorId: "sponsor2",
-                entryFee: 50,
-                prizePool: 5000,
-                startTime: Date(),
-                endTime: Calendar.current.date(byAdding: .day, value: 14, to: Date()),
-                isPublic: true,
-                maxParticipants: 50,
-                participants: [],
-                sponsorName: "Hyperion",
-                sponsorLogo: "hyperion-logo"
-            )
+        let allPlayers = [
+            LeaguePlayer(id: "1", username: "BAYC_ENJOYER", avatar: "🐵", points: 74829, rank: 1),
+            LeaguePlayer(id: "2", username: "ALEX34628", avatar: "👨🏿", points: 72148, rank: 2),
+            LeaguePlayer(id: "3", username: "GLOBALOUDE", avatar: "👨🏻‍💻", points: 70521, rank: 3),
+            LeaguePlayer(id: "4", username: "CRYPTOLEV", avatar: "🐸", points: 43824, rank: 4),
+            LeaguePlayer(id: "5", username: "SAMMY_LAH", avatar: "👨🏿", points: 39824, rank: 5),
+            LeaguePlayer(id: "6", username: "MR_ZERO", avatar: "👨🏼", points: 35210, rank: 6),
+            LeaguePlayer(id: "7", username: "PLAYERS74", avatar: "👨🏽", points: 33091, rank: 7)
         ]
+
+        topPlayers = Array(allPlayers.prefix(3))
+        leaderboard = allPlayers
     }
 }
 
-struct FeaturedLeagueCard: View {
-    let league: League
-
-    var body: some View {
-        PressableCard {
-            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                HStack {
-                    Text("🏆 Featured")
-                        .font(Theme.Typography.caption)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Theme.ColorPalette.secondary)
-
-                    Spacer()
-
-                    if let sponsor = league.sponsorName {
-                        Text(sponsor)
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-                    }
-                }
-
-                Text(league.name)
-                    .font(Theme.Typography.heading2)
-                    .foregroundColor(Theme.ColorPalette.textPrimary)
-
-                HStack {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                        Text("Prize Pool")
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-                        MetricNumber(value: Int(league.prizePool))
-                            .foregroundColor(Theme.ColorPalette.success)
-                    }
-
-                    Spacer()
-
-                    VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
-                        Text("Entry Fee")
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-                        Text("$\(Int(league.entryFee))")
-                            .font(Theme.Typography.mono)
-                            .fontWeight(.bold)
-                            .foregroundColor(Theme.ColorPalette.textPrimary)
-                    }
-                }
-
-                PrimaryButton(title: "Join League") {
-                    // Join league action
-                }
-            }
-            .padding(Theme.Spacing.md)
-            .glassCard(isActive: true)
-        }
-    }
-}
-
-struct LeagueCard: View {
-    let league: League
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: Theme.Spacing.sm) {
-                // League icon or sponsor logo
-                Circle()
-                    .fill(Theme.ColorPalette.primary.opacity(0.15))
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        Text("🏆")
-                            .font(.title2)
-                    )
-
-                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                    Text(league.name)
-                        .font(Theme.Typography.body)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Theme.ColorPalette.textPrimary)
-                        .multilineTextAlignment(.leading)
-
-                    HStack {
-                        Text("$\(Int(league.prizePool)) pool")
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.success)
-
-                        Text("•")
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-
-                        Text("\(league.participants.count)/\(league.maxParticipants) players")
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-                    }
-
-                    if let endTime = league.endTime {
-                        Text("Ends \(endTime, style: .relative)")
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary.opacity(0.7))
-                    }
-                }
-
-                Spacer()
-
-                VStack(spacing: Theme.Spacing.xxs) {
-                    Text("$\(Int(league.entryFee))")
-                        .font(Theme.Typography.mono)
-                        .fontWeight(.bold)
-                        .foregroundColor(Theme.ColorPalette.textPrimary)
-                    Text("entry")
-                        .font(Theme.Typography.caption)
-                        .foregroundColor(Theme.ColorPalette.textSecondary)
-                }
-            }
-            .padding(Theme.Spacing.md)
-            .glassCard()
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-struct CreateLeagueView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State private var leagueName = ""
-    @State private var entryFee = ""
-    @State private var prizePool = ""
-    @State private var maxParticipants = ""
-    @State private var isPublic = true
-
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Theme.ColorPalette.background
-                    .ignoresSafeArea()
-
-                VStack(spacing: Theme.Spacing.lg) {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.md) {
-                        Text("Create League")
-                            .font(Theme.Typography.heading1)
-                            .foregroundColor(Theme.ColorPalette.textPrimary)
-
-                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                            Text("League Name")
-                                .font(Theme.Typography.caption)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
-                            TextField("Enter league name", text: $leagueName)
-                                .textFieldStyle(CustomTextFieldStyle())
-                        }
-
-                        HStack(spacing: Theme.Spacing.md) {
-                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                                Text("Entry Fee")
-                                    .font(Theme.Typography.caption)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
-                                TextField("$0", text: $entryFee)
-                                    .textFieldStyle(CustomTextFieldStyle())
-                                    #if os(iOS)
-                                    .keyboardType(.decimalPad)
-                                    #endif
-                            }
-
-                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                                Text("Prize Pool")
-                                    .font(Theme.Typography.caption)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
-                                TextField("$0", text: $prizePool)
-                                    .textFieldStyle(CustomTextFieldStyle())
-                                    #if os(iOS)
-                                    .keyboardType(.decimalPad)
-                                    #endif
-                            }
-                        }
-
-                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                            Text("Max Participants")
-                                .font(Theme.Typography.caption)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
-                            TextField("100", text: $maxParticipants)
-                                .textFieldStyle(CustomTextFieldStyle())
-                                #if os(iOS)
-                                .keyboardType(.numberPad)
-                                #endif
-                        }
-
-                        Toggle("Public League", isOn: $isPublic)
-                            .font(Theme.Typography.body)
-                            .foregroundColor(Theme.ColorPalette.textPrimary)
-                    }
-
-                    Spacer()
-
-                    PrimaryButton(title: "Create League") {
-                        dismiss()
-                    }
-                    .disabled(leagueName.isEmpty)
-                }
-                .padding()
-            }
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                #if os(iOS)
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .foregroundColor(Theme.ColorPalette.primary)
-                }
-                #else
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .foregroundColor(Theme.ColorPalette.primary)
-                }
-                #endif
-            }
-        }
-    }
-}
-
-struct LeagueDetailView: View {
-    let league: League
-    @Environment(\.dismiss) private var dismiss
-    @State private var currentRanks: [Int] = []
-
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Theme.ColorPalette.background
-                    .ignoresSafeArea()
-
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
-                        // Header
-                        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                            if let sponsor = league.sponsorName {
-                                Text(sponsor)
-                                    .font(Theme.Typography.caption)
-                                    .foregroundColor(Theme.ColorPalette.primary)
-                            }
-
-                            Text(league.name)
-                                .font(Theme.Typography.heading1)
-                                .foregroundColor(Theme.ColorPalette.textPrimary)
-                                .sharpPageTransition()
-
-                            HStack(spacing: Theme.Spacing.lg) {
-                                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                                    Text("Prize Pool")
-                                        .font(Theme.Typography.caption)
-                                        .foregroundColor(Theme.ColorPalette.textSecondary)
-                                    MetricNumber(value: Int(league.prizePool))
-                                        .foregroundColor(Theme.ColorPalette.success)
-                                }
-
-                                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                                    Text("Entry Fee")
-                                        .font(Theme.Typography.caption)
-                                        .foregroundColor(Theme.ColorPalette.textSecondary)
-                                    Text("$\(Int(league.entryFee))")
-                                        .font(Theme.Typography.heading2)
-                                        .foregroundColor(Theme.ColorPalette.textPrimary)
-                                }
-                            }
-                        }
-                        .padding(Theme.Spacing.md)
-                        .glassCard()
-
-                        // Leaderboard
-                        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                            Text("Leaderboard")
-                                .font(Theme.Typography.heading2)
-                                .foregroundColor(Theme.ColorPalette.textPrimary)
-
-                            if league.participants.isEmpty {
-                                Text("No participants yet")
-                                    .font(Theme.Typography.body)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
-                                    .padding()
-                            } else {
-                                ForEach(Array(league.participants.enumerated()), id: \.element.id) { index, participant in
-                                    LeaderboardRow(participant: participant, rank: index + 1)
-                                        .animation(Theme.Animation.base.delay(Double(index) * 0.03), value: league.participants)
-                                }
-                            }
-                        }
-                        .padding(Theme.Spacing.md)
-                        .glassCard()
-
-                        // Join button
-                        PrimaryButton(title: "Join League - $\(Int(league.entryFee))") {
-                            // Join league action
-                        }
-                    }
-                    .padding()
-                }
-            }
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                #if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .foregroundColor(Theme.ColorPalette.primary)
-                }
-                #else
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .foregroundColor(Theme.ColorPalette.primary)
-                }
-                #endif
-            }
-        }
-    }
-}
-
-struct LeaderboardRow: View {
-    let participant: LeagueParticipant
+struct TopPlayerCard: View {
+    let player: LeaguePlayer
     let rank: Int
 
     var body: some View {
-        HStack {
-            // Rank
-            RankView(rank: rank, isUp: participant.percentageGain >= 0)
-                .frame(width: 60)
+        VStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 60, height: 60)
 
-            // User info
-            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                Text(participant.user.username)
-                    .font(Theme.Typography.body)
-                    .fontWeight(.semibold)
-                    .foregroundColor(Theme.ColorPalette.textPrimary)
-                Text("$\(Int(participant.currentScore))")
-                    .font(Theme.Typography.caption)
-                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                Text(player.avatar)
+                    .font(.title)
+
+                // Rank badge
+                Circle()
+                    .fill(rankColor)
+                    .frame(width: 20, height: 20)
+                    .overlay(
+                        Text("\(rank)")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                    )
+                    .offset(x: 20, y: -20)
             }
 
-            Spacer()
+            VStack(spacing: 2) {
+                Text(player.username)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.black)
+                    .lineLimit(1)
 
-            // Performance
-            VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
-                Text("\(participant.percentageGain >= 0 ? "+" : "")\(participant.percentageGain, specifier: "%.1f")%")
-                    .font(Theme.Typography.mono)
-                    .fontWeight(.bold)
-                    .foregroundColor(participant.percentageGain >= 0 ? Theme.ColorPalette.success : Theme.ColorPalette.error)
-                Text("gain")
-                    .font(Theme.Typography.caption)
-                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                Text("\(player.points.formatted())")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
             }
         }
-        .padding(.vertical, Theme.Spacing.xs)
+    }
+
+    private var rankColor: Color {
+        switch rank {
+        case 1: return Color.yellow
+        case 2: return Color.gray
+        case 3: return Color.orange
+        default: return Color.blue
+        }
     }
 }
 
-struct CustomTextFieldStyle: TextFieldStyle {
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .padding(Theme.Spacing.sm)
-            .font(Theme.Typography.body)
-            .background(
-                RoundedRectangle(cornerRadius: Theme.Radius.sm)
-                    .fill(Theme.ColorPalette.surface)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Theme.Radius.sm)
-                            .stroke(Theme.ColorPalette.divider, lineWidth: 1)
-                    )
-            )
-            .foregroundColor(Theme.ColorPalette.textPrimary)
+struct LeaderboardRowView: View {
+    let player: LeaguePlayer
+    let rank: Int
+
+    var body: some View {
+        HStack(spacing: 12) {
+            // Rank number
+            Text("\(rank)")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(.black)
+                .frame(width: 20)
+
+            // Avatar
+            Circle()
+                .fill(Color.gray.opacity(0.2))
+                .frame(width: 32, height: 32)
+                .overlay(
+                    Text(player.avatar)
+                        .font(.title3)
+                )
+
+            // Username
+            Text(player.username)
+                .font(.subheadline)
+                .foregroundColor(.black)
+
+            Spacer()
+
+            // Points
+            Text("\(player.points.formatted())")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(.black)
+        }
+        .padding(.vertical, 4)
     }
 }
 

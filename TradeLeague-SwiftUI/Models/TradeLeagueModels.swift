@@ -204,3 +204,17 @@ struct PortfolioAllocation: Codable {
     let tokens: [TokenAllocation]
     let totalValue: Double
 }
+
+// MARK: - League Player Models
+struct LeaguePlayer: Identifiable, Codable, Equatable {
+    let id: String
+    let username: String
+    let avatar: String
+    let points: Int
+    let rank: Int
+}
+
+enum LeagueScope: CaseIterable {
+    case global
+    case local
+}

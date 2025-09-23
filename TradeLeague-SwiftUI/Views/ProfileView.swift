@@ -843,7 +843,7 @@ struct PieChartView: View {
                     PieSlice(
                         startAngle: startAngle(for: index),
                         endAngle: endAngle(for: index),
-                        color: Color(hex: token.color) ?? Theme.ColorPalette.primary
+                        color: Color.fromHex(token.color) ?? Theme.ColorPalette.primary
                     )
                     .frame(width: 200, height: 200)
                 }
@@ -869,7 +869,7 @@ struct PieChartView: View {
                 ForEach(allocation.tokens) { token in
                     HStack {
                         Circle()
-                            .fill(Color(hex: token.color) ?? Theme.ColorPalette.primary)
+                            .fill(Color.fromHex(token.color) ?? Theme.ColorPalette.primary)
                             .frame(width: 12, height: 12)
 
                         Text(token.symbol)
@@ -929,7 +929,7 @@ struct PieSlice: View {
 }
 
 extension Color {
-    init?(hex: String) {
+    static func fromHex(_ hex: String) -> Color? {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)
@@ -945,7 +945,7 @@ extension Color {
             return nil
         }
 
-        self.init(
+        return Color(
             .sRGB,
             red: Double(r) / 255,
             green: Double(g) / 255,

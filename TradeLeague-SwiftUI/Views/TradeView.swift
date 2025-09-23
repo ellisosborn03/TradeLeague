@@ -507,7 +507,17 @@ struct VaultDetailView: View {
                                 Text("Amount to Follow")
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
                                 TextField("Enter amount in USDC", text: $followAmount)
-                                    .textFieldStyle(CustomTextFieldStyle())
+                                    .padding(Theme.Spacing.sm)
+                                    .font(Theme.Typography.body)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                                            .fill(Theme.ColorPalette.surface)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                                                    .stroke(Theme.ColorPalette.divider, lineWidth: 1)
+                                            )
+                                    )
+                                    .foregroundColor(Theme.ColorPalette.textPrimary)
                                     #if os(iOS)
                                     .keyboardType(.numberPad)
                                     #endif
