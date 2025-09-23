@@ -150,11 +150,11 @@ struct LeagueView: View {
                 prizePool: 10000,
                 entryFee: 100,
                 participants: [
-                    LeaguePlayer(id: "1", username: "Alex Chen", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2847.23, rank: 1),
-                    LeaguePlayer(id: "2", username: "Sarah Kim", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1923.45, rank: 2),
-                    LeaguePlayer(id: "3", username: "Marcus Johnson", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1456.78, rank: 3),
-                    LeaguePlayer(id: "4", username: "Elena Rodriguez", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: -234.56, rank: 4),
-                    LeaguePlayer(id: "5", username: "David Park", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: -567.89, rank: 5)
+                    LeaguePlayer(id: "1", username: "Alex", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2847.23, rank: 1),
+                    LeaguePlayer(id: "2", username: "Sarah", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1923.45, rank: 2),
+                    LeaguePlayer(id: "3", username: "Maya", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1456.78, rank: 3),
+                    LeaguePlayer(id: "4", username: "Jake", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: -234.56, rank: 4),
+                    LeaguePlayer(id: "5", username: "Ryan", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: -567.89, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date()
@@ -167,11 +167,11 @@ struct LeagueView: View {
                 prizePool: 7500,
                 entryFee: 75,
                 participants: [
-                    LeaguePlayer(id: "6", username: "Rachel Wong", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", profit: 3245.67, rank: 1),
-                    LeaguePlayer(id: "7", username: "James Miller", avatar: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=150&h=150&fit=crop&crop=face", profit: 2134.89, rank: 2),
-                    LeaguePlayer(id: "8", username: "Priya Sharma", avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face", profit: 1876.34, rank: 3),
-                    LeaguePlayer(id: "9", username: "Tom Anderson", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face", profit: 987.12, rank: 4),
-                    LeaguePlayer(id: "10", username: "Lisa Zhang", avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a2c9f9?w=150&h=150&fit=crop&crop=face", profit: -123.45, rank: 5)
+                    LeaguePlayer(id: "6", username: "Emma", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", profit: 3245.67, rank: 1),
+                    LeaguePlayer(id: "7", username: "James", avatar: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=150&h=150&fit=crop&crop=face", profit: 2134.89, rank: 2),
+                    LeaguePlayer(id: "8", username: "Priya", avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face", profit: 1876.34, rank: 3),
+                    LeaguePlayer(id: "9", username: "Carlos", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face", profit: 987.12, rank: 4),
+                    LeaguePlayer(id: "10", username: "Lisa", avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a2c9f9?w=150&h=150&fit=crop&crop=face", profit: -123.45, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
@@ -184,11 +184,11 @@ struct LeagueView: View {
                 prizePool: 5000,
                 entryFee: 50,
                 participants: [
-                    LeaguePlayer(id: "11", username: "Kevin Liu", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&h=150&fit=crop&crop=face", profit: 1987.65, rank: 1),
-                    LeaguePlayer(id: "12", username: "Emma Thompson", avatar: "https://images.unsplash.com/photo-1541534401786-2077eed87a74?w=150&h=150&fit=crop&crop=face", profit: 1543.21, rank: 2),
-                    LeaguePlayer(id: "13", username: "Carlos Ruiz", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=face", profit: 1234.56, rank: 3),
-                    LeaguePlayer(id: "14", username: "Sophie Martin", avatar: "https://images.unsplash.com/photo-1507120410856-1f35574c3b45?w=150&h=150&fit=crop&crop=face", profit: 876.43, rank: 4),
-                    LeaguePlayer(id: "15", username: "Michael Brown", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: -345.67, rank: 5)
+                    LeaguePlayer(id: "11", username: "Kevin", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&h=150&fit=crop&crop=face", profit: 1987.65, rank: 1),
+                    LeaguePlayer(id: "12", username: "Zoe", avatar: "https://images.unsplash.com/photo-1541534401786-2077eed87a74?w=150&h=150&fit=crop&crop=face", profit: 1543.21, rank: 2),
+                    LeaguePlayer(id: "13", username: "David", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=face", profit: 1234.56, rank: 3),
+                    LeaguePlayer(id: "14", username: "Sophie", avatar: "https://images.unsplash.com/photo-1507120410856-1f35574c3b45?w=150&h=150&fit=crop&crop=face", profit: 876.43, rank: 4),
+                    LeaguePlayer(id: "15", username: "Mike", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: -345.67, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()
@@ -201,11 +201,11 @@ struct LeagueView: View {
                 prizePool: 3000,
                 entryFee: 25,
                 participants: [
-                    LeaguePlayer(id: "16", username: "Anna Petrov", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: 1456.78, rank: 1),
-                    LeaguePlayer(id: "17", username: "Jake Wilson", avatar: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=150&h=150&fit=crop&crop=face", profit: 1234.56, rank: 2),
-                    LeaguePlayer(id: "18", username: "Maya Patel", avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face", profit: 987.65, rank: 3),
-                    LeaguePlayer(id: "19", username: "Ryan O'Connor", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face", profit: 543.21, rank: 4),
-                    LeaguePlayer(id: "20", username: "Zoe Davis", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=face", profit: -234.56, rank: 5)
+                    LeaguePlayer(id: "16", username: "Anna", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: 1456.78, rank: 1),
+                    LeaguePlayer(id: "17", username: "Tom", avatar: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=150&h=150&fit=crop&crop=face", profit: 1234.56, rank: 2),
+                    LeaguePlayer(id: "18", username: "Nina", avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face", profit: 987.65, rank: 3),
+                    LeaguePlayer(id: "19", username: "Leo", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face", profit: 543.21, rank: 4),
+                    LeaguePlayer(id: "20", username: "Ben", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=face", profit: -234.56, rank: 5)
                 ],
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 2, to: Date()) ?? Date()
@@ -215,12 +215,12 @@ struct LeagueView: View {
 
     private func loadFriendsLeaderboard() {
         friendsLeaderboard = [
-            LeaguePlayer(id: "f1", username: "John Smith", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2345.67, rank: 1),
-            LeaguePlayer(id: "f2", username: "Maria Garcia", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1876.43, rank: 2),
-            LeaguePlayer(id: "f3", username: "Chris Lee", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1234.89, rank: 3),
-            LeaguePlayer(id: "f4", username: "Amy Chen", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: 987.65, rank: 4),
-            LeaguePlayer(id: "f5", username: "Robert Kim", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: 543.21, rank: 5),
-            LeaguePlayer(id: "f6", username: "Lisa Wang", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", profit: 234.56, rank: 6)
+            LeaguePlayer(id: "f1", username: "Max", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2345.67, rank: 1),
+            LeaguePlayer(id: "f2", username: "Aria", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1876.43, rank: 2),
+            LeaguePlayer(id: "f3", username: "Jade", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1234.89, rank: 3),
+            LeaguePlayer(id: "f4", username: "Sam", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: 987.65, rank: 4),
+            LeaguePlayer(id: "f5", username: "Kai", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: 543.21, rank: 5),
+            LeaguePlayer(id: "f6", username: "Mia", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", profit: 234.56, rank: 6)
         ]
     }
 }
