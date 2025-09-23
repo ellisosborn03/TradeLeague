@@ -20,6 +20,21 @@ struct Theme {
         static let chartPurple: Color = Color(hex: "AF52DE")
         static let darkBackground: Color = Color(hex: "1C1C1E")
 
+        // Enhanced orange palette
+        static let orangeLight: Color = Color(hex: "FF8A3D")
+        static let orangeDark: Color = Color(hex: "FF6B00")
+        static let orangeAccessible: Color = Color(hex: "EA580C")  // High contrast for text
+
+        // Shadow colors
+        static let shadowAmbient: Color = Color(red: 15/255, green: 23/255, blue: 42/255).opacity(0.06)
+        static let shadowKey: Color = Color(red: 15/255, green: 23/255, blue: 42/255).opacity(0.12)
+        static let shadowGlow: Color = Color(hex: "F97316").opacity(0.28)
+        static let shadowGlowPressed: Color = Color(hex: "F97316").opacity(0.45)
+
+        // Border colors
+        static let border: Color = Color(red: 15/255, green: 23/255, blue: 42/255).opacity(0.08)
+        static let borderFocus: Color = Color(hex: "F97316").opacity(0.18)
+
         static let gradientPrimary = LinearGradient(
             colors: [primary, secondary],
             startPoint: .leading,
@@ -31,26 +46,67 @@ struct Theme {
     }
 
     enum Typography {
-        static let heading1 = Font.system(size: 32, weight: .bold, design: .default)
-        static let heading2 = Font.system(size: 24, weight: .semibold, design: .default)
+        // Display / Hero numbers with wide sans (tracking applied in view)
+        static let displayXL = Font.system(size: 56, weight: .bold, design: .default)
+        static let displayL = Font.system(size: 48, weight: .bold, design: .default)
+        static let displayM = Font.system(size: 40, weight: .bold, design: .default)
+        static let displayS = Font.system(size: 36, weight: .bold, design: .default)
+
+        // Section headings with bottom margin
+        static let heading1 = Font.system(size: 32, weight: .semibold, design: .default)
+        static let heading2 = Font.system(size: 28, weight: .semibold, design: .default)
+
+        // Body text with optimal line height
+        static let bodyL = Font.system(size: 17, weight: .regular, design: .default)
         static let body = Font.system(size: 16, weight: .regular, design: .default)
+        static let bodyS = Font.system(size: 15, weight: .regular, design: .default)
+
+        // Supporting text
         static let caption = Font.system(size: 14, weight: .regular, design: .default)
+        static let captionS = Font.system(size: 12, weight: .regular, design: .default)
+
+        // Chip text
+        static let chip = Font.system(size: 14, weight: .medium, design: .default)
+        static let chipS = Font.system(size: 12, weight: .medium, design: .default)
+
+        // Buttons
+        static let button = Font.system(size: 17, weight: .semibold, design: .default)
+        static let buttonS = Font.system(size: 15, weight: .semibold, design: .default)
+
+        // Mono for numbers
         static let mono = Font.system(size: 14, weight: .medium, design: .monospaced)
-        static let button = Font.system(size: 16, weight: .semibold, design: .default)
+        static let monoL = Font.system(size: 16, weight: .medium, design: .monospaced)
     }
 
     enum Animation {
+        // Legacy animations
         static let xfast = SwiftUI.Animation.spring(duration: 0.12, bounce: 0.0)
         static let fast = SwiftUI.Animation.spring(duration: 0.18, bounce: 0.1)
         static let base = SwiftUI.Animation.spring(duration: 0.24, bounce: 0.18)
         static let slow = SwiftUI.Animation.spring(duration: 0.32, bounce: 0.22)
 
+        // Optimized animations with cubic-bezier timing
+        static let reveal = SwiftUI.Animation.spring(duration: 0.55, bounce: 0.0)
+        static let revealSlow = SwiftUI.Animation.spring(duration: 0.75, bounce: 0.0)
+
+        // Hover/press interactions
+        static let hoverIn = SwiftUI.Animation.spring(duration: 0.15, bounce: 0.0)
+        static let hoverOut = SwiftUI.Animation.spring(duration: 0.22, bounce: 0.0)
+        static let pressIn = SwiftUI.Animation.spring(duration: 0.12, bounce: 0.0)
+        static let pressOut = SwiftUI.Animation.spring(duration: 0.24, bounce: 0.0)
+
+        // Count-up animations
+        static let countUp = SwiftUI.Animation.easeOut(duration: 1.4)
+        static let countUpFast = SwiftUI.Animation.easeOut(duration: 1.2)
+
+        // Smooth interactions
         static let sharpSpring = SwiftUI.Animation.spring(duration: 0.42, bounce: 0.18)
         static let glide = SwiftUI.Animation.spring(duration: 0.30, bounce: 0.22)
         static let settle = SwiftUI.Animation.spring(duration: 0.22, bounce: 0.10)
     }
 
     enum Spacing {
+        // Basic spacing
         static let xxs: CGFloat = 4
         static let xs: CGFloat = 8
         static let sm: CGFloat = 12
@@ -58,6 +114,18 @@ struct Theme {
         static let lg: CGFloat = 24
         static let xl: CGFloat = 32
         static let xxl: CGFloat = 48
+
+        // Vertical rhythm
+        static let sectionGap: CGFloat = 64  // Between major sections
+        static let sectionGapL: CGFloat = 88  // Large section gaps
+        static let headingToBody: CGFloat = 24  // Heading to body spacing
+        static let headingMargin: CGFloat = 12  // Bottom margin for headings
+
+        // Chip padding
+        static let chipVertical: CGFloat = 12
+        static let chipHorizontal: CGFloat = 18
+        static let chipVerticalS: CGFloat = 10
+        static let chipHorizontalS: CGFloat = 16
     }
 
     enum Radius {

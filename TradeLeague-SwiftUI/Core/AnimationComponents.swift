@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct PageTransition: ViewModifier {
     @State private var appear = false
@@ -103,11 +104,16 @@ struct PrimaryButton: View {
     let action: () -> Void
     @State private var isPressed = false
     @State private var success = false
+    @State private var isHovered = false
 
     var body: some View {
         Button(action: {
+            // Haptic feedback
+            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+            impactFeedback.impactOccurred()
             action()
-            withAnimation(.spring(duration: 0.18, bounce: 0.4)) {
+
+            withAnimation(Theme.Animation.pressIn) {
                 success = true
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.36) {
@@ -120,22 +126,39 @@ struct PrimaryButton: View {
                 .padding(.horizontal, Theme.Spacing.lg)
                 .padding(.vertical, Theme.Spacing.md)
                 .frame(maxWidth: .infinity)
-                .background(Theme.ColorPalette.gradientPrimary)
+                .background(
+                    LinearGradient(
+                        colors: [
+                            Theme.ColorPalette.orangeLight,
+                            Theme.ColorPalette.primary,
+                            Theme.ColorPalette.orangeDark
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.md))
-                .scaleEffect(isPressed ? 0.98 : (success ? 1.04 : 1.0))
-                .shadow(color: Theme.ColorPalette.primary.opacity(0.3),
-                        radius: success ? 16 : 8,
-                        x: 0,
-                        y: 4)
+                .scaleEffect(isPressed ? 0.98 : (success ? 1.04 : (isHovered ? 1.02 : 1.0)))
+                .shadow(
+                    color: success ? Theme.ColorPalette.shadowGlowPressed : Theme.ColorPalette.shadowGlow,
+                    radius: success ? 20 : (isHovered ? 16 : 8),
+                    x: 0,
+                    y: success ? 8 : 4
+                )
         }
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity,
                             pressing: { pressing in
-                                withAnimation(Theme.Animation.xfast) {
+                                withAnimation(pressing ? Theme.Animation.pressIn : Theme.Animation.pressOut) {
                                     isPressed = pressing
                                 }
                             },
                             perform: {})
+        .onHover { hovering in
+            withAnimation(hovering ? Theme.Animation.hoverIn : Theme.Animation.hoverOut) {
+                isHovered = hovering
+            }
+        }
     }
 }
 
