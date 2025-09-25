@@ -235,9 +235,13 @@ struct VaultCard: View {
                             Text("•")
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
 
-                            Text(vault.venue.rawValue)
-                                .font(Theme.Typography.caption)
-                                .foregroundColor(Theme.ColorPalette.primary)
+                            HStack(spacing: 4) {
+                                SponsorLogoView.small(vault.venue.rawValue)
+
+                                Text(vault.venue.rawValue)
+                                    .font(Theme.Typography.caption)
+                                    .foregroundColor(Theme.ColorPalette.primary)
+                            }
                         }
                     }
 
