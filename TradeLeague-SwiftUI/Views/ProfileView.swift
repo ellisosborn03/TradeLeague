@@ -251,24 +251,125 @@ struct PortfolioSummaryCard: View {
     @StateObject private var balanceManager = BalanceManager.shared
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
-            Text("Portfolio")
-                .font(Theme.Typography.heading2)
-                .foregroundColor(Theme.ColorPalette.textPrimary)
+        VStack(spacing: 0) {
+            // Top section with Portfolio title, value, and performance
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Portfolio")
+                        .font(Theme.Typography.heading2)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
-            // Total Value
-            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                Text("Total Value")
-                    .font(Theme.Typography.caption)
-                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                    CountUpText(target: balanceManager.currentBalance, fontSize: Theme.Typography.displayL)
+                        .foregroundColor(Theme.ColorPalette.successGreen)
+                }
 
-                CountUpText(target: balanceManager.currentBalance, fontSize: Theme.Typography.displayS)
-                    .foregroundColor(Theme.ColorPalette.textPrimary)
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    HStack(spacing: 4) {
+                        Text("Rank")
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        Text("#7")
+                            .font(Theme.Typography.body)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+                    }
+
+                    HStack(spacing: 4) {
+                        Text("+\(portfolio.todayChangePercentage, specifier: "%.1f")% today")
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                    }
+
+                    HStack(spacing: 4) {
+                        Text("Week")
+                            .font(Theme.Typography.captionS)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Theme.ColorPalette.successGreen)
+                            .cornerRadius(12)
+                    }
+                }
             }
+            .padding(.horizontal, Theme.Spacing.md)
+            .padding(.top, Theme.Spacing.md)
+
+            // Mini chart section
+            VStack(alignment: .leading, spacing: 8) {
+                MiniPortfolioChart()
+                    .frame(height: 60)
+                    .padding(.horizontal, Theme.Spacing.md)
+            }
+            .padding(.bottom, Theme.Spacing.md)
         }
-        .padding(Theme.Spacing.md)
         .optimizedGlassCard(style: .glass)
         .reveal(delay: 0.3)
+    }
+}
+
+struct MiniPortfolioChart: View {
+    @State private var animateChart = false
+
+    private let dataPoints: [Double] = [0.3, 0.7, 0.4, 0.8, 0.6, 0.9, 0.5, 0.85, 0.7, 0.95]
+
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack {
+                // Background dots pattern
+                ForEach(0..<8, id: \.self) { row in
+                    ForEach(0..<12, id: \.self) { col in
+                        Circle()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(width: 2, height: 2)
+                            .position(
+                                x: CGFloat(col) * (geometry.size.width / 12) + 10,
+                                y: CGFloat(row) * (geometry.size.height / 8) + 5
+                            )
+                    }
+                }
+
+                // Chart line
+                Path { path in
+                    let width = geometry.size.width - 20
+                    let height = geometry.size.height - 10
+
+                    for (index, point) in dataPoints.enumerated() {
+                        let x = 10 + (width / CGFloat(dataPoints.count - 1)) * CGFloat(index)
+                        let y = height - (height * point) + 5
+
+                        if index == 0 {
+                            path.move(to: CGPoint(x: x, y: y))
+                        } else {
+                            path.addLine(to: CGPoint(x: x, y: y))
+                        }
+                    }
+                }
+                .trim(from: 0, to: animateChart ? 1 : 0)
+                .stroke(Theme.ColorPalette.successGreen, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                .animation(.easeInOut(duration: 1.5), value: animateChart)
+
+                // Data points
+                ForEach(Array(dataPoints.enumerated()), id: \.offset) { index, point in
+                    let width = geometry.size.width - 20
+                    let height = geometry.size.height - 10
+                    let x = 10 + (width / CGFloat(dataPoints.count - 1)) * CGFloat(index)
+                    let y = height - (height * point) + 5
+
+                    Circle()
+                        .fill(Theme.ColorPalette.successGreen)
+                        .frame(width: 4, height: 4)
+                        .position(x: x, y: y)
+                        .scaleEffect(animateChart ? 1 : 0)
+                        .animation(.easeInOut(duration: 0.5).delay(Double(index) * 0.1), value: animateChart)
+                }
+            }
+        }
+        .onAppear {
+            animateChart = true
+        }
     }
 }
 

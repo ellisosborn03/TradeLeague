@@ -495,7 +495,7 @@ struct SponsoredLeagueCard: View {
             Button(action: onToggle) {
                 HStack(spacing: Theme.Spacing.md) {
                     // Company Logo
-                    CompanyLogoView(company: league.sponsorLogo)
+                    SponsorLogoView.medium(league.sponsorName)
 
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         Text(league.sponsorName)
