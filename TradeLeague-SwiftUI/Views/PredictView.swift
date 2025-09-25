@@ -334,6 +334,12 @@ struct CategoryBadge: View {
             return Theme.ColorPalette.secondary
         case .derivatives:
             return Theme.ColorPalette.primary.opacity(0.8)
+        case .crypto:
+            return Theme.ColorPalette.primaryBlue
+        case .politics:
+            return Theme.ColorPalette.dangerRed
+        case .sports:
+            return Theme.ColorPalette.successGreen
         }
     }
 
