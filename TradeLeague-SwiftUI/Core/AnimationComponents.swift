@@ -233,8 +233,10 @@ struct SponsorLogoView: View {
             return "panora-logo"
         case "circle":
             return "circle-logo"
-        case "kana", "kana labs":
+        case "kana", "kana labs", "kanalabs":
             return "kana-logo"
+        case "kofi":
+            return "kofi-logo"
         case "nodit":
             return "nodit-logo"
         case "ekiden":
@@ -264,8 +266,10 @@ struct SponsorLogoView: View {
             return Color(hex: "F59E0B") // Tapp Orange
         case "panora":
             return Color(hex: "8B5CF6") // Panora Purple
-        case "kana", "kana labs":
+        case "kana", "kana labs", "kanalabs":
             return Color(hex: "06B6D4") // Kana Cyan
+        case "kofi":
+            return Color(hex: "FF5722") // Kofi Orange
         case "nodit":
             return Color(hex: "374151") // Nodit Gray
         case "ekiden":
@@ -295,8 +299,10 @@ struct SponsorLogoView: View {
             return "link.circle.fill"
         case "panora":
             return "chart.xyaxis.line"
-        case "kana", "kana labs":
+        case "kana", "kana labs", "kanalabs":
             return "arrow.triangle.swap"
+        case "kofi":
+            return "leaf.circle.fill"
         case "nodit":
             return "server.rack"
         case "ekiden":
