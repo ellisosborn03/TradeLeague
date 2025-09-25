@@ -26,16 +26,12 @@ struct ProfileView: View {
                             }
                         }
 
-                        // Portfolio Summary
-                        if let portfolio = portfolio {
-                            PortfolioSummaryCard(portfolio: portfolio)
-                        }
 
                         // Segment Control
                         VStack(spacing: 0) {
                             CustomSegmentToggle(
                                 options: [0, 1, 2],
-                                optionLabels: [0: "HOLDINGS", 1: "REWARDS", 2: "ACTIVITY"],
+                                optionLabels: [0: "LEAGUES", 1: "HOLDINGS", 2: "ACTIVITY"],
                                 selection: $selectedSegment
                             )
                             .padding(.horizontal)
@@ -43,9 +39,9 @@ struct ProfileView: View {
                             // Content based on selected segment
                             Group {
                                 if selectedSegment == 0 {
-                                    HoldingsView(portfolio: portfolio)
-                                } else if selectedSegment == 1 {
                                     RewardsView(rewards: portfolio?.rewards ?? [])
+                                } else if selectedSegment == 1 {
+                                    HoldingsView(portfolio: portfolio)
                                 } else {
                                     ActivityView(transactions: transactions)
                                 }
@@ -55,28 +51,11 @@ struct ProfileView: View {
 
                         // Powered by Aptos Footer
                         HStack(spacing: Theme.Spacing.xs) {
-                            Text("Powered by")
+                            Text("Powered by Aptos")
                                 .font(Theme.Typography.caption)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
-
-                            AsyncImage(url: URL(string: "https://cryptologos.cc/logos/aptos-apt-logo.svg")) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                            } placeholder: {
-                                Text("Aptos")
-                                    .font(Theme.Typography.caption)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
-                            }
-                            .frame(width: 16, height: 16)
-
-                            Text("Aptos")
-                                .font(Theme.Typography.caption)
-                                .fontWeight(.medium)
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
                         }
-                        .padding(.top, Theme.Spacing.lg)
+                        .padding(.vertical, Theme.Spacing.lg)
                     }
                     .padding()
                 }
@@ -98,7 +77,7 @@ struct ProfileView: View {
             id: "user1",
             walletAddress: "0x1234567890abcdef",
             username: "Ellis O.",
-            avatar: "ellis-avatar",
+            avatar: "ellis",
             totalVolume: 125000,
             inviteCode: "CTRLMOVE",
             createdAt: Date(),
@@ -242,10 +221,6 @@ struct ProfileHeader: View {
                                 .font(Theme.Typography.bodyL)
                                 .foregroundColor(Theme.ColorPalette.textPrimary)
 
-                            if let rank = user.rank {
-                                RankView(rank: rank, isUp: true)
-                            }
-
                             Text("Total Volume: $\(Int(user.totalVolume / 1000))K")
                                 .font(Theme.Typography.caption)
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
@@ -269,8 +244,16 @@ struct ProfileHeader: View {
                         }
                     }
 
-                    // Streak Bar inside the same card
-                    StreakBarInCard()
+                    // Streak Bar inside the same card with equal spacing
+                    VStack(spacing: Theme.Spacing.sm) {
+                        Spacer()
+                            .frame(height: Theme.Spacing.xs)
+
+                        StreakBarInCard()
+
+                        Spacer()
+                            .frame(height: Theme.Spacing.xs)
+                    }
                 }
                 .padding(Theme.Spacing.md)
                 .optimizedGlassCard(style: .glass)
@@ -917,6 +900,14 @@ struct SettingsView: View {
                         }
 
                         SettingsRow(
+                            icon: "key",
+                            title: "Keyless Account",
+                            subtitle: "0x742d35c1e3f42000ab734c2d6b4f4b4e5f"
+                        ) {
+                            // Keyless key action - copy to clipboard
+                        }
+
+                        SettingsRow(
                             icon: "questionmark.circle",
                             title: "Help & Support",
                             subtitle: "Get help and contact support"
@@ -1261,7 +1252,7 @@ struct StreakBarInCard: View {
                     Text("\(streakCount) days")
                         .font(Theme.Typography.caption)
                         .fontWeight(.semibold)
-                        .foregroundColor(Theme.ColorPalette.primary)
+                        .foregroundColor(Theme.ColorPalette.orangeAccessible)
                 }
             }
 
@@ -1270,15 +1261,16 @@ struct StreakBarInCard: View {
                 ZStack(alignment: .leading) {
                     // Background
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(Theme.ColorPalette.surface.opacity(0.6))
+                        .fill(Theme.ColorPalette.orangeLight.opacity(0.2))
                         .frame(height: 6)
 
-                    // Progress
+                    // Progress - shows progression through orange intensity
                     RoundedRectangle(cornerRadius: 3)
                         .fill(LinearGradient(
                             gradient: Gradient(colors: [
-                                Theme.ColorPalette.primary,
-                                Theme.ColorPalette.primaryBlue
+                                Theme.ColorPalette.orangeLight.opacity(0.6),
+                                Theme.ColorPalette.orangeLight,
+                                Theme.ColorPalette.orangeDark
                             ]),
                             startPoint: .leading,
                             endPoint: .trailing
@@ -1291,7 +1283,7 @@ struct StreakBarInCard: View {
                         HStack(spacing: 3) {
                             ForEach(0..<3, id: \.self) { index in
                                 Circle()
-                                    .fill(Theme.ColorPalette.primary)
+                                    .fill(Theme.ColorPalette.orangeLight)
                                     .frame(width: 3, height: 3)
                                     .scaleEffect(isLoading ? 1.2 : 0.8)
                                     .animation(.easeInOut(duration: 0.6).repeatForever().delay(Double(index) * 0.2), value: isLoading)

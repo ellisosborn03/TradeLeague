@@ -59,7 +59,7 @@ struct LeagueView: View {
                                     .padding(.horizontal)
                                     .reveal(delay: 0.3)
                             } else {
-                                Text("See how you stack up against your friends. Invite more friends to climb the leaderboard.")
+                                Text("Trade, earn, and compete with friends.")
                                     .font(Theme.Typography.caption)
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
                                     .multilineTextAlignment(.center)
@@ -84,29 +84,11 @@ struct LeagueView: View {
 
                     // Powered by Aptos Footer
                     HStack(spacing: Theme.Spacing.xs) {
-                        Text("Powered by")
+                        Text("Powered by Aptos")
                             .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-
-                        AsyncImage(url: URL(string: "https://cryptologos.cc/logos/aptos-apt-logo.svg")) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            Text("Aptos")
-                                .font(Theme.Typography.caption)
-                                .fontWeight(.medium)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
-                        }
-                        .frame(width: 16, height: 16)
-
-                        Text("Aptos")
-                            .font(Theme.Typography.caption)
-                            .fontWeight(.medium)
                             .foregroundColor(Theme.ColorPalette.textSecondary)
                     }
-                    .padding(.top, Theme.Spacing.lg)
-                    .padding(.bottom, Theme.Spacing.md)
+                    .padding(.vertical, Theme.Spacing.lg)
                 }
             }
             .onAppear {
@@ -126,11 +108,11 @@ struct LeagueView: View {
     private func loadSponsoredLeagues() {
         // Sample players for all challenges
         let samplePlayers = [
-            LeaguePlayer(id: "1", username: "Alex", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2847.23, rank: 1),
-            LeaguePlayer(id: "2", username: "Sarah", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1923.45, rank: 2),
-            LeaguePlayer(id: "3", username: "Maya", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1456.78, rank: 3),
-            LeaguePlayer(id: "4", username: "Jake", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: -234.56, rank: 4),
-            LeaguePlayer(id: "5", username: "Ryan", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: -567.89, rank: 5)
+            LeaguePlayer(id: "1", username: "Alex", avatar: "nft1", profit: 2847.23, rank: 1),
+            LeaguePlayer(id: "2", username: "Sarah", avatar: "nft2", profit: 1923.45, rank: 2),
+            LeaguePlayer(id: "3", username: "Maya", avatar: "nft3", profit: 1456.78, rank: 3),
+            LeaguePlayer(id: "4", username: "Jake", avatar: "nft1", profit: -234.56, rank: 4),
+            LeaguePlayer(id: "5", username: "Ryan", avatar: "nft2", profit: -567.89, rank: 5)
         ]
 
         sponsoredLeagues = [
@@ -153,7 +135,7 @@ struct LeagueView: View {
                 sponsorLogo: "ekiden",
                 leagueName: "Ekiden Challenge",
                 prizePool: 7500,
-                entryFee: 50,
+                entryFee: 75,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 6, to: Date()) ?? Date()
@@ -165,19 +147,19 @@ struct LeagueView: View {
                 sponsorLogo: "hyperion",
                 leagueName: "Hyperion Challenge",
                 prizePool: 6000,
-                entryFee: 50,
+                entryFee: 60,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
             ),
-            // Kanalabs Challenge
+            // Kana Labs Challenge
             SponsoredLeague(
                 id: "kanalabs",
-                sponsorName: "Kanalabs",
+                sponsorName: "Kana Labs",
                 sponsorLogo: "kanalabs",
-                leagueName: "Kanalabs Challenge",
+                leagueName: "Kana Labs Challenge",
                 prizePool: 5000,
-                entryFee: 25,
+                entryFee: 50,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 2, to: Date()) ?? Date()
@@ -189,7 +171,7 @@ struct LeagueView: View {
                 sponsorLogo: "kofi",
                 leagueName: "Kofi Challenge",
                 prizePool: 4000,
-                entryFee: 25,
+                entryFee: 40,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date()
@@ -201,7 +183,7 @@ struct LeagueView: View {
                 sponsorLogo: "merkle",
                 leagueName: "Merkle Trade Challenge",
                 prizePool: 8000,
-                entryFee: 50,
+                entryFee: 80,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
@@ -213,7 +195,7 @@ struct LeagueView: View {
                 sponsorLogo: "nodit",
                 leagueName: "NODIT Challenge",
                 prizePool: 3500,
-                entryFee: 25,
+                entryFee: 35,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 6, to: Date()) ?? Date()
@@ -225,7 +207,7 @@ struct LeagueView: View {
                 sponsorLogo: "panora",
                 leagueName: "Panora Challenge",
                 prizePool: 5500,
-                entryFee: 25,
+                entryFee: 55,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 4, to: Date()) ?? Date()
@@ -237,7 +219,7 @@ struct LeagueView: View {
                 sponsorLogo: "tapp",
                 leagueName: "Tapp Exchange Challenge",
                 prizePool: 4500,
-                entryFee: 25,
+                entryFee: 45,
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
@@ -247,31 +229,31 @@ struct LeagueView: View {
 
     private func loadFriendsLeaderboard() {
         friendsLeaderboard = [
-            LeaguePlayer(id: "f1", username: "Avery", avatar: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face", profit: 2345.67, rank: 1, recentTrades: [
+            LeaguePlayer(id: "f1", username: "Avery", avatar: "nft3", profit: 2345.67, rank: 1, recentTrades: [
                 Trade(id: "t1", symbol: "APT", type: .long, amount: 500, price: 12.45, pnl: 890.23, timestamp: Date().addingTimeInterval(-3600), venue: "Merkle"),
                 Trade(id: "t2", symbol: "USDC", type: .buy, amount: 1000, price: 1.0, pnl: 245.67, timestamp: Date().addingTimeInterval(-7200), venue: "Hyperion"),
                 Trade(id: "t3", symbol: "BTC", type: .long, amount: 0.5, price: 67000, pnl: 1209.77, timestamp: Date().addingTimeInterval(-10800), venue: "Tapp")
             ]),
-            LeaguePlayer(id: "f2", username: "Aria", avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop&crop=face", profit: 1876.43, rank: 2, recentTrades: [
+            LeaguePlayer(id: "f2", username: "Aria", avatar: "nft1", profit: 1876.43, rank: 2, recentTrades: [
                 Trade(id: "t4", symbol: "ETH", type: .long, amount: 2, price: 3400, pnl: 678.90, timestamp: Date().addingTimeInterval(-2700), venue: "Merkle"),
                 Trade(id: "t5", symbol: "APT", type: .sell, amount: 300, price: 13.20, pnl: 456.78, timestamp: Date().addingTimeInterval(-5400), venue: "Hyperion"),
                 Trade(id: "t6", symbol: "SOL", type: .short, amount: 10, price: 180, pnl: 740.75, timestamp: Date().addingTimeInterval(-8100), venue: "Tapp")
             ]),
-            LeaguePlayer(id: "f3", username: "Jade", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", profit: 1234.89, rank: 3, recentTrades: [
+            LeaguePlayer(id: "f3", username: "Jade", avatar: "nft2", profit: 1234.89, rank: 3, recentTrades: [
                 Trade(id: "t7", symbol: "USDC", type: .buy, amount: 2000, price: 1.0, pnl: 534.21, timestamp: Date().addingTimeInterval(-1800), venue: "Hyperion"),
                 Trade(id: "t8", symbol: "APT", type: .long, amount: 400, price: 12.80, pnl: 700.68, timestamp: Date().addingTimeInterval(-4500), venue: "Merkle")
             ]),
-            LeaguePlayer(id: "f4", username: "Satoshi", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face", profit: 987.65, rank: 4, recentTrades: [
+            LeaguePlayer(id: "f4", username: "Satoshi", avatar: "doge.png", profit: 987.65, rank: 4, recentTrades: [
                 Trade(id: "t9", symbol: "BTC", type: .long, amount: 0.3, price: 66800, pnl: 456.78, timestamp: Date().addingTimeInterval(-2100), venue: "Tapp"),
                 Trade(id: "t10", symbol: "ETH", type: .short, amount: 1.5, price: 3380, pnl: 234.56, timestamp: Date().addingTimeInterval(-6300), venue: "Merkle"),
                 Trade(id: "t11", symbol: "APT", type: .buy, amount: 250, price: 12.65, pnl: 296.31, timestamp: Date().addingTimeInterval(-9000), venue: "Hyperion")
             ]),
-            LeaguePlayer(id: "f5", username: "Vitalik", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", profit: 543.21, rank: 5, recentTrades: [
+            LeaguePlayer(id: "f5", username: "Vitalik", avatar: "vitalik.png", profit: 543.21, rank: 5, recentTrades: [
                 Trade(id: "t12", symbol: "ETH", type: .long, amount: 1, price: 3420, pnl: 123.45, timestamp: Date().addingTimeInterval(-3300), venue: "Merkle"),
                 Trade(id: "t13", symbol: "USDC", type: .sell, amount: 800, price: 1.0, pnl: 89.76, timestamp: Date().addingTimeInterval(-7800), venue: "Hyperion"),
                 Trade(id: "t14", symbol: "SOL", type: .long, amount: 5, price: 175, pnl: 330.00, timestamp: Date().addingTimeInterval(-11700), venue: "Tapp")
             ]),
-            LeaguePlayer(id: "f6", username: "Mia", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", profit: 234.56, rank: 6, recentTrades: [
+            LeaguePlayer(id: "f6", username: "Mia", avatar: "nft3", profit: 234.56, rank: 6, recentTrades: [
                 Trade(id: "t15", symbol: "APT", type: .buy, amount: 100, price: 12.90, pnl: 67.89, timestamp: Date().addingTimeInterval(-4200), venue: "Hyperion"),
                 Trade(id: "t16", symbol: "BTC", type: .sell, amount: 0.1, price: 67200, pnl: 166.67, timestamp: Date().addingTimeInterval(-8700), venue: "Tapp")
             ])
@@ -689,11 +671,34 @@ struct AvatarView: View {
     let size: CGFloat
 
     var body: some View {
-        AsyncImage(url: URL(string: avatarURL)) { image in
-            image
+        // Handle local images (doge.png, vitalik.png, nft1, nft2, nft3)
+        if avatarURL.contains(".png") || avatarURL.hasPrefix("nft") || avatarURL.hasPrefix("doge") || avatarURL.hasPrefix("vitalik") {
+            // Remove .png extension if present for asset catalog lookup
+            let imageName = avatarURL.replacingOccurrences(of: ".png", with: "")
+            Image(imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-        } placeholder: {
+                .frame(width: size, height: size)
+                .clipShape(Circle())
+        } else if avatarURL.hasPrefix("http") {
+            // Handle URL-based images (fallback for any remaining URLs)
+            AsyncImage(url: URL(string: avatarURL)) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Circle()
+                    .fill(Theme.ColorPalette.surface)
+                    .overlay(
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                            .font(.system(size: size * 0.4))
+                    )
+            }
+            .frame(width: size, height: size)
+            .clipShape(Circle())
+        } else {
+            // Default placeholder for invalid image references
             Circle()
                 .fill(Theme.ColorPalette.surface)
                 .overlay(
@@ -701,9 +706,8 @@ struct AvatarView: View {
                         .foregroundColor(Theme.ColorPalette.textSecondary)
                         .font(.system(size: size * 0.4))
                 )
+                .frame(width: size, height: size)
         }
-        .frame(width: size, height: size)
-        .clipShape(Circle())
     }
 }
 
@@ -1360,63 +1364,69 @@ struct LeagueJoinView: View {
                                 .font(.headline)
                                 .foregroundColor(Theme.ColorPalette.textPrimary)
 
-                            Text("Use the players and balances already available in this challenge.")
-                                .font(Theme.Typography.body)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
-                                .padding()
-                                .background(Theme.ColorPalette.surface.opacity(0.5))
-                                .cornerRadius(Theme.Radius.sm)
-                        }
-                        .padding()
-                        .optimizedGlassCard(style: .elevated)
-
-                        // Join section
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Join Challenge")
-                                .font(.headline)
-                                .foregroundColor(Theme.ColorPalette.textPrimary)
-
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Entry Amount")
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
-
-                                HStack(spacing: Theme.Spacing.sm) {
-                                    TextField("800", text: $joinAmount)
-                                        .padding(Theme.Spacing.sm)
-                                        .font(Theme.Typography.body)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: Theme.Radius.sm)
-                                                .fill(Theme.ColorPalette.surface)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: Theme.Radius.sm)
-                                                        .stroke(Theme.ColorPalette.divider, lineWidth: 1)
+                            // Top 3 competitors with icons
+                            HStack(spacing: 20) {
+                                ForEach(Array(league.participants.prefix(3).enumerated()), id: \.element.id) { index, player in
+                                    VStack(spacing: 8) {
+                                        // Avatar with rank border
+                                        ZStack {
+                                            Circle()
+                                                .stroke(
+                                                    index == 0 ? Color.yellow :
+                                                    index == 1 ? Color.gray :
+                                                    Color(red: 0.8, green: 0.5, blue: 0.2),
+                                                    lineWidth: 3
                                                 )
-                                        )
-                                        .foregroundColor(Theme.ColorPalette.textPrimary)
-                                        #if os(iOS)
-                                        .keyboardType(.numberPad)
-                                        #endif
+                                                .frame(width: 56, height: 56)
 
-                                    Button("Join") {
-                                        joinLeague()
-                                        dismiss()
+                                            AvatarView(avatarURL: player.avatar, size: 50)
+                                        }
+
+                                        // Name
+                                        Text(player.username)
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                                        // Profit
+                                        Text("+$\(Int(player.profit))")
+                                            .font(.caption2)
+                                            .foregroundColor(Theme.ColorPalette.successGreen)
+
+                                        // Rank badge
+                                        Text("\(index + 1)")
+                                            .font(.caption)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.white)
+                                            .frame(width: 24, height: 24)
+                                            .background(
+                                                index == 0 ? Color.yellow :
+                                                index == 1 ? Color.gray :
+                                                Color(red: 0.8, green: 0.5, blue: 0.2)
+                                            )
+                                            .clipShape(Circle())
                                     }
-                                    .font(Theme.Typography.button)
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, Theme.Spacing.lg)
-                                    .padding(.vertical, Theme.Spacing.sm)
-                                    .background(Theme.ColorPalette.primary)
-                                    .cornerRadius(Theme.Radius.sm)
-                                    .disabled(balanceManager.currentBalance < 50)
+                                    .frame(maxWidth: .infinity)
                                 }
-
-                                Text("Min $50 to join")
-                                    .font(.caption)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
                             }
+                            .padding(.vertical, 12)
                         }
                         .padding()
                         .optimizedGlassCard(style: .elevated)
+
+                        // Join button
+                        Button("Join with $\(Int(league.entryFee))") {
+                            joinLeague()
+                            dismiss()
+                        }
+                        .font(Theme.Typography.button)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, Theme.Spacing.md)
+                        .background(Theme.ColorPalette.orangeLight)
+                        .cornerRadius(Theme.Radius.sm)
+                        .disabled(balanceManager.currentBalance < league.entryFee)
+                        .padding(.horizontal)
                     }
                     .padding()
                 }
@@ -1454,7 +1464,7 @@ struct LeagueJoinView: View {
         case "hyperion":
             return "Hybrid orderbook/AMM sprint: maximize volume-weighted PnL on approved pairs."
         case "kanalabs":
-            return "Execute cross-DEX routes via Kanalabs; score = (net PnL + routing efficiency bonus)."
+            return "Execute cross-DEX routes via Kana Labs; score = (net PnL + routing efficiency bonus)."
         case "kofi":
             return "Stake on Aptos via Kofi. Highest net staking APY captured (slashing-adjusted) wins."
         case "merkle":

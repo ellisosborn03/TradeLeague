@@ -63,29 +63,11 @@ struct PredictView: View {
 
                     // Powered by Aptos Footer
                     HStack(spacing: Theme.Spacing.xs) {
-                        Text("Powered by")
+                        Text("Powered by Aptos")
                             .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-
-                        AsyncImage(url: URL(string: "https://cryptologos.cc/logos/aptos-apt-logo.svg")) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            Text("Aptos")
-                                .font(Theme.Typography.caption)
-                                .fontWeight(.medium)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
-                        }
-                        .frame(width: 16, height: 16)
-
-                        Text("Aptos")
-                            .font(Theme.Typography.caption)
-                            .fontWeight(.medium)
                             .foregroundColor(Theme.ColorPalette.textSecondary)
                     }
-                    .padding(.top, Theme.Spacing.lg)
-                    .padding(.bottom, Theme.Spacing.md)
+                    .padding(.vertical, Theme.Spacing.lg)
                 }
             }
             .onAppear {
@@ -344,14 +326,29 @@ struct CategoryBadge: View {
     }
 
     var body: some View {
-        Text(category.rawValue)
-            .font(Theme.Typography.caption)
-            .fontWeight(.semibold)
-            .foregroundColor(.white)
-            .padding(.horizontal, Theme.Spacing.xs)
-            .padding(.vertical, Theme.Spacing.xxs)
-            .background(badgeColor)
-            .cornerRadius(Theme.Radius.sm)
+        HStack(spacing: 4) {
+            // Add logo for politics and sports
+            if category == .politics {
+                Image("president-logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 12, height: 12)
+            } else if category == .sports {
+                Image("football-logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 12, height: 12)
+            }
+
+            Text(category.rawValue)
+                .font(Theme.Typography.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+        }
+        .padding(.horizontal, Theme.Spacing.xs)
+        .padding(.vertical, Theme.Spacing.xxs)
+        .background(badgeColor)
+        .cornerRadius(Theme.Radius.sm)
     }
 }
 
