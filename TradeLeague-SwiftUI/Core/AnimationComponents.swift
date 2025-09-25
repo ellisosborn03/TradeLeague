@@ -239,6 +239,14 @@ struct SponsorLogoView: View {
             return "nodit-logo"
         case "ekiden":
             return "ekiden-logo"
+        case "aptos":
+            return "aptos-logo"
+        case "panama predictions":
+            return "panama-logo"
+        case "politics", "presidential":
+            return "presidential-logo"
+        case "sports":
+            return "sports-logo"
         default:
             return nil
         }
@@ -262,6 +270,14 @@ struct SponsorLogoView: View {
             return Color(hex: "374151") // Nodit Gray
         case "ekiden":
             return Color(hex: "DC2626") // Ekiden Red
+        case "aptos":
+            return Color(hex: "000000") // Aptos Black
+        case "panama predictions":
+            return Color(hex: "3B82F6") // Panama Blue
+        case "politics", "presidential":
+            return Color(hex: "DC2626") // Political Red
+        case "sports":
+            return Color(hex: "059669") // Sports Green
         default:
             return Theme.ColorPalette.primary
         }
@@ -285,6 +301,14 @@ struct SponsorLogoView: View {
             return "server.rack"
         case "ekiden":
             return "function"
+        case "aptos":
+            return "hexagon.fill"
+        case "panama predictions":
+            return "chart.line.uptrend.xyaxis"
+        case "politics", "presidential":
+            return "person.3.fill"
+        case "sports":
+            return "sportscourt.fill"
         default:
             return "building.2.crop.circle"
         }

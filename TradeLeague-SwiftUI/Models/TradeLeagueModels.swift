@@ -109,6 +109,9 @@ enum MarketType: String, CaseIterable, Codable {
 }
 
 enum PredictionCategory: String, CaseIterable, Codable {
+    case crypto = "Crypto"
+    case politics = "Politics"
+    case sports = "Sports"
     case price = "Price"
     case volume = "Volume"
     case crossChain = "CrossChain"

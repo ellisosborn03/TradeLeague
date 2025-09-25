@@ -28,10 +28,15 @@ struct PredictView: View {
                                     .foregroundColor(Theme.ColorPalette.textPrimary)
                                     .reveal(delay: 0.1)
 
-                                Text("Predict market outcomes")
-                                    .font(Theme.Typography.bodyS)
-                                    .foregroundColor(Theme.ColorPalette.textSecondary)
-                                    .reveal(delay: 0.2)
+                                HStack(spacing: 8) {
+                                    Text("Powered by Panama Predictions")
+                                        .font(Theme.Typography.bodyS)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                                        .reveal(delay: 0.2)
+
+                                    SponsorLogoView.small("Panama Predictions")
+                                        .reveal(delay: 0.3)
+                                }
                             }
 
                             Spacer()
@@ -96,10 +101,27 @@ struct PredictView: View {
     private func loadMarkets() {
         // Mock data - replace with actual API call
         markets = [
+            // APT first as requested
+            PredictionMarket(
+                id: "3",
+                sponsor: "Aptos",
+                sponsorLogo: "aptos-logo",
+                question: "Will APT price reach $15 by end of week?",
+                outcomes: [
+                    PredictionOutcome(index: 0, label: "Yes", probability: 0.65, totalStaked: 12500, color: "00B894"),
+                    PredictionOutcome(index: 1, label: "No", probability: 0.35, totalStaked: 6750, color: "FF6B6B")
+                ],
+                totalStaked: 19250,
+                resolutionTime: Calendar.current.date(byAdding: .day, value: 4, to: Date()) ?? Date(),
+                resolved: false,
+                winningOutcome: nil,
+                marketType: .binary,
+                category: .crypto
+            ),
             PredictionMarket(
                 id: "1",
-                sponsor: "Panora",
-                sponsorLogo: "panora-logo",
+                sponsor: "Politics",
+                sponsorLogo: "presidential-logo",
                 question: "Next US Presidential Election Winner?",
                 outcomes: [
                     PredictionOutcome(index: 0, label: "J.D. Vance", probability: 0.31, totalStaked: 775000, color: "DC2626"),
@@ -111,12 +133,12 @@ struct PredictView: View {
                 resolved: false,
                 winningOutcome: nil,
                 marketType: .multiple,
-                category: .crossChain
+                category: .politics
             ),
             PredictionMarket(
                 id: "2",
-                sponsor: "Merkle Trade",
-                sponsorLogo: "merkle-logo",
+                sponsor: "Sports",
+                sponsorLogo: "sports-logo",
                 question: "Pro Football Champion?",
                 outcomes: [
                     PredictionOutcome(index: 0, label: "Buffalo", probability: 0.19, totalStaked: 2900000, color: "0066CC"),
@@ -128,40 +150,7 @@ struct PredictView: View {
                 resolved: false,
                 winningOutcome: nil,
                 marketType: .multiple,
-                category: .derivatives
-            ),
-            PredictionMarket(
-                id: "3",
-                sponsor: "Hyperion",
-                sponsorLogo: "hyperion-logo",
-                question: "Will APT price reach $15 by end of week?",
-                outcomes: [
-                    PredictionOutcome(index: 0, label: "Yes", probability: 0.65, totalStaked: 12500, color: "00B894"),
-                    PredictionOutcome(index: 1, label: "No", probability: 0.35, totalStaked: 6750, color: "FF6B6B")
-                ],
-                totalStaked: 19250,
-                resolutionTime: Calendar.current.date(byAdding: .day, value: 4, to: Date()) ?? Date(),
-                resolved: false,
-                winningOutcome: nil,
-                marketType: .binary,
-                category: .price
-            ),
-            PredictionMarket(
-                id: "4",
-                sponsor: "Tapp Network",
-                sponsorLogo: "tapp-logo",
-                question: "Which protocol will have highest TVL this month?",
-                outcomes: [
-                    PredictionOutcome(index: 0, label: "Pancake", probability: 0.4, totalStaked: 8000, color: "6C5CE7"),
-                    PredictionOutcome(index: 1, label: "Thala", probability: 0.35, totalStaked: 7000, color: "74B9FF"),
-                    PredictionOutcome(index: 2, label: "Liquidswap", probability: 0.25, totalStaked: 5000, color: "FDCB6E")
-                ],
-                totalStaked: 20000,
-                resolutionTime: Calendar.current.date(byAdding: .day, value: 15, to: Date()) ?? Date(),
-                resolved: false,
-                winningOutcome: nil,
-                marketType: .multiple,
-                category: .volume
+                category: .sports
             )
         ]
     }

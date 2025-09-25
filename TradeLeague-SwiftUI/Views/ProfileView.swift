@@ -98,9 +98,9 @@ struct ProfileView: View {
             id: "user1",
             walletAddress: "0x1234567890abcdef",
             username: "Ellis O.",
-            avatar: nil,
+            avatar: "ellis-avatar",
             totalVolume: 125000,
-            inviteCode: "CRYPTO123",
+            inviteCode: "CTRLMOVE",
             createdAt: Date(),
             currentScore: 85000,
             rank: 7
@@ -128,6 +128,22 @@ struct ProfileView: View {
                 ),
                 Reward(
                     id: "2",
+                    type: .league,
+                    amount: 750,
+                    description: "Hyperion Lightning Liquidity Winner",
+                    claimedAt: nil,
+                    expiresAt: Calendar.current.date(byAdding: .day, value: 5, to: Date())
+                ),
+                Reward(
+                    id: "3",
+                    type: .prediction,
+                    amount: 200,
+                    description: "Aptos Price Prediction Success",
+                    claimedAt: Date(),
+                    expiresAt: nil
+                ),
+                Reward(
+                    id: "4",
                     type: .referral,
                     amount: 50,
                     description: "Friend Referral Bonus",
@@ -198,15 +214,27 @@ struct ProfileHeader: View {
             OptimizedPressableCard {
                 HStack(spacing: Theme.Spacing.md) {
                     // Avatar
-                    Circle()
-                        .fill(Theme.ColorPalette.gradientPrimary)
-                        .frame(width: 60, height: 60)
-                        .overlay(
-                            Text(String(user.username.prefix(1)).uppercased())
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                        )
+                    if let avatarName = user.avatar {
+                        Image(avatarName)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 60, height: 60)
+                            .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(Theme.ColorPalette.primary, lineWidth: 2)
+                            )
+                    } else {
+                        Circle()
+                            .fill(Theme.ColorPalette.gradientPrimary)
+                            .frame(width: 60, height: 60)
+                            .overlay(
+                                Text(String(user.username.prefix(1)).uppercased())
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                            )
+                    }
 
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         Text(user.username)
@@ -593,14 +621,19 @@ struct RewardCard: View {
 
     var body: some View {
         HStack {
-            // Reward type icon
-            Circle()
-                .fill(rewardTypeColor.opacity(0.2))
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Text(rewardTypeIcon)
-                        .font(.title3)
-                )
+            // Reward type icon/logo
+            if let logoName = rewardLogo {
+                SponsorLogoView.medium(logoName)
+            } else {
+                Circle()
+                    .fill(rewardTypeColor.opacity(0.2))
+                    .frame(width: 40, height: 40)
+                    .overlay(
+                        Text(rewardTypeIcon)
+                            .font(.title3)
+                            .foregroundColor(rewardTypeColor)
+                    )
+            }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(reward.description)
@@ -669,6 +702,22 @@ struct RewardCard: View {
         case .achievement:
             return "⭐"
         }
+    }
+
+    private var rewardLogo: String? {
+        let description = reward.description.lowercased()
+        if description.contains("circle") {
+            return "Circle"
+        } else if description.contains("hyperion") {
+            return "Hyperion"
+        } else if description.contains("aptos") {
+            return "Aptos"
+        } else if description.contains("merkle") {
+            return "Merkle Trade"
+        } else if description.contains("tapp") {
+            return "Tapp Network"
+        }
+        return nil
     }
 }
 
