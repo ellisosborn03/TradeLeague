@@ -662,6 +662,12 @@ struct TransactionCard: View {
             return Theme.ColorPalette.chartPurple
         case .reward:
             return Theme.ColorPalette.warningYellow
+        case .league:
+            return Theme.ColorPalette.primaryBlue
+        case .trade:
+            return Theme.ColorPalette.successGreen
+        case .vault:
+            return Theme.ColorPalette.chartPurple
         }
     }
 
@@ -679,6 +685,12 @@ struct TransactionCard: View {
             return "crystal.ball"
         case .reward:
             return "gift.fill"
+        case .league:
+            return "trophy.fill"
+        case .trade:
+            return "chart.line.uptrend.xyaxis"
+        case .vault:
+            return "building.columns.fill"
         }
     }
 }
