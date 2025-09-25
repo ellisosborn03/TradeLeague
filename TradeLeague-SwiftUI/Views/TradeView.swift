@@ -21,7 +21,7 @@ struct TradeView: View {
                     VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         HStack {
                             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                                Text("Trade")
+                                Text("Follow")
                                     .font(Theme.Typography.displayM)
                                     .fontWeight(.bold)
                                     .tracking(-1.0)
@@ -531,6 +531,11 @@ struct VaultDetailView: View {
                                     }
                                 }
                             }
+
+                            // Performance Chart
+                            VaultPerformanceChart(vault: vault)
+                                .frame(height: 200)
+                                .padding(.top)
                         }
                         .padding()
                         .optimizedGlassCard(style: .elevated)
@@ -565,8 +570,9 @@ struct VaultDetailView: View {
                                 .font(.caption)
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
 
-                            OptimizedPrimaryButton(title: "Follow Vault") {
+                            OptimizedPrimaryButton(title: "Follow") {
                                 // Follow vault action
+                                dismiss()
                             }
                             .disabled(followAmount.isEmpty)
                         }
@@ -587,6 +593,184 @@ struct VaultDetailView: View {
                     .foregroundColor(Theme.ColorPalette.primaryBlue)
                 }
             }
+        }
+    }
+}
+
+struct VaultPerformanceChart: View {
+    let vault: Vault
+    @State private var animateChart = false
+
+    // Realistic performance data points for different vault types
+    private var dataPoints: [Double] {
+        switch vault.strategy {
+        case .marketMaking:
+            return [1.0, 1.02, 1.01, 1.04, 1.03, 1.06, 1.05, 1.08, 1.07, 1.10, 1.09, 1.12, 1.11, 1.15, 1.14, 1.17, 1.16, 1.19, 1.18, 1.21]
+        case .yieldFarming:
+            return [1.0, 1.03, 1.02, 1.05, 1.08, 1.06, 1.09, 1.12, 1.10, 1.14, 1.13, 1.16, 1.19, 1.17, 1.20, 1.23, 1.21, 1.25, 1.24, 1.28]
+        case .arbitrage:
+            return [1.0, 1.01, 1.03, 1.02, 1.04, 1.06, 1.05, 1.07, 1.09, 1.08, 1.10, 1.12, 1.11, 1.13, 1.15, 1.14, 1.16, 1.18, 1.17, 1.20]
+        case .perpsTrading:
+            return [1.0, 0.98, 1.02, 1.05, 1.01, 1.08, 1.04, 1.12, 1.08, 1.15, 1.11, 1.18, 1.14, 1.22, 1.18, 1.26, 1.22, 1.30, 1.26, 1.35]
+        case .liquidityProvision:
+            return [1.0, 1.02, 1.04, 1.03, 1.06, 1.08, 1.07, 1.10, 1.12, 1.11, 1.14, 1.16, 1.15, 1.18, 1.20, 1.19, 1.22, 1.24, 1.23, 1.26]
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header with performance indicators separated
+            HStack {
+                Text("Performance Chart (30 Days)")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                Spacer()
+
+                HStack(spacing: 24) {
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("Current")
+                            .font(.caption2)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        Text("+\(vault.allTimeReturn, specifier: "%.1f")%")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(vault.allTimeReturn >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
+                    }
+
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("Monthly")
+                            .font(.caption2)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        Text("+\(vault.monthlyReturn, specifier: "%.1f")%")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(vault.monthlyReturn >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
+                    }
+                }
+            }
+
+            // Chart area with proper bounding
+            GeometryReader { geometry in
+                ZStack {
+                    // Chart background with proper bounds
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Theme.ColorPalette.surface.opacity(0.3))
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+
+                    // Background grid
+                    ForEach(0..<5, id: \.self) { row in
+                        ForEach(0..<15, id: \.self) { col in
+                            Circle()
+                                .fill(Theme.ColorPalette.divider.opacity(0.2))
+                                .frame(width: 1, height: 1)
+                                .position(
+                                    x: 20 + CGFloat(col) * ((geometry.size.width - 40) / 15),
+                                    y: 15 + CGFloat(row) * ((geometry.size.height - 30) / 5)
+                                )
+                        }
+                    }
+
+                    // Area fill with proper margins
+                    Path { path in
+                        let width = geometry.size.width - 40  // 20px margin on each side
+                        let height = geometry.size.height - 30  // 15px margin top/bottom
+                        let startX: CGFloat = 20
+                        let startY: CGFloat = 15
+                        let minValue = dataPoints.min() ?? 1.0
+                        let maxValue = dataPoints.max() ?? 1.0
+                        let range = maxValue - minValue
+
+                        // Start from bottom
+                        path.move(to: CGPoint(x: startX, y: startY + height))
+
+                        // Draw to first point
+                        if let firstPoint = dataPoints.first {
+                            let normalizedValue = range > 0 ? (firstPoint - minValue) / range : 0.5
+                            let y = startY + height - (height * normalizedValue)
+                            path.addLine(to: CGPoint(x: startX, y: y))
+                        }
+
+                        // Draw curve through points
+                        for (index, point) in dataPoints.enumerated() {
+                            let x = startX + (width / CGFloat(dataPoints.count - 1)) * CGFloat(index)
+                            let normalizedValue = range > 0 ? (point - minValue) / range : 0.5
+                            let y = startY + height - (height * normalizedValue)
+                            path.addLine(to: CGPoint(x: x, y: y))
+                        }
+
+                        // Close area back to bottom
+                        if !dataPoints.isEmpty {
+                            path.addLine(to: CGPoint(x: startX + width, y: startY + height))
+                            path.addLine(to: CGPoint(x: startX, y: startY + height))
+                        }
+                    }
+                    .fill(LinearGradient(
+                        gradient: Gradient(colors: [
+                            vault.allTimeReturn >= 0 ? Theme.ColorPalette.successGreen.opacity(0.3) : Theme.ColorPalette.dangerRed.opacity(0.3),
+                            vault.allTimeReturn >= 0 ? Theme.ColorPalette.successGreen.opacity(0.1) : Theme.ColorPalette.dangerRed.opacity(0.1)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ))
+                    .scaleEffect(x: animateChart ? 1 : 0, y: 1, anchor: .leading)
+                    .animation(.easeInOut(duration: 1.2), value: animateChart)
+
+                    // Chart line
+                    Path { path in
+                        let width = geometry.size.width - 40
+                        let height = geometry.size.height - 30
+                        let startX: CGFloat = 20
+                        let startY: CGFloat = 15
+                        let minValue = dataPoints.min() ?? 1.0
+                        let maxValue = dataPoints.max() ?? 1.0
+                        let range = maxValue - minValue
+
+                        for (index, point) in dataPoints.enumerated() {
+                            let x = startX + (width / CGFloat(dataPoints.count - 1)) * CGFloat(index)
+                            let normalizedValue = range > 0 ? (point - minValue) / range : 0.5
+                            let y = startY + height - (height * normalizedValue)
+
+                            if index == 0 {
+                                path.move(to: CGPoint(x: x, y: y))
+                            } else {
+                                path.addLine(to: CGPoint(x: x, y: y))
+                            }
+                        }
+                    }
+                    .trim(from: 0, to: animateChart ? 1 : 0)
+                    .stroke(
+                        vault.allTimeReturn >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed,
+                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round)
+                    )
+                    .animation(.easeInOut(duration: 1.5), value: animateChart)
+
+                    // Data points
+                    ForEach(Array(dataPoints.enumerated()), id: \.offset) { index, point in
+                        let width = geometry.size.width - 40
+                        let height = geometry.size.height - 30
+                        let startX: CGFloat = 20
+                        let startY: CGFloat = 15
+                        let minValue = dataPoints.min() ?? 1.0
+                        let maxValue = dataPoints.max() ?? 1.0
+                        let range = maxValue - minValue
+                        let x = startX + (width / CGFloat(dataPoints.count - 1)) * CGFloat(index)
+                        let normalizedValue = range > 0 ? (point - minValue) / range : 0.5
+                        let y = startY + height - (height * normalizedValue)
+
+                        Circle()
+                            .fill(vault.allTimeReturn >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
+                            .frame(width: 3, height: 3)
+                            .position(x: x, y: y)
+                            .scaleEffect(animateChart ? 1 : 0)
+                            .animation(.easeInOut(duration: 0.4).delay(Double(index) * 0.03), value: animateChart)
+                    }
+                }
+            }
+        }
+        .onAppear {
+            animateChart = true
         }
     }
 }

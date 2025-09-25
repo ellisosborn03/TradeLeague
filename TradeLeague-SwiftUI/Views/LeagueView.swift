@@ -1379,34 +1379,41 @@ struct LeagueJoinView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Entry Amount")
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
-                                TextField("Enter amount in USDC", text: $joinAmount)
-                                    .padding(Theme.Spacing.sm)
-                                    .font(Theme.Typography.body)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: Theme.Radius.sm)
-                                            .fill(Theme.ColorPalette.surface)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: Theme.Radius.sm)
-                                                    .stroke(Theme.ColorPalette.divider, lineWidth: 1)
-                                            )
-                                    )
-                                    .foregroundColor(Theme.ColorPalette.textPrimary)
-                                    #if os(iOS)
-                                    .keyboardType(.numberPad)
-                                    #endif
-                            }
 
-                            HStack {
+                                HStack(spacing: Theme.Spacing.sm) {
+                                    TextField("800", text: $joinAmount)
+                                        .padding(Theme.Spacing.sm)
+                                        .font(Theme.Typography.body)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                                                .fill(Theme.ColorPalette.surface)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                                                        .stroke(Theme.ColorPalette.divider, lineWidth: 1)
+                                                )
+                                        )
+                                        .foregroundColor(Theme.ColorPalette.textPrimary)
+                                        #if os(iOS)
+                                        .keyboardType(.numberPad)
+                                        #endif
+
+                                    Button("Join") {
+                                        joinLeague()
+                                        dismiss()
+                                    }
+                                    .font(Theme.Typography.button)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, Theme.Spacing.lg)
+                                    .padding(.vertical, Theme.Spacing.sm)
+                                    .background(Theme.ColorPalette.primary)
+                                    .cornerRadius(Theme.Radius.sm)
+                                    .disabled(balanceManager.currentBalance < 50)
+                                }
+
                                 Text("Min $50 to join")
                                     .font(.caption)
                                     .foregroundColor(Theme.ColorPalette.textSecondary)
-                                Spacer()
                             }
-
-                            OptimizedPrimaryButton(title: "Join with $50") {
-                                joinLeague()
-                            }
-                            .disabled(balanceManager.currentBalance < 50)
                         }
                         .padding()
                         .optimizedGlassCard(style: .elevated)

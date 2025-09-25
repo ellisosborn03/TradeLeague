@@ -568,8 +568,9 @@ struct PredictionMarketDetailView: View {
                                     Spacer()
                                 }
 
-                                OptimizedPrimaryButton(title: "Place Prediction") {
+                                OptimizedPrimaryButton(title: "Predict") {
                                     placePrediction()
+                                    dismiss()
                                 }
                                 .disabled(stakeAmount.isEmpty || selectedOutcome == nil || !isValidStake)
                             }

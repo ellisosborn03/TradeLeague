@@ -24,7 +24,7 @@ struct ContentView: View {
                 TabBarItem(icon: "trophy.fill", title: "League", isSelected: selectedTab == 0)
                     .onTapGesture { withAnimation(Theme.Animation.fast) { selectedTab = 0 } }
 
-                TabBarItem(icon: "chart.line.uptrend.xyaxis", title: "Trade", isSelected: selectedTab == 1)
+                TabBarItem(icon: "plus.circle.fill", title: "Follow", isSelected: selectedTab == 1)
                     .onTapGesture { withAnimation(Theme.Animation.fast) { selectedTab = 1 } }
 
                 TabBarItem(icon: "sparkles", title: "Predict", isSelected: selectedTab == 2)

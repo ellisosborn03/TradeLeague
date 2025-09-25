@@ -212,60 +212,65 @@ struct ProfileHeader: View {
 
             // User Info Card
             OptimizedPressableCard {
-                HStack(spacing: Theme.Spacing.md) {
-                    // Avatar
-                    if let avatarName = user.avatar {
-                        Image(avatarName)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 60, height: 60)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .stroke(Theme.ColorPalette.primary, lineWidth: 2)
-                            )
-                    } else {
-                        Circle()
-                            .fill(Theme.ColorPalette.gradientPrimary)
-                            .frame(width: 60, height: 60)
-                            .overlay(
-                                Text(String(user.username.prefix(1)).uppercased())
-                                    .font(.title)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                            )
-                    }
-
-                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                        Text(user.username)
-                            .font(Theme.Typography.bodyL)
-                            .foregroundColor(Theme.ColorPalette.textPrimary)
-
-                        if let rank = user.rank {
-                            RankView(rank: rank, isUp: true)
+                VStack(spacing: Theme.Spacing.md) {
+                    HStack(spacing: Theme.Spacing.md) {
+                        // Avatar
+                        if let avatarName = user.avatar {
+                            Image(avatarName)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 60, height: 60)
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle()
+                                        .stroke(Theme.ColorPalette.primary, lineWidth: 2)
+                                )
+                        } else {
+                            Circle()
+                                .fill(Theme.ColorPalette.gradientPrimary)
+                                .frame(width: 60, height: 60)
+                                .overlay(
+                                    Text(String(user.username.prefix(1)).uppercased())
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                )
                         }
 
-                        Text("Total Volume: $\(Int(user.totalVolume / 1000))K")
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                        VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                            Text(user.username)
+                                .font(Theme.Typography.bodyL)
+                                .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                            if let rank = user.rank {
+                                RankView(rank: rank, isUp: true)
+                            }
+
+                            Text("Total Volume: $\(Int(user.totalVolume / 1000))K")
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
+                        }
+
+                        Spacer()
+
+                        // Invite Code
+                        VStack(spacing: Theme.Spacing.xxs) {
+                            Text("Invite Code")
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.ColorPalette.textSecondary)
+                            Text(user.inviteCode)
+                                .font(Theme.Typography.mono)
+                                .fontWeight(.bold)
+                                .foregroundColor(Theme.ColorPalette.primary)
+                                .padding(.horizontal, Theme.Spacing.sm)
+                                .padding(.vertical, Theme.Spacing.xs)
+                                .background(Theme.ColorPalette.primary.opacity(0.1))
+                                .cornerRadius(Theme.Radius.sm)
+                        }
                     }
 
-                    Spacer()
-
-                    // Invite Code
-                    VStack(spacing: Theme.Spacing.xxs) {
-                        Text("Invite Code")
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.ColorPalette.textSecondary)
-                        Text(user.inviteCode)
-                            .font(Theme.Typography.mono)
-                            .fontWeight(.bold)
-                            .foregroundColor(Theme.ColorPalette.primary)
-                            .padding(.horizontal, Theme.Spacing.sm)
-                            .padding(.vertical, Theme.Spacing.xs)
-                            .background(Theme.ColorPalette.primary.opacity(0.1))
-                            .cornerRadius(Theme.Radius.sm)
-                    }
+                    // Streak Bar inside the same card
+                    StreakBarInCard()
                 }
                 .padding(Theme.Spacing.md)
                 .optimizedGlassCard(style: .glass)
@@ -1156,6 +1161,162 @@ extension Color {
             blue:  Double(b) / 255,
             opacity: Double(a) / 255
         )
+    }
+}
+
+struct StreakBarView: View {
+    @State private var isLoading = true
+    @State private var streakCount = 7
+    @State private var progressWidth: CGFloat = 0
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Daily Trading Streak")
+                    .font(Theme.Typography.body)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                Spacer()
+
+                if !isLoading {
+                    Text("\(streakCount) days")
+                        .font(Theme.Typography.bodyS)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Theme.ColorPalette.primary)
+                }
+            }
+
+            // Progress Bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    // Background
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Theme.ColorPalette.surface)
+                        .frame(height: 8)
+
+                    // Progress
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(LinearGradient(
+                            gradient: Gradient(colors: [
+                                Theme.ColorPalette.primary,
+                                Theme.ColorPalette.primaryBlue
+                            ]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ))
+                        .frame(width: progressWidth, height: 8)
+                        .animation(.easeInOut(duration: 1.0), value: progressWidth)
+
+                    // Loading indicator
+                    if isLoading {
+                        HStack(spacing: 4) {
+                            ForEach(0..<3, id: \.self) { index in
+                                Circle()
+                                    .fill(Theme.ColorPalette.primary)
+                                    .frame(width: 4, height: 4)
+                                    .scaleEffect(isLoading ? 1.2 : 0.8)
+                                    .animation(.easeInOut(duration: 0.6).repeatForever().delay(Double(index) * 0.2), value: isLoading)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+            }
+            .frame(height: 8)
+        }
+        .padding(Theme.Spacing.md)
+        .optimizedGlassCard(style: .glass)
+        .onAppear {
+            // Simulate loading
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    isLoading = false
+                }
+
+                // Animate progress bar based on streak
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    let targetWidth = CGFloat(streakCount) / 30.0 // 30 day max for visual purposes
+                    progressWidth = min(targetWidth, 1.0) * UIScreen.main.bounds.width * 0.8
+                }
+            }
+        }
+    }
+}
+
+struct StreakBarInCard: View {
+    @State private var isLoading = true
+    @State private var streakCount = 7
+    @State private var progressWidth: CGFloat = 0
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Daily Trading Streak")
+                    .font(Theme.Typography.bodyS)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                Spacer()
+
+                if !isLoading {
+                    Text("\(streakCount) days")
+                        .font(Theme.Typography.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Theme.ColorPalette.primary)
+                }
+            }
+
+            // Progress Bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    // Background
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Theme.ColorPalette.surface.opacity(0.6))
+                        .frame(height: 6)
+
+                    // Progress
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(LinearGradient(
+                            gradient: Gradient(colors: [
+                                Theme.ColorPalette.primary,
+                                Theme.ColorPalette.primaryBlue
+                            ]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ))
+                        .frame(width: progressWidth, height: 6)
+                        .animation(.easeInOut(duration: 1.0), value: progressWidth)
+
+                    // Loading indicator
+                    if isLoading {
+                        HStack(spacing: 3) {
+                            ForEach(0..<3, id: \.self) { index in
+                                Circle()
+                                    .fill(Theme.ColorPalette.primary)
+                                    .frame(width: 3, height: 3)
+                                    .scaleEffect(isLoading ? 1.2 : 0.8)
+                                    .animation(.easeInOut(duration: 0.6).repeatForever().delay(Double(index) * 0.2), value: isLoading)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                .onAppear {
+                    // Simulate loading
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            isLoading = false
+                        }
+
+                        // Animate progress bar based on streak
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            let targetWidth = CGFloat(streakCount) / 30.0 // 30 day max for visual purposes
+                            progressWidth = min(targetWidth, 1.0) * geometry.size.width
+                        }
+                    }
+                }
+            }
+            .frame(height: 6)
+        }
     }
 }
 
