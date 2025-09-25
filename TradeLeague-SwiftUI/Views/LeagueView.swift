@@ -829,6 +829,398 @@ struct TradeRowView: View {
     }
 }
 
+struct USDCChallengeView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var isUnlocked = false
+    @State private var challengeCompleted = false
+    @State private var amount = ""
+    @State private var selectedStrategy = 0
+    @State private var showConfirmModal = false
+    @State private var showSuccessToast = false
+
+    private let strategies = [
+        StrategyCard(id: 0, name: "Coinbase USDC Lending", yield: "4.2% APY", risk: "Low", description: "Earn yield through Coinbase's institutional lending program"),
+        StrategyCard(id: 1, name: "Aave v3", yield: "3.8% APY", risk: "Medium", description: "Decentralized lending protocol with variable rates"),
+        StrategyCard(id: 2, name: "Compound v3", yield: "4.1% APY", risk: "Medium", description: "Autonomous interest rate protocol"),
+        StrategyCard(id: 3, name: "USYC", yield: "5.1% APY", risk: "Low", description: "Hashnote US Yield Coin backed by T-Bills")
+    ]
+
+    var body: some View {
+        NavigationView {
+            ZStack {
+                Theme.ColorPalette.background
+                    .ignoresSafeArea()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        // Hero Card
+                        heroCard
+
+                        // Status Banner
+                        if challengeCompleted {
+                            statusBanner
+                        }
+
+                        // Main Content
+                        if isUnlocked {
+                            unlockedContent
+                        }
+                    }
+                    .padding()
+                }
+            }
+            .navigationTitle("Deploy USDC")
+            .navigationBarTitleDisplayMode(.large)
+            .navigationBarBackButtonHidden()
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Close") { dismiss() }
+                        .foregroundColor(Theme.ColorPalette.primary)
+                }
+            }
+        }
+        .sheet(isPresented: $showConfirmModal) {
+            confirmModal
+        }
+        .overlay(
+            Group {
+                if showSuccessToast {
+                    successToast
+                }
+            },
+            alignment: .top
+        )
+    }
+
+    private var heroCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("USDC Challenge")
+                        .font(Theme.Typography.heading2)
+                        .fontWeight(.bold)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                    if !isUnlocked {
+                        Text("Join the $50 Challenge to unlock yield.")
+                            .font(Theme.Typography.body)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                    } else {
+                        Text("Deploy your USDC to earn yield")
+                            .font(Theme.Typography.body)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                    }
+                }
+
+                Spacer()
+
+                Image(systemName: isUnlocked ? "checkmark.circle.fill" : "lock.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(isUnlocked ? Theme.ColorPalette.successGreen : Theme.ColorPalette.textSecondary)
+            }
+
+            if !isUnlocked {
+                Button(action: joinChallenge) {
+                    HStack {
+                        Text("Join for $50")
+                            .font(Theme.Typography.body)
+                            .fontWeight(.semibold)
+
+                        Image(systemName: "arrow.right")
+                            .font(.caption)
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Theme.ColorPalette.primary)
+                    .cornerRadius(Theme.Radius.sm)
+                }
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.md)
+                .fill(Color.white)
+                .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        )
+    }
+
+    private var statusBanner: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundColor(Theme.ColorPalette.successGreen)
+                .font(.title3)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Challenge Completed")
+                    .font(Theme.Typography.body)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                Text("You've successfully joined the $50 USDC Challenge")
+                    .font(Theme.Typography.caption)
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
+            }
+
+            Spacer()
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                .fill(Theme.ColorPalette.successGreen.opacity(0.1))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                        .stroke(Theme.ColorPalette.successGreen.opacity(0.3), lineWidth: 1)
+                )
+        )
+    }
+
+    private var unlockedContent: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            // Amount Input
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Amount")
+                    .font(Theme.Typography.body)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                HStack {
+                    TextField("0.00", text: $amount)
+                        .font(Theme.Typography.heading3)
+                        .fontWeight(.semibold)
+                        .keyboardType(.decimalPad)
+
+                    Text("USDC")
+                        .font(Theme.Typography.body)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                        .fill(Color.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                                .stroke(Theme.ColorPalette.border, lineWidth: 1)
+                        )
+                )
+
+                HStack {
+                    Text("Minimum: $10 USDC")
+                        .font(Theme.Typography.caption)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
+
+                    Spacer()
+
+                    Text("Available: $1,234.56")
+                        .font(Theme.Typography.caption)
+                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                }
+            }
+
+            // Strategy Selection
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Choose Strategy")
+                    .font(Theme.Typography.body)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                VStack(spacing: 8) {
+                    ForEach(strategies, id: \.id) { strategy in
+                        strategyCardView(strategy)
+                    }
+                }
+            }
+
+            // Deploy Button
+            Button(action: deployFunds) {
+                Text("Deploy USDC")
+                    .font(Theme.Typography.body)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                            .fill(isValidAmount ? Theme.ColorPalette.primary : Theme.ColorPalette.textSecondary)
+                    )
+            }
+            .disabled(!isValidAmount)
+        }
+    }
+
+    private func strategyCardView(_ strategy: StrategyCard) -> some View {
+        Button(action: { selectedStrategy = strategy.id }) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text(strategy.name)
+                            .font(Theme.Typography.body)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                        Spacer()
+
+                        Text(strategy.yield)
+                            .font(Theme.Typography.body)
+                            .fontWeight(.bold)
+                            .foregroundColor(Theme.ColorPalette.successGreen)
+                    }
+
+                    HStack {
+                        Text(strategy.description)
+                            .font(Theme.Typography.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+
+                        Spacer()
+
+                        Text(strategy.risk + " Risk")
+                            .font(Theme.Typography.captionS)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(riskColor(strategy.risk).opacity(0.1))
+                            )
+                            .foregroundColor(riskColor(strategy.risk))
+                    }
+                }
+
+                Image(systemName: selectedStrategy == strategy.id ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(selectedStrategy == strategy.id ? Theme.ColorPalette.primary : Theme.ColorPalette.textSecondary)
+                    .font(.title3)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                    .fill(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                            .stroke(selectedStrategy == strategy.id ? Theme.ColorPalette.primary : Theme.ColorPalette.border, lineWidth: selectedStrategy == strategy.id ? 2 : 1)
+                    )
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+
+    private var confirmModal: some View {
+        NavigationView {
+            VStack(spacing: 24) {
+                VStack(spacing: 16) {
+                    Image(systemName: "dollarsign.circle.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(Theme.ColorPalette.primary)
+
+                    VStack(spacing: 8) {
+                        Text("Join USDC Challenge")
+                            .font(Theme.Typography.heading2)
+                            .fontWeight(.bold)
+                            .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                        Text("Stake $50 USDC to unlock yield strategies")
+                            .font(Theme.Typography.body)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+
+                Spacer()
+
+                VStack(spacing: 12) {
+                    Button(action: confirmJoin) {
+                        Text("Confirm & Join")
+                            .font(Theme.Typography.body)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Theme.ColorPalette.primary)
+                            .cornerRadius(Theme.Radius.sm)
+                    }
+
+                    Button("Cancel") {
+                        showConfirmModal = false
+                    }
+                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                }
+            }
+            .padding()
+            .navigationTitle("")
+            .navigationBarHidden(true)
+        }
+    }
+
+    private var successToast: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundColor(Theme.ColorPalette.successGreen)
+                .font(.title3)
+
+            Text("Challenge joined.")
+                .font(Theme.Typography.body)
+                .fontWeight(.semibold)
+                .foregroundColor(Theme.ColorPalette.textPrimary)
+
+            Spacer()
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.sm)
+                .fill(Color.white)
+                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        )
+        .padding()
+        .transition(.move(edge: .top).combined(with: .opacity))
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                withAnimation {
+                    showSuccessToast = false
+                }
+            }
+        }
+    }
+
+    private var isValidAmount: Bool {
+        guard let amountValue = Double(amount) else { return false }
+        return amountValue >= 10 && amountValue <= 1234.56
+    }
+
+    private func riskColor(_ risk: String) -> Color {
+        switch risk.lowercased() {
+        case "low": return Theme.ColorPalette.successGreen
+        case "medium": return Theme.ColorPalette.warningYellow
+        case "high": return Theme.ColorPalette.dangerRed
+        default: return Theme.ColorPalette.textSecondary
+        }
+    }
+
+    private func joinChallenge() {
+        showConfirmModal = true
+    }
+
+    private func confirmJoin() {
+        showConfirmModal = false
+        withAnimation {
+            challengeCompleted = true
+            isUnlocked = true
+            showSuccessToast = true
+        }
+    }
+
+    private func deployFunds() {
+        // Deploy funds logic
+    }
+}
+
+struct StrategyCard {
+    let id: Int
+    let name: String
+    let yield: String
+    let risk: String
+    let description: String
+}
+
 struct LeagueJoinView: View {
     let league: SponsoredLeague
     @Environment(\.dismiss) private var dismiss
