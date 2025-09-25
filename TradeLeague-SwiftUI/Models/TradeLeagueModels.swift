@@ -138,7 +138,7 @@ struct UserPrediction: Identifiable, Codable {
 
 // MARK: - Portfolio Models
 struct Portfolio: Codable {
-    let totalValue: Double
+    var totalValue: Double
     let todayChange: Double
     let todayChangePercentage: Double
     let allTimeChange: Double
@@ -182,6 +182,9 @@ enum TransactionType: String, CaseIterable, Codable {
     case unfollow = "Unfollow"
     case prediction = "Prediction"
     case reward = "Reward"
+    case league = "League Entry"
+    case trade = "Trade"
+    case vault = "Vault Investment"
 }
 
 enum TransactionStatus: String, CaseIterable, Codable {
@@ -247,6 +250,64 @@ enum LeagueScope: CaseIterable {
     case global
     case local
 }
+
+// MARK: - Balance Management
+class BalanceManager: ObservableObject {
+    static let shared = BalanceManager()
+
+    @Published var currentBalance: Double = 12500.0 // Starting balance
+    @Published var portfolioAllocation: PortfolioAllocation
+
+    private init() {
+        self.portfolioAllocation = PortfolioAllocation(
+            tokens: [
+                TokenAllocation(symbol: "APT", name: "Aptos", color: "#0D47A1", percentage: 25.0, amount: 3125.0),
+                TokenAllocation(symbol: "USDC", name: "USDC (on Aptos)", color: "#B0BEC5", percentage: 20.0, amount: 2500.0),
+                TokenAllocation(symbol: "EKID", name: "Ekiden", color: "#FB8C00", percentage: 15.0, amount: 1875.0),
+                TokenAllocation(symbol: "PORA", name: "Panora", color: "#1ABC9C", percentage: 20.0, amount: 2500.0),
+                TokenAllocation(symbol: "RION", name: "Hyperion", color: "#8E44AD", percentage: 20.0, amount: 2500.0)
+            ],
+            totalValue: 12500.0
+        )
+    }
+
+    func deductBalance(amount: Double, type: TransactionType) -> Bool {
+        guard currentBalance >= amount else { return false }
+
+        currentBalance -= amount
+        updatePortfolioAllocation()
+
+        // Add transaction record
+        addTransaction(amount: amount, type: type)
+
+        return true
+    }
+
+    private func updatePortfolioAllocation() {
+        let newTokens = portfolioAllocation.tokens.map { token in
+            let newAmount = (token.percentage / 100) * currentBalance
+            return TokenAllocation(
+                symbol: token.symbol,
+                name: token.name,
+                color: token.color,
+                percentage: token.percentage,
+                amount: newAmount
+            )
+        }
+
+        portfolioAllocation = PortfolioAllocation(
+            tokens: newTokens,
+            totalValue: currentBalance
+        )
+    }
+
+    private func addTransaction(amount: Double, type: TransactionType) {
+        // This would typically save to a database or local storage
+        // For now, we'll just track the balance changes
+        print("Transaction: \(type.rawValue) - $\(amount)")
+    }
+}
+
 
 // MARK: - Sponsored League Models
 struct SponsoredLeague: Identifiable, Codable, Equatable {

@@ -187,13 +187,25 @@ struct LeagueCard: View {
         Button(action: onTap) {
             HStack(spacing: 12) {
                 // League icon or sponsor logo
-                Circle()
-                    .fill(Color.primaryBlue.opacity(0.2))
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        Text("🏆")
-                            .font(.title2)
-                    )
+                if let logoName = league.sponsorLogo {
+                    Image(logoName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                        )
+                } else {
+                    Circle()
+                        .fill(Color.primaryBlue.opacity(0.2))
+                        .frame(width: 50, height: 50)
+                        .overlay(
+                            Text("🏆")
+                                .font(.title2)
+                        )
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(league.name)

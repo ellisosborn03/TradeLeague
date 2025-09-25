@@ -232,13 +232,13 @@ struct SponsorLogoView: View {
         case "panora":
             return "panora-logo"
         case "circle":
-            return nil // Will use fallback for now
+            return "circle-logo"
         case "kana", "kana labs":
-            return nil // Will use fallback for now
+            return "kana-logo"
         case "nodit":
-            return nil // Will use fallback for now
+            return "nodit-logo"
         case "ekiden":
-            return nil // Will use fallback for now
+            return "ekiden-logo"
         default:
             return nil
         }

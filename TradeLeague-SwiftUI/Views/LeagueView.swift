@@ -1225,6 +1225,9 @@ struct LeagueJoinView: View {
     let league: SponsoredLeague
     @Environment(\.dismiss) private var dismiss
     @State private var joinAmount = ""
+    @State private var showSuccessAlert = false
+    @State private var showInsufficientFundsAlert = false
+    @StateObject private var balanceManager = BalanceManager.shared
 
     var body: some View {
         NavigationView {
@@ -1373,15 +1376,20 @@ struct LeagueJoinView: View {
                                     #endif
                             }
 
-                            Text("Entry Fee: $\(Int(league.entryFee)) • Minimum entry to participate")
-                                .font(.caption)
-                                .foregroundColor(Theme.ColorPalette.textSecondary)
+                            HStack {
+                                Text("Entry Fee: $\(Int(league.entryFee))")
+                                    .font(.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                                Spacer()
+                                Text("Available: $\(balanceManager.currentBalance, specifier: "%.2f")")
+                                    .font(.caption)
+                                    .foregroundColor(Theme.ColorPalette.textSecondary)
+                            }
 
                             OptimizedPrimaryButton(title: "Join Challenge for $\(Int(league.entryFee))") {
-                                // Join challenge action - will show success toast
-                                dismiss()
+                                joinLeague()
                             }
-                            .disabled(joinAmount.isEmpty)
+                            .disabled(joinAmount.isEmpty || balanceManager.currentBalance < league.entryFee)
                         }
                         .padding()
                         .optimizedGlassCard(style: .elevated)
@@ -1400,6 +1408,26 @@ struct LeagueJoinView: View {
                     .foregroundColor(Theme.ColorPalette.primaryBlue)
                 }
             }
+        }
+        .alert("League Joined!", isPresented: $showSuccessAlert) {
+            Button("OK") { dismiss() }
+        } message: {
+            Text("You have successfully joined the league. Check your portfolio for updated balance.")
+        }
+        .alert("Insufficient Funds", isPresented: $showInsufficientFundsAlert) {
+            Button("OK") { }
+        } message: {
+            Text("You don't have enough balance to join this league.")
+        }
+    }
+
+    private func joinLeague() {
+        guard let amount = Double(joinAmount), amount >= league.entryFee else { return }
+
+        if balanceManager.deductBalance(amount: league.entryFee, type: .league) {
+            showSuccessAlert = true
+        } else {
+            showInsufficientFundsAlert = true
         }
     }
 }

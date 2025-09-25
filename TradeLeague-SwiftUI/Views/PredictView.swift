@@ -451,6 +451,9 @@ struct PredictionMarketDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedOutcome: Int?
     @State private var stakeAmount = ""
+    @State private var showSuccessAlert = false
+    @State private var showInsufficientFundsAlert = false
+    @StateObject private var balanceManager = BalanceManager.shared
 
     var body: some View {
         NavigationView {
@@ -563,10 +566,17 @@ struct PredictionMarketDetailView: View {
                                     }
                                 }
 
-                                OptimizedPrimaryButton(title: "Place Prediction") {
-                                    // Make prediction action
+                                HStack {
+                                    Text("Available: $\(balanceManager.currentBalance, specifier: "%.2f")")
+                                        .font(.caption)
+                                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                                    Spacer()
                                 }
-                                .disabled(stakeAmount.isEmpty || selectedOutcome == nil)
+
+                                OptimizedPrimaryButton(title: "Place Prediction") {
+                                    placePrediction()
+                                }
+                                .disabled(stakeAmount.isEmpty || selectedOutcome == nil || !isValidStake)
                             }
                             .padding()
                             .optimizedGlassCard(style: .elevated)
@@ -586,6 +596,33 @@ struct PredictionMarketDetailView: View {
                     .foregroundColor(Theme.ColorPalette.primaryBlue)
                 }
             }
+        }
+        .alert("Prediction Placed!", isPresented: $showSuccessAlert) {
+            Button("OK") { dismiss() }
+        } message: {
+            Text("Your prediction has been placed successfully. Check your portfolio for updated balance.")
+        }
+        .alert("Insufficient Funds", isPresented: $showInsufficientFundsAlert) {
+            Button("OK") { }
+        } message: {
+            Text("You don't have enough balance to place this prediction.")
+        }
+    }
+
+    private var isValidStake: Bool {
+        guard let stake = Double(stakeAmount) else { return false }
+        return stake > 0 && stake <= balanceManager.currentBalance
+    }
+
+    private func placePrediction() {
+        guard let stake = Double(stakeAmount),
+              let selectedIndex = selectedOutcome,
+              stake > 0 else { return }
+
+        if balanceManager.deductBalance(amount: stake, type: .prediction) {
+            showSuccessAlert = true
+        } else {
+            showInsufficientFundsAlert = true
         }
     }
 }

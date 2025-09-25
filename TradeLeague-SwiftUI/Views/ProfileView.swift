@@ -97,7 +97,7 @@ struct ProfileView: View {
         user = User(
             id: "user1",
             walletAddress: "0x1234567890abcdef",
-            username: "CryptoTrader",
+            username: "Ellis O.",
             avatar: nil,
             totalVolume: 125000,
             inviteCode: "CRYPTO123",
@@ -210,7 +210,7 @@ struct ProfileHeader: View {
 
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         Text(user.username)
-                            .font(Theme.Typography.heading2)
+                            .font(Theme.Typography.bodyL)
                             .foregroundColor(Theme.ColorPalette.textPrimary)
 
                         if let rank = user.rank {
@@ -248,6 +248,7 @@ struct ProfileHeader: View {
 
 struct PortfolioSummaryCard: View {
     let portfolio: Portfolio
+    @StateObject private var balanceManager = BalanceManager.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.md) {
@@ -261,23 +262,8 @@ struct PortfolioSummaryCard: View {
                     .font(Theme.Typography.caption)
                     .foregroundColor(Theme.ColorPalette.textSecondary)
 
-                CountUpText(target: portfolio.totalValue, fontSize: Theme.Typography.displayS)
+                CountUpText(target: balanceManager.currentBalance, fontSize: Theme.Typography.displayS)
                     .foregroundColor(Theme.ColorPalette.textPrimary)
-            }
-
-            // Performance metrics
-            HStack(spacing: Theme.Spacing.lg) {
-                PerformanceMetricCard(
-                    title: "Today",
-                    value: portfolio.todayChange,
-                    percentage: portfolio.todayChangePercentage
-                )
-
-                PerformanceMetricCard(
-                    title: "All Time",
-                    value: portfolio.allTimeChange,
-                    percentage: portfolio.allTimeChangePercentage
-                )
             }
         }
         .padding(Theme.Spacing.md)
@@ -313,27 +299,18 @@ struct PerformanceMetricCard: View {
 
 struct HoldingsView: View {
     let portfolio: Portfolio?
-    @State private var portfolioAllocation: PortfolioAllocation = PortfolioAllocation(
-        tokens: [
-            TokenAllocation(symbol: "APT", name: "Aptos", color: "#0D47A1", percentage: 25.0, amount: 3125.0),
-            TokenAllocation(symbol: "USDC", name: "USDC (on Aptos)", color: "#B0BEC5", percentage: 20.0, amount: 2500.0),
-            TokenAllocation(symbol: "EKID", name: "Ekiden", color: "#FB8C00", percentage: 15.0, amount: 1875.0),
-            TokenAllocation(symbol: "PORA", name: "Panora", color: "#1ABC9C", percentage: 20.0, amount: 2500.0),
-            TokenAllocation(symbol: "RION", name: "Hyperion", color: "#8E44AD", percentage: 20.0, amount: 2500.0)
-        ],
-        totalValue: 12500.0
-    )
+    @StateObject private var balanceManager = BalanceManager.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // Token Allocation Section
+            // Portfolio Section
             VStack(alignment: .leading, spacing: 12) {
-                Text("Token Allocation")
+                Text("Portfolio")
                     .font(Theme.Typography.heading2)
                     .foregroundColor(Theme.ColorPalette.textPrimary)
                     .padding(.horizontal)
 
-                PieChartView(allocation: portfolioAllocation)
+                PieChartView(allocation: balanceManager.portfolioAllocation, portfolio: portfolio)
                     .padding(.horizontal)
             }
 
@@ -854,6 +831,7 @@ struct SettingsRow: View {
 
 struct PieChartView: View {
     let allocation: PortfolioAllocation
+    let portfolio: Portfolio?
     @State private var animatedPercentages: [Double] = []
 
     var body: some View {
@@ -914,10 +892,47 @@ struct PieChartView: View {
                     }
                 }
             }
-            .padding()
-            .optimizedGlassCard(style: .elevated)
-            .reveal(delay: 0.4)
+
+            // Performance metrics (moved here from PortfolioSummaryCard)
+            if let portfolio = portfolio {
+                HStack(spacing: Theme.Spacing.lg) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Today")
+                            .font(.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+
+                        Text("$\(portfolio.todayChange, specifier: "%.0f")")
+                            .font(.headline)
+                            .foregroundColor(portfolio.todayChange >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
+
+                        Text("\(portfolio.todayChangePercentage >= 0 ? "+" : "")\(portfolio.todayChangePercentage, specifier: "%.1f")%")
+                            .font(.caption)
+                            .foregroundColor(portfolio.todayChangePercentage >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .optimizedGlassCard(style: .flat)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("All Time")
+                            .font(.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+
+                        Text("$\(portfolio.allTimeChange, specifier: "%.0f")")
+                            .font(.headline)
+                            .foregroundColor(portfolio.allTimeChange >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
+
+                        Text("\(portfolio.allTimeChangePercentage >= 0 ? "+" : "")\(portfolio.allTimeChangePercentage, specifier: "%.1f")%")
+                            .font(.caption)
+                            .foregroundColor(portfolio.allTimeChangePercentage >= 0 ? Theme.ColorPalette.successGreen : Theme.ColorPalette.dangerRed)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .optimizedGlassCard(style: .flat)
+                }
+            }
         }
+        .reveal(delay: 0.4)
     }
 
     private func startAngle(for index: Int) -> Angle {
