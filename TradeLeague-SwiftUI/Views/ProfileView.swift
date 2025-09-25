@@ -738,7 +738,7 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Theme.ColorPalette.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 20) {
@@ -881,10 +881,11 @@ struct PieChartView: View {
                 // Total value in center
                 VStack {
                     Text("Total")
-                        .font(Theme.Typography.caption)
+                        .font(Theme.Typography.captionS)
                         .foregroundColor(Theme.ColorPalette.textSecondary)
                     Text("$\(allocation.totalValue, specifier: "%.0f")")
-                        .font(Theme.Typography.heading2)
+                        .font(Theme.Typography.body)
+                        .fontWeight(.semibold)
                         .foregroundColor(Theme.ColorPalette.textPrimary)
                 }
             }

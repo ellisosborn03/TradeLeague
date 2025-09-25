@@ -46,17 +46,18 @@ struct Theme {
     }
 
     enum Typography {
-        // Display / Hero numbers with wide sans (tracking applied in view)
+        // Display / Hero numbers (for big numbers, dashboards, onboarding highlights)
         static let displayXL = Font.system(size: 56, weight: .bold, design: .default)
         static let displayL = Font.system(size: 48, weight: .bold, design: .default)
         static let displayM = Font.system(size: 40, weight: .bold, design: .default)
         static let displayS = Font.system(size: 36, weight: .bold, design: .default)
 
-        // Section headings with bottom margin
+        // Headings (section titles, feature highlights)
         static let heading1 = Font.system(size: 32, weight: .semibold, design: .default)
         static let heading2 = Font.system(size: 28, weight: .semibold, design: .default)
+        static let heading3 = Font.system(size: 24, weight: .medium, design: .default)
 
-        // Body text with optimal line height
+        // Body text (general copy, instructions, UI text)
         static let bodyL = Font.system(size: 17, weight: .regular, design: .default)
         static let body = Font.system(size: 16, weight: .regular, design: .default)
         static let bodyS = Font.system(size: 15, weight: .regular, design: .default)
@@ -65,17 +66,38 @@ struct Theme {
         static let caption = Font.system(size: 14, weight: .regular, design: .default)
         static let captionS = Font.system(size: 12, weight: .regular, design: .default)
 
-        // Chip text
+        // Interactive elements
+        static let button = Font.system(size: 17, weight: .semibold, design: .default)
+        static let buttonS = Font.system(size: 15, weight: .semibold, design: .default)
         static let chip = Font.system(size: 14, weight: .medium, design: .default)
         static let chipS = Font.system(size: 12, weight: .medium, design: .default)
 
-        // Buttons
-        static let button = Font.system(size: 17, weight: .semibold, design: .default)
-        static let buttonS = Font.system(size: 15, weight: .semibold, design: .default)
-
-        // Mono for numbers
-        static let mono = Font.system(size: 14, weight: .medium, design: .monospaced)
+        // Numbers / Data
         static let monoL = Font.system(size: 16, weight: .medium, design: .monospaced)
+        static let mono = Font.system(size: 14, weight: .medium, design: .monospaced)
+
+        // Line Heights (multipliers for lineSpacing)
+        enum LineHeight {
+            static let display: CGFloat = 0.1      // 110% (use with lineSpacing)
+            static let heading: CGFloat = 0.1      // 110%
+            static let body: CGFloat = 0.4         // 140%
+            static let caption: CGFloat = 0.3      // 130%
+        }
+
+        // Letter Spacing (tracking values)
+        enum Tracking {
+            static let display: CGFloat = -0.56    // -1% for display text
+            static let body: CGFloat = 0           // neutral for body text
+            static let allCaps: CGFloat = 0.32     // +2% for chips, buttons
+        }
+
+        // Text Treatments
+        enum Treatment {
+            static let emphasis: Font.Weight = .bold
+            static let emphasisColor: Color = ColorPalette.primary
+            static let linkColor: Color = ColorPalette.primaryBlue
+            static let disabledOpacity: CGFloat = 0.6
+        }
     }
 
     enum Animation {

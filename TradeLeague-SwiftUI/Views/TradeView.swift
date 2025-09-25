@@ -454,7 +454,7 @@ struct VaultDetailView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Theme.ColorPalette.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -490,34 +490,41 @@ struct VaultDetailView: View {
                                 .font(.headline)
                                 .foregroundColor(Theme.ColorPalette.textPrimary)
 
-                            HStack(spacing: 20) {
-                                PerformanceMetric(
-                                    title: "All Time Return",
-                                    value: vault.allTimeReturn,
-                                    isPercentage: true
-                                )
+                            // Full width performance grid
+                            VStack(spacing: 16) {
+                                HStack {
+                                    PerformanceMetric(
+                                        title: "All Time Return",
+                                        value: vault.allTimeReturn,
+                                        isPercentage: true
+                                    )
 
-                                PerformanceMetric(
-                                    title: "Monthly Return",
-                                    value: vault.monthlyReturn,
-                                    isPercentage: true
-                                )
-                            }
+                                    Spacer()
 
-                            HStack(spacing: 20) {
-                                PerformanceMetric(
-                                    title: "Total AUM",
-                                    value: vault.totalAUM,
-                                    prefix: "$"
-                                )
+                                    PerformanceMetric(
+                                        title: "Monthly Return",
+                                        value: vault.monthlyReturn,
+                                        isPercentage: true
+                                    )
+                                }
 
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Followers")
-                                        .font(.caption)
-                                        .foregroundColor(Theme.ColorPalette.textSecondary)
-                                    Text("\(vault.followers)")
-                                        .font(.headline)
-                                        .foregroundColor(Theme.ColorPalette.textPrimary)
+                                HStack {
+                                    PerformanceMetric(
+                                        title: "Total AUM",
+                                        value: vault.totalAUM,
+                                        prefix: "$"
+                                    )
+
+                                    Spacer()
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Followers")
+                                            .font(.caption)
+                                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                                        Text("\(vault.followers)")
+                                            .font(.headline)
+                                            .foregroundColor(Theme.ColorPalette.textPrimary)
+                                    }
                                 }
                             }
                         }

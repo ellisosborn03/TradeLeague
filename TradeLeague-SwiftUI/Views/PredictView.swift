@@ -100,6 +100,40 @@ struct PredictView: View {
                 id: "1",
                 sponsor: "Panora",
                 sponsorLogo: "panora-logo",
+                question: "Next US Presidential Election Winner?",
+                outcomes: [
+                    PredictionOutcome(index: 0, label: "J.D. Vance", probability: 0.31, totalStaked: 775000, color: "DC2626"),
+                    PredictionOutcome(index: 1, label: "Gavin Newsom", probability: 0.22, totalStaked: 550000, color: "2563EB"),
+                    PredictionOutcome(index: 2, label: "Other", probability: 0.47, totalStaked: 1175000, color: "6B7280")
+                ],
+                totalStaked: 2500000,
+                resolutionTime: Calendar.current.date(byAdding: .year, value: 3, to: Date()) ?? Date(),
+                resolved: false,
+                winningOutcome: nil,
+                marketType: .multiple,
+                category: .crossChain
+            ),
+            PredictionMarket(
+                id: "2",
+                sponsor: "Merkle Trade",
+                sponsorLogo: "merkle-logo",
+                question: "Pro Football Champion?",
+                outcomes: [
+                    PredictionOutcome(index: 0, label: "Buffalo", probability: 0.19, totalStaked: 2900000, color: "0066CC"),
+                    PredictionOutcome(index: 1, label: "Baltimore", probability: 0.15, totalStaked: 2289000, color: "241773"),
+                    PredictionOutcome(index: 2, label: "Other", probability: 0.66, totalStaked: 10093000, color: "6B7280")
+                ],
+                totalStaked: 15282000,
+                resolutionTime: Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date(),
+                resolved: false,
+                winningOutcome: nil,
+                marketType: .multiple,
+                category: .derivatives
+            ),
+            PredictionMarket(
+                id: "3",
+                sponsor: "Hyperion",
+                sponsorLogo: "hyperion-logo",
                 question: "Will APT price reach $15 by end of week?",
                 outcomes: [
                     PredictionOutcome(index: 0, label: "Yes", probability: 0.65, totalStaked: 12500, color: "00B894"),
@@ -113,9 +147,9 @@ struct PredictView: View {
                 category: .price
             ),
             PredictionMarket(
-                id: "2",
-                sponsor: "Merkle Trade",
-                sponsorLogo: "merkle-logo",
+                id: "4",
+                sponsor: "Tapp Network",
+                sponsorLogo: "tapp-logo",
                 question: "Which protocol will have highest TVL this month?",
                 outcomes: [
                     PredictionOutcome(index: 0, label: "Pancake", probability: 0.4, totalStaked: 8000, color: "6C5CE7"),
@@ -421,7 +455,7 @@ struct PredictionMarketDetailView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Theme.ColorPalette.darkBackground
+                Theme.ColorPalette.background
                     .ignoresSafeArea()
 
                 ScrollView {

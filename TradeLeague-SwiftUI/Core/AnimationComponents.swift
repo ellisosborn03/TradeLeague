@@ -392,9 +392,8 @@ struct CountUpText: View {
             .fontWeight(.bold)
             .tracking(-0.5)
             .onAppear {
-                withAnimation(Theme.Animation.countUp) {
-                    value = target
-                }
+                // Removed animation - show value immediately
+                value = target
             }
     }
 

@@ -212,6 +212,35 @@ struct LeaguePlayer: Identifiable, Codable, Equatable {
     let avatar: String
     let profit: Double // Changed from points to profit
     let rank: Int
+    let recentTrades: [Trade]
+
+    init(id: String, username: String, avatar: String, profit: Double, rank: Int, recentTrades: [Trade] = []) {
+        self.id = id
+        self.username = username
+        self.avatar = avatar
+        self.profit = profit
+        self.rank = rank
+        self.recentTrades = recentTrades
+    }
+}
+
+// MARK: - Trade Models
+struct Trade: Identifiable, Codable, Equatable {
+    let id: String
+    let symbol: String
+    let type: TradeType
+    let amount: Double
+    let price: Double
+    let pnl: Double
+    let timestamp: Date
+    let venue: String
+}
+
+enum TradeType: String, CaseIterable, Codable {
+    case buy = "Buy"
+    case sell = "Sell"
+    case long = "Long"
+    case short = "Short"
 }
 
 enum LeagueScope: CaseIterable {
