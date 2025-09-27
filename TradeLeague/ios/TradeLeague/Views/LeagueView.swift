@@ -16,12 +16,12 @@ struct LeagueView: View {
                         // Header with create button
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("Leagues")
+                                Text("Compete")
                                     .font(.largeTitle)
                                     .fontWeight(.bold)
                                     .foregroundColor(.primaryText)
 
-                                Text("Compete in sponsored leagues")
+                                Text("Join sponsored challenges and compete")
                                     .font(.subheadline)
                                     .foregroundColor(.secondaryText)
                             }
@@ -82,7 +82,65 @@ struct LeagueView: View {
                 endTime: Calendar.current.date(byAdding: .day, value: 7, to: Date()),
                 isPublic: true,
                 maxParticipants: 100,
-                participants: [],
+                participants: [
+                    LeagueParticipant(
+                        id: "p1",
+                        userId: "u1",
+                        user: User(
+                            id: "u1",
+                            walletAddress: "0x123",
+                            username: "CryptoMaster",
+                            avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                            totalVolume: 50000,
+                            inviteCode: "MASTER",
+                            createdAt: Date(),
+                            currentScore: 15000,
+                            rank: 1
+                        ),
+                        joinedAt: Date(),
+                        currentScore: 15000,
+                        rank: 1,
+                        percentageGain: 12.5
+                    ),
+                    LeagueParticipant(
+                        id: "p2",
+                        userId: "u2",
+                        user: User(
+                            id: "u2",
+                            walletAddress: "0x456",
+                            username: "TradeWizard",
+                            avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+                            totalVolume: 35000,
+                            inviteCode: "WIZARD",
+                            createdAt: Date(),
+                            currentScore: 12000,
+                            rank: 2
+                        ),
+                        joinedAt: Date(),
+                        currentScore: 12000,
+                        rank: 2,
+                        percentageGain: 8.3
+                    ),
+                    LeagueParticipant(
+                        id: "p3",
+                        userId: "u3",
+                        user: User(
+                            id: "u3",
+                            walletAddress: "0x789",
+                            username: "AptosGuru",
+                            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                            totalVolume: 28000,
+                            inviteCode: "GURU",
+                            createdAt: Date(),
+                            currentScore: 10500,
+                            rank: 3
+                        ),
+                        joinedAt: Date(),
+                        currentScore: 10500,
+                        rank: 3,
+                        percentageGain: 5.2
+                    )
+                ],
                 sponsorName: "Circle",
                 sponsorLogo: "circle-logo"
             ),
@@ -96,7 +154,65 @@ struct LeagueView: View {
                 endTime: Calendar.current.date(byAdding: .day, value: 14, to: Date()),
                 isPublic: true,
                 maxParticipants: 50,
-                participants: [],
+                participants: [
+                    LeagueParticipant(
+                        id: "p1",
+                        userId: "u1",
+                        user: User(
+                            id: "u1",
+                            walletAddress: "0x123",
+                            username: "CryptoMaster",
+                            avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                            totalVolume: 50000,
+                            inviteCode: "MASTER",
+                            createdAt: Date(),
+                            currentScore: 15000,
+                            rank: 1
+                        ),
+                        joinedAt: Date(),
+                        currentScore: 15000,
+                        rank: 1,
+                        percentageGain: 12.5
+                    ),
+                    LeagueParticipant(
+                        id: "p2",
+                        userId: "u2",
+                        user: User(
+                            id: "u2",
+                            walletAddress: "0x456",
+                            username: "TradeWizard",
+                            avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+                            totalVolume: 35000,
+                            inviteCode: "WIZARD",
+                            createdAt: Date(),
+                            currentScore: 12000,
+                            rank: 2
+                        ),
+                        joinedAt: Date(),
+                        currentScore: 12000,
+                        rank: 2,
+                        percentageGain: 8.3
+                    ),
+                    LeagueParticipant(
+                        id: "p3",
+                        userId: "u3",
+                        user: User(
+                            id: "u3",
+                            walletAddress: "0x789",
+                            username: "AptosGuru",
+                            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                            totalVolume: 28000,
+                            inviteCode: "GURU",
+                            createdAt: Date(),
+                            currentScore: 10500,
+                            rank: 3
+                        ),
+                        joinedAt: Date(),
+                        currentScore: 10500,
+                        rank: 3,
+                        percentageGain: 5.2
+                    )
+                ],
                 sponsorName: "Hyperion",
                 sponsorLogo: "hyperion-logo"
             )
@@ -452,6 +568,36 @@ struct LeaderboardRow: View {
                 .fontWeight(.bold)
                 .foregroundColor(.primaryText)
                 .frame(width: 40)
+
+            // User avatar
+            Group {
+                if let avatarURL = participant.user.avatar, !avatarURL.isEmpty {
+                    AsyncImage(url: URL(string: avatarURL)) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } placeholder: {
+                        Circle()
+                            .fill(Color.gray.opacity(0.3))
+                            .overlay(
+                                ProgressView()
+                                    .scaleEffect(0.5)
+                            )
+                    }
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
+                } else {
+                    Circle()
+                        .fill(Color.primaryBlue.opacity(0.7))
+                        .frame(width: 40, height: 40)
+                        .overlay(
+                            Text(String(participant.user.username.prefix(1)).uppercased())
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        )
+                }
+            }
 
             // User info
             VStack(alignment: .leading) {

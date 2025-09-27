@@ -341,6 +341,32 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - ✅ **Ecosystem Integration**: 8+ Aptos partner integrations
 - ✅ **Market Potential**: Clear path from testnet to mainnet
 
+## 🏅 Hackathon Bounty Alignment
+
+TradeLeague directly addresses multiple sponsor bounties in the CTRL+Move Hackathon:
+
+### Tapp Exchange - Next-Gen DeFi: Beyond AMMs ($2,000)
+- **Integration**: Custom hook builder for social trading mechanics
+- **Innovation**: IL protection hooks, yield optimizer hooks, copy-trading pools
+- **Value**: Visual interface for creating trading hooks with mobile-first UX
+
+### Kana Labs - Build Next-Gen Trading Tools with Kana Perps ($5,000)
+- **Integration**: Cross-chain arbitrage finder and leveraged prediction markets
+- **Innovation**: Touch market using perps, funding rate arbitrage, copy trading bot
+- **Value**: Portfolio dashboard with multi-chain asset management
+
+### Nodit - Aptos Infrastructure Challenge ($1,000)
+- **Integration**: Real-time leaderboards via WebSocket, transaction monitoring
+- **Innovation**: Event-driven league updates, comprehensive analytics dashboard
+- **Value**: Enterprise-grade infrastructure with 99.99% uptime for social features
+
+### Hyperion - Liquidity & Capital Efficiency Challenge ($2,000)
+- **Integration**: CLMM strategy competitions, auto-range vaults
+- **Innovation**: Composability solutions using Hyperion SDK for better returns
+- **Value**: Gamified concentrated liquidity with social following mechanics
+
+**Total Potential Bounty Value: $10,000**
+
 ## 📞 Support
 
 - **GitHub Issues**: [Create an issue](https://github.com/ellisosborn03/TradeLeague/issues)

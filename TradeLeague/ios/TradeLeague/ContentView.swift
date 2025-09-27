@@ -6,7 +6,7 @@ struct ContentView: View {
             LeagueView()
                 .tabItem {
                     Image(systemName: "trophy.fill")
-                    Text("League")
+                    Text("Compete")
                 }
 
             TradeView()

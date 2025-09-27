@@ -69,10 +69,10 @@ struct ProfileView: View {
         user = User(
             id: "user1",
             walletAddress: "0x1234567890abcdef",
-            username: "CryptoTrader",
-            avatar: nil,
+            username: "Ellis",
+            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
             totalVolume: 125000,
-            inviteCode: "CRYPTO123",
+            inviteCode: "ELLIS123",
             createdAt: Date(),
             currentScore: 85000,
             rank: 7
@@ -166,21 +166,44 @@ struct ProfileHeader: View {
             // User Info Card
             HStack(spacing: 16) {
                 // Avatar
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [.primaryBlue, .chartPurple],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                Group {
+                    if let avatarURL = user.avatar, !avatarURL.isEmpty {
+                        AsyncImage(url: URL(string: avatarURL)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } placeholder: {
+                            Circle()
+                                .fill(Color.gray.opacity(0.3))
+                                .overlay(
+                                    ProgressView()
+                                        .scaleEffect(0.8)
+                                )
+                        }
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.primaryBlue, lineWidth: 2)
                         )
-                    )
-                    .frame(width: 60, height: 60)
-                    .overlay(
-                        Text(String(user.username.prefix(1)).uppercased())
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                    )
+                    } else {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.primaryBlue, .chartPurple],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 60, height: 60)
+                            .overlay(
+                                Text(String(user.username.prefix(1)).uppercased())
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                            )
+                    }
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(user.username)
@@ -438,7 +461,7 @@ struct RewardsView: View {
                         .font(.headline)
                         .foregroundColor(.primaryText)
 
-                    Text("Participate in leagues and refer friends to earn rewards")
+                    Text("Participate in leagues and trading competitions to earn rewards")
                         .font(.subheadline)
                         .foregroundColor(.secondaryText)
                         .multilineTextAlignment(.center)
