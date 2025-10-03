@@ -19,7 +19,9 @@ TradeLeague is fantasy football for crypto, a social DeFi super app built on Apt
 
 ## Demo Video — Social DeFi Super App built on Aptos
 
-[![Watch the demo](https://drive.google.com/uc?export=view&id=1noGeyCn4gel6laIjnp8uyrlohbozxlrH)](https://drive.google.com/file/d/177pdVQdyb2IMxKwoFO4aLl_diwC5KKp_/view?usp=share_link)
+<a href="https://drive.google.com/file/d/177pdVQdyb2IMxKwoFO4aLl_diwC5KKp_/view?usp=share_link" target="_blank">
+  <img src="https://drive.google.com/uc?export=view&id=1noGeyCn4gel6laIjnp8uyrlohbozxlrH" width="320"/>
+</a>
 
 ### 🏆 Leagues: DeFi as a Sport
 
