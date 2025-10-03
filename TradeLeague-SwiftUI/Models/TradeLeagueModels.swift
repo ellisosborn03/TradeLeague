@@ -1,5 +1,13 @@
 import Foundation
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
+#if canImport(AppKit)
+import AppKit
+#endif
+
 // MARK: - User Models
 struct User: Identifiable, Codable, Equatable {
     let id: String
@@ -694,6 +702,7 @@ class TransactionManager: ObservableObject {
         // Use aptos CLI to submit transaction with proper signing
         // This creates a simple transfer transaction as a "memo" on chain
 
+        #if os(macOS)
         return try await withCheckedThrowingContinuation { continuation in
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
@@ -758,6 +767,11 @@ class TransactionManager: ObservableObject {
                 continuation.resume(throwing: error)
             }
         }
+        #else
+        // iOS doesn't support Process - throw error to use fallback simulation
+        print("⚠️ [CLI] Process execution not available on iOS - using simulated transaction")
+        throw TransactionError.networkError
+        #endif
     }
 
     // MARK: - Transaction History
