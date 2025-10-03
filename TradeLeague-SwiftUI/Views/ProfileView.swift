@@ -3,9 +3,9 @@ import SwiftUI
 struct ProfileView: View {
     @State private var user: User?
     @State private var portfolio: Portfolio?
-    @State private var transactions: [Transaction] = []
     @State private var showSettings = false
     @State private var selectedSegment = 0
+    @StateObject private var transactionManager = TransactionManager.shared
 
     var body: some View {
         NavigationView {
@@ -43,7 +43,7 @@ struct ProfileView: View {
                                 } else if selectedSegment == 1 {
                                     HoldingsView(portfolio: portfolio)
                                 } else {
-                                    ActivityView(transactions: transactions)
+                                    ActivityView(transactions: transactionManager.transactions)
                                 }
                             }
                             .padding(.top)
@@ -63,7 +63,6 @@ struct ProfileView: View {
             .onAppear {
                 loadUserData()
                 loadPortfolio()
-                loadTransactions()
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
@@ -75,7 +74,7 @@ struct ProfileView: View {
         // Mock data - replace with actual API call
         user = User(
             id: "user1",
-            walletAddress: "0x1234567890abcdef",
+            walletAddress: "0x1c2cf8c859fc98c4bc8ebaeec177489b191574000bd961db1b51670fb5e7b155",
             username: "Ellis O.",
             avatar: "ellis",
             totalVolume: 125000,
@@ -131,30 +130,6 @@ struct ProfileView: View {
                 )
             ]
         )
-    }
-
-    private func loadTransactions() {
-        // Mock data - replace with actual API call
-        transactions = [
-            Transaction(
-                id: "1",
-                type: .follow,
-                amount: 1000,
-                hash: "0xabc123",
-                status: .success,
-                timestamp: Date(),
-                description: "Followed Hyperion LP Strategy"
-            ),
-            Transaction(
-                id: "2",
-                type: .prediction,
-                amount: 250,
-                hash: "0xdef456",
-                status: .success,
-                timestamp: Calendar.current.date(byAdding: .hour, value: -2, to: Date()) ?? Date(),
-                description: "Predicted APT price increase"
-            )
-        ]
     }
 }
 

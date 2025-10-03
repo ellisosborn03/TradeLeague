@@ -3,7 +3,7 @@ import SwiftUI
 struct ProfileView: View {
     @State private var user: User?
     @State private var portfolio: Portfolio?
-    @State private var transactions: [Transaction] = []
+    @StateObject private var transactionManager = TransactionManager.shared
     @State private var showSettings = false
     @State private var selectedSegment = 0
 
@@ -44,7 +44,7 @@ struct ProfileView: View {
                                 } else if selectedSegment == 1 {
                                     RewardsView(rewards: portfolio?.rewards ?? [])
                                 } else {
-                                    ActivityView(transactions: transactions)
+                                    ActivityView(transactions: transactionManager.transactions)
                                 }
                             }
                             .padding(.top)
@@ -56,7 +56,6 @@ struct ProfileView: View {
             .onAppear {
                 loadUserData()
                 loadPortfolio()
-                loadTransactions()
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
@@ -110,29 +109,6 @@ struct ProfileView: View {
         )
     }
 
-    private func loadTransactions() {
-        // Mock data - replace with actual API call
-        transactions = [
-            Transaction(
-                id: "1",
-                type: .follow,
-                amount: 1000,
-                hash: "0xabc123",
-                status: .success,
-                timestamp: Date(),
-                description: "Followed Hyperion LP Strategy"
-            ),
-            Transaction(
-                id: "2",
-                type: .prediction,
-                amount: 250,
-                hash: "0xdef456",
-                status: .success,
-                timestamp: Calendar.current.date(byAdding: .hour, value: -2, to: Date()) ?? Date(),
-                description: "Predicted APT price increase"
-            )
-        ]
-    }
 }
 
 struct ProfileHeader: View {
@@ -597,45 +573,77 @@ struct ActivityView: View {
 
 struct TransactionCard: View {
     let transaction: Transaction
+    @StateObject private var aptosService = AptosService.shared
 
     var body: some View {
-        HStack {
-            // Transaction type icon
-            Circle()
-                .fill(transactionTypeColor.opacity(0.2))
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Image(systemName: transactionTypeIcon)
-                        .foregroundColor(transactionTypeColor)
-                )
+        VStack(spacing: 12) {
+            HStack {
+                // Transaction type icon
+                Circle()
+                    .fill(transactionTypeColor.opacity(0.2))
+                    .frame(width: 40, height: 40)
+                    .overlay(
+                        Image(systemName: transactionTypeIcon)
+                            .foregroundColor(transactionTypeColor)
+                    )
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(transaction.description)
-                    .font(.headline)
-                    .foregroundColor(.primaryText)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(transaction.description)
+                        .font(.headline)
+                        .foregroundColor(.primaryText)
 
-                HStack {
-                    Text(transaction.type.rawValue)
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
+                    HStack {
+                        Text(transaction.type.rawValue)
+                            .font(.caption)
+                            .foregroundColor(.secondaryText)
 
-                    Text("•")
-                        .foregroundColor(.secondaryText)
+                        Text("•")
+                            .foregroundColor(.secondaryText)
 
-                    Text(transaction.timestamp, style: .relative)
-                        .font(.caption)
-                        .foregroundColor(.secondaryText)
+                        Text(transaction.timestamp, style: .relative)
+                            .font(.caption)
+                            .foregroundColor(.secondaryText)
+                    }
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing) {
+                    Text("$\(Int(transaction.amount))")
+                        .font(.headline)
+                        .foregroundColor(.primaryText)
+
+                    StatusBadge(status: transaction.status)
                 }
             }
 
-            Spacer()
+            // Transaction link - clickable to view on Aptos testnet explorer
+            if !transaction.hash.isEmpty {
+                HStack(spacing: 6) {
+                    Link(destination: URL(string: aptosService.getExplorerURL(forTransaction: transaction.hash))!) {
+                        HStack(spacing: 4) {
+                            Text("transaction")
+                                .font(.caption)
+                                .foregroundColor(.accentPurple)
+                                .underline()
 
-            VStack(alignment: .trailing) {
-                Text("$\(Int(transaction.amount))")
-                    .font(.headline)
-                    .foregroundColor(.primaryText)
+                            Image(systemName: "arrow.up.forward.square")
+                                .font(.caption2)
+                                .foregroundColor(.accentPurple)
+                        }
+                    }
 
-                StatusBadge(status: transaction.status)
+                    Text("→")
+                        .font(.caption)
+                        .foregroundColor(.secondaryText)
+
+                    Text(transaction.hash.prefix(8) + "..." + transaction.hash.suffix(6))
+                        .font(.system(.caption2, design: .monospaced))
+                        .foregroundColor(.secondaryText)
+
+                    Spacer()
+                }
+                .padding(.top, 4)
             }
         }
         .padding()

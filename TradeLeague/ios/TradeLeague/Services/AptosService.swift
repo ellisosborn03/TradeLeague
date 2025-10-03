@@ -8,6 +8,16 @@ class AptosService: ObservableObject {
     private let fullnodeURL = "https://fullnode.testnet.aptoslabs.com/v1"
     private let moduleAddress = "0x1" // Replace with actual deployed address
 
+    // Wallet A (Sender) - ALL transactions originate from this wallet
+    private let walletAAddress = "0x1c2cf8c859fc98c4bc8ebaeec177489b191574000bd961db1b51670fb5e7b155"
+    private let walletAPrivateKey = "B37A61F467D0D226B671BFC8A842FB3036F7BE8B55BEAA66C168154053B40A0D"
+
+    // Wallet B (Receiver) - ALL transactions are sent to this wallet
+    private let walletBAddress = "0xadd13b17d2ed6eba21fd5a44849c88734ccf644b3f5b1415978d16b99294de2a"
+
+    // Explorer base URL
+    private let explorerBaseURL = "https://explorer.aptoslabs.com"
+
     private init() {}
 
     // MARK: - Wallet Connection
@@ -189,7 +199,72 @@ class AptosService: ObservableObject {
         return try await submitTransaction(payload: payload)
     }
 
+    // MARK: - Payment Transaction (Wallet A → Wallet B)
+    /// Sends a payment from Wallet A to Wallet B on Aptos testnet
+    /// - Parameter amountInAPT: The amount to send in APT (will be converted to Octas)
+    /// - Returns: A tuple containing (transaction hash, explorer URL)
+    func sendPayment(amountInAPT: Double) async throws -> (hash: String, explorerURL: String) {
+        let amountInOctas = UInt64(amountInAPT * 100_000_000) // Convert APT to Octas
+
+        // Create the transaction payload
+        let payload: [String: Any] = [
+            "sender": walletAAddress,
+            "sequence_number": try await getAccountSequenceNumber(address: walletAAddress),
+            "max_gas_amount": "2000",
+            "gas_unit_price": "100",
+            "expiration_timestamp_secs": String(Int(Date().timeIntervalSince1970) + 600), // 10 min expiry
+            "payload": [
+                "type": "entry_function_payload",
+                "function": "0x1::coin::transfer",
+                "type_arguments": ["0x1::aptos_coin::AptosCoin"],
+                "arguments": [walletBAddress, String(amountInOctas)]
+            ]
+        ]
+
+        // Submit the transaction
+        let txHash = try await submitSignedTransaction(payload: payload)
+
+        // Generate explorer URL
+        let explorerURL = "\(explorerBaseURL)/txn/\(txHash)?network=testnet"
+
+        return (txHash, explorerURL)
+    }
+
     // MARK: - Transaction Helpers
+    private func getAccountSequenceNumber(address: String) async throws -> String {
+        let url = URL(string: "\(fullnodeURL)/accounts/\(address)")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let account = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        return (account?["sequence_number"] as? String) ?? "0"
+    }
+
+    private func submitSignedTransaction(payload: [String: Any]) async throws -> String {
+        // In a production app, this would use a proper Aptos SDK to sign and submit
+        // For now, we'll use the REST API directly
+
+        let url = URL(string: "\(fullnodeURL)/transactions")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let jsonData = try JSONSerialization.data(withJSONObject: payload)
+        request.httpBody = jsonData
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 || httpResponse.statusCode == 202 else {
+            throw AptosError.transactionFailed("Failed to submit transaction")
+        }
+
+        let result = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let hash = result?["hash"] as? String else {
+            throw AptosError.transactionFailed("No transaction hash returned")
+        }
+
+        return hash
+    }
+
     private func submitTransaction(payload: [String: Any]) async throws -> String {
         // This would integrate with wallet provider to sign and submit transaction
         // For now, return a mock transaction hash
@@ -233,6 +308,57 @@ class AptosService: ObservableObject {
         }
 
         return 0
+    }
+
+    /// Get Wallet A (Sender) balance
+    func getWalletABalance() async throws -> Double {
+        return try await getTokenBalance(address: walletAAddress)
+    }
+
+    /// Get Wallet B (Receiver) balance
+    func getWalletBBalance() async throws -> Double {
+        return try await getTokenBalance(address: walletBAddress)
+    }
+
+    /// Generate an Aptos explorer URL for a transaction
+    func getExplorerURL(forTransaction hash: String) -> String {
+        return "\(explorerBaseURL)/txn/\(hash)?network=testnet"
+    }
+
+    /// Generate an Aptos explorer URL for an account
+    func getExplorerURL(forAccount address: String) -> String {
+        return "\(explorerBaseURL)/account/\(address)?network=testnet"
+    }
+
+    /// Get Wallet A explorer URL
+    func getWalletAExplorerURL() -> String {
+        return getExplorerURL(forAccount: walletAAddress)
+    }
+
+    /// Get Wallet B explorer URL
+    func getWalletBExplorerURL() -> String {
+        return getExplorerURL(forAccount: walletBAddress)
+    }
+}
+
+// MARK: - Error Types
+enum AptosError: LocalizedError {
+    case transactionFailed(String)
+    case networkError(String)
+    case invalidResponse
+    case insufficientBalance
+
+    var errorDescription: String? {
+        switch self {
+        case .transactionFailed(let message):
+            return "Transaction failed: \(message)"
+        case .networkError(let message):
+            return "Network error: \(message)"
+        case .invalidResponse:
+            return "Invalid response from Aptos node"
+        case .insufficientBalance:
+            return "Insufficient balance in wallet"
+        }
     }
 }
 

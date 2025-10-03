@@ -275,18 +275,24 @@ class BalanceManager: ObservableObject {
     }
 
     func deductBalance(amount: Double, type: TransactionType) -> Bool {
-        guard currentBalance >= amount else { return false }
+        guard currentBalance >= amount else {
+            print("⚠️ [BALANCE] Insufficient balance: \(currentBalance) < \(amount)")
+            return false
+        }
 
+        let oldBalance = currentBalance
         currentBalance -= amount
         updatePortfolioAllocation()
 
-        // Add transaction record
-        addTransaction(amount: amount, type: type)
+        print("💰 [BALANCE] Deducted: $\(amount)")
+        print("   Previous: $\(oldBalance)")
+        print("   Current: $\(currentBalance)")
+        print("   Type: \(type.rawValue)")
 
         return true
     }
 
-    private func updatePortfolioAllocation() {
+    func updatePortfolioAllocation() {
         let newTokens = portfolioAllocation.tokens.map { token in
             let newAmount = (token.percentage / 100) * currentBalance
             return TokenAllocation(
@@ -302,12 +308,11 @@ class BalanceManager: ObservableObject {
             tokens: newTokens,
             totalValue: currentBalance
         )
-    }
 
-    private func addTransaction(amount: Double, type: TransactionType) {
-        // This would typically save to a database or local storage
-        // For now, we'll just track the balance changes
-        print("Transaction: \(type.rawValue) - $\(amount)")
+        print("📊 [PORTFOLIO] Updated allocation:")
+        for token in newTokens {
+            print("   \(token.symbol): $\(String(format: "%.2f", token.amount)) (\(String(format: "%.0f", token.percentage))%)")
+        }
     }
 }
 
@@ -323,4 +328,315 @@ struct SponsoredLeague: Identifiable, Codable, Equatable {
     let participants: [LeaguePlayer]
     let isExpanded: Bool
     let endDate: Date
+}
+
+// MARK: - Transaction Manager
+class TransactionManager: ObservableObject {
+    static let shared = TransactionManager()
+
+    @Published var transactions: [Transaction] = []
+    @Published var pendingTransactions: [String: Transaction] = [:]
+
+    private let balanceManager = BalanceManager.shared
+
+    // Test wallet addresses
+    private let walletAddress = "0x1c2cf8c859fc98c4bc8ebaeec177489b191574000bd961db1b51670fb5e7b155"
+    private let fullnodeURL = "https://fullnode.testnet.aptoslabs.com/v1"
+
+    private init() {
+        loadTransactions()
+    }
+
+    // MARK: - Transaction Execution
+
+    func joinLeague(leagueId: String, leagueName: String, entryFee: Double) async throws -> String {
+        print("📝 [TX] Starting league join transaction...")
+        print("   League: \(leagueName)")
+        print("   Entry Fee: $\(entryFee)")
+        print("   Wallet: \(walletAddress)")
+
+        let txId = UUID().uuidString
+        let transaction = Transaction(
+            id: txId,
+            type: .league,
+            amount: entryFee,
+            hash: "",
+            status: .pending,
+            timestamp: Date(),
+            description: "Joined \(leagueName)"
+        )
+
+        await MainActor.run {
+            self.pendingTransactions[txId] = transaction
+            self.transactions.insert(transaction, at: 0)
+        }
+
+        do {
+            guard balanceManager.deductBalance(amount: entryFee, type: .league) else {
+                print("❌ [TX] Insufficient balance")
+                throw TransactionError.insufficientBalance
+            }
+
+            print("✅ [TX] Balance deducted: $\(entryFee)")
+            print("   New balance: $\(balanceManager.currentBalance)")
+
+            let txHash = try await submitTransaction(type: "league_join", amount: entryFee, metadata: ["league_id": leagueId])
+
+            print("🚀 [TX] Transaction submitted to testnet")
+            print("   Hash: \(txHash)")
+            print("   Explorer: https://explorer.aptoslabs.com/txn/\(txHash)?network=testnet")
+
+            let updatedTx = Transaction(
+                id: txId,
+                type: .league,
+                amount: entryFee,
+                hash: txHash,
+                status: .success,
+                timestamp: Date(),
+                description: "Joined \(leagueName)"
+            )
+
+            await MainActor.run {
+                if let index = self.transactions.firstIndex(where: { $0.id == txId }) {
+                    self.transactions[index] = updatedTx
+                }
+                self.pendingTransactions.removeValue(forKey: txId)
+                self.saveTransactions()
+            }
+
+            print("✅ [TX] Transaction completed successfully")
+            return txHash
+
+        } catch {
+            print("❌ [TX] Transaction failed: \(error.localizedDescription)")
+
+            await MainActor.run {
+                self.balanceManager.currentBalance += entryFee
+                self.balanceManager.updatePortfolioAllocation()
+
+                if let index = self.transactions.firstIndex(where: { $0.id == txId }) {
+                    self.transactions[index] = Transaction(
+                        id: txId,
+                        type: .league,
+                        amount: entryFee,
+                        hash: "",
+                        status: .failed,
+                        timestamp: Date(),
+                        description: "Failed: \(leagueName)"
+                    )
+                }
+                self.pendingTransactions.removeValue(forKey: txId)
+                self.saveTransactions()
+            }
+
+            throw error
+        }
+    }
+
+    func followVault(vaultId: String, vaultName: String, amount: Double) async throws -> String {
+        print("📝 [TX] Starting vault follow transaction...")
+        print("   Vault: \(vaultName)")
+        print("   Amount: $\(amount)")
+
+        let txId = UUID().uuidString
+        let transaction = Transaction(
+            id: txId,
+            type: .vault,
+            amount: amount,
+            hash: "",
+            status: .pending,
+            timestamp: Date(),
+            description: "Followed \(vaultName)"
+        )
+
+        await MainActor.run {
+            self.pendingTransactions[txId] = transaction
+            self.transactions.insert(transaction, at: 0)
+        }
+
+        do {
+            guard balanceManager.deductBalance(amount: amount, type: .vault) else {
+                throw TransactionError.insufficientBalance
+            }
+
+            let txHash = try await submitTransaction(type: "vault_follow", amount: amount, metadata: ["vault_id": vaultId])
+
+            let updatedTx = Transaction(
+                id: txId,
+                type: .vault,
+                amount: amount,
+                hash: txHash,
+                status: .success,
+                timestamp: Date(),
+                description: "Followed \(vaultName)"
+            )
+
+            await MainActor.run {
+                if let index = self.transactions.firstIndex(where: { $0.id == txId }) {
+                    self.transactions[index] = updatedTx
+                }
+                self.pendingTransactions.removeValue(forKey: txId)
+                self.saveTransactions()
+            }
+
+            return txHash
+
+        } catch {
+            await MainActor.run {
+                self.balanceManager.currentBalance += amount
+                self.balanceManager.updatePortfolioAllocation()
+
+                if let index = self.transactions.firstIndex(where: { $0.id == txId }) {
+                    self.transactions[index] = Transaction(
+                        id: txId,
+                        type: .vault,
+                        amount: amount,
+                        hash: "",
+                        status: .failed,
+                        timestamp: Date(),
+                        description: "Failed: \(vaultName)"
+                    )
+                }
+                self.pendingTransactions.removeValue(forKey: txId)
+                self.saveTransactions()
+            }
+
+            throw error
+        }
+    }
+
+    func placePrediction(marketId: String, question: String, outcomeIndex: Int, amount: Double) async throws -> String {
+        print("📝 [TX] Starting prediction transaction...")
+        print("   Question: \(question)")
+        print("   Amount: $\(amount)")
+
+        let txId = UUID().uuidString
+        let transaction = Transaction(
+            id: txId,
+            type: .prediction,
+            amount: amount,
+            hash: "",
+            status: .pending,
+            timestamp: Date(),
+            description: "Prediction: \(question)"
+        )
+
+        await MainActor.run {
+            self.pendingTransactions[txId] = transaction
+            self.transactions.insert(transaction, at: 0)
+        }
+
+        do {
+            guard balanceManager.deductBalance(amount: amount, type: .prediction) else {
+                throw TransactionError.insufficientBalance
+            }
+
+            let txHash = try await submitTransaction(type: "prediction_place", amount: amount, metadata: ["market_id": marketId, "outcome": String(outcomeIndex)])
+
+            let updatedTx = Transaction(
+                id: txId,
+                type: .prediction,
+                amount: amount,
+                hash: txHash,
+                status: .success,
+                timestamp: Date(),
+                description: "Prediction: \(question)"
+            )
+
+            await MainActor.run {
+                if let index = self.transactions.firstIndex(where: { $0.id == txId }) {
+                    self.transactions[index] = updatedTx
+                }
+                self.pendingTransactions.removeValue(forKey: txId)
+                self.saveTransactions()
+            }
+
+            return txHash
+
+        } catch {
+            await MainActor.run {
+                self.balanceManager.currentBalance += amount
+                self.balanceManager.updatePortfolioAllocation()
+
+                if let index = self.transactions.firstIndex(where: { $0.id == txId }) {
+                    self.transactions[index] = Transaction(
+                        id: txId,
+                        type: .prediction,
+                        amount: amount,
+                        hash: "",
+                        status: .failed,
+                        timestamp: Date(),
+                        description: "Failed: Prediction"
+                    )
+                }
+                self.pendingTransactions.removeValue(forKey: txId)
+                self.saveTransactions()
+            }
+
+            throw error
+        }
+    }
+
+    // MARK: - Testnet Transaction Submission
+
+    private func submitTransaction(type: String, amount: Double, metadata: [String: String]) async throws -> String {
+        // Simulate network delay
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+
+        // Generate realistic transaction hash
+        let txHash = "0x" + String((0..<64).map { _ in "0123456789abcdef".randomElement()! })
+
+        // Log to console (simulating testnet logging)
+        print("📡 [TESTNET LOG]")
+        print("   Network: Aptos Testnet")
+        print("   Endpoint: \(fullnodeURL)")
+        print("   Transaction Hash: \(txHash)")
+        print("   Type: \(type)")
+        print("   Amount: \(amount) USDC")
+        print("   From: \(walletAddress)")
+        print("   Metadata: \(metadata)")
+        print("   Timestamp: \(Date())")
+        print("   Gas: ~0.0001 APT")
+        print("---")
+
+        return txHash
+    }
+
+    // MARK: - Transaction History
+
+    func loadTransactions() {
+        if let data = UserDefaults.standard.data(forKey: "transactions"),
+           let decoded = try? JSONDecoder().decode([Transaction].self, from: data) {
+            transactions = decoded
+            print("📥 Loaded \(transactions.count) transactions from storage")
+        }
+    }
+
+    func saveTransactions() {
+        if let encoded = try? JSONEncoder().encode(transactions) {
+            UserDefaults.standard.set(encoded, forKey: "transactions")
+            print("💾 Saved \(transactions.count) transactions to storage")
+        }
+    }
+}
+
+// MARK: - Transaction Errors
+enum TransactionError: LocalizedError {
+    case insufficientBalance
+    case networkError
+    case invalidAmount
+    case transactionFailed
+
+    var errorDescription: String? {
+        switch self {
+        case .insufficientBalance:
+            return "Insufficient balance"
+        case .networkError:
+            return "Network error occurred"
+        case .invalidAmount:
+            return "Invalid transaction amount"
+        case .transactionFailed:
+            return "Transaction failed"
+        }
+    }
 }

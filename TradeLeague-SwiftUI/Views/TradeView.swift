@@ -92,17 +92,17 @@ struct TradeView: View {
                     currentScore: 95000,
                     rank: 1
                 ),
-                name: "Hyperion LP Strategy",
+                name: "Tapp Pool - Powered by Kana Labs",
                 strategy: .liquidityProvision,
-                venue: .hyperion,
-                totalAUM: 500000,
-                performanceFee: 15,
-                allTimeReturn: 45.8,
-                weeklyReturn: 3.2,
-                monthlyReturn: 12.1,
-                followers: 342,
-                description: "Conservative liquidity provision strategy focusing on stable pools",
-                riskLevel: .conservative
+                venue: .tapp,
+                totalAUM: 850000,
+                performanceFee: 12,
+                allTimeReturn: 78.9,
+                weeklyReturn: 5.4,
+                monthlyReturn: 19.7,
+                followers: 542,
+                description: "Earn 10k Tapp Points. Elite liquidity provision strategy powered by Kana Labs technology",
+                riskLevel: .moderate
             ),
             Vault(
                 id: "2",
@@ -129,6 +129,32 @@ struct TradeView: View {
                 followers: 156,
                 description: "Aggressive perpetual futures trading with high returns",
                 riskLevel: .aggressive
+            ),
+            Vault(
+                id: "3",
+                managerId: "user3",
+                manager: User(
+                    id: "user3",
+                    walletAddress: "0x789",
+                    username: "YieldHunter",
+                    avatar: nil,
+                    totalVolume: 600000,
+                    inviteCode: "YIELD",
+                    createdAt: Date(),
+                    currentScore: 72000,
+                    rank: 5
+                ),
+                name: "Hyperion LP Strategy",
+                strategy: .liquidityProvision,
+                venue: .hyperion,
+                totalAUM: 500000,
+                performanceFee: 15,
+                allTimeReturn: 45.8,
+                weeklyReturn: 3.2,
+                monthlyReturn: 12.1,
+                followers: 342,
+                description: "Conservative liquidity provision strategy focusing on stable pools",
+                riskLevel: .conservative
             )
         ]
     }
@@ -436,6 +462,9 @@ struct VaultDetailView: View {
     let vault: Vault
     @Environment(\.dismiss) private var dismiss
     @State private var followAmount = ""
+    @State private var showSuccessAlert = false
+    @State private var showInsufficientFundsAlert = false
+    @StateObject private var balanceManager = BalanceManager.shared
 
     var body: some View {
         NavigationView {
@@ -553,10 +582,9 @@ struct VaultDetailView: View {
                                 .foregroundColor(Theme.ColorPalette.textSecondary)
 
                             OptimizedPrimaryButton(title: "Follow") {
-                                // Follow vault action
-                                dismiss()
+                                followVault()
                             }
-                            .disabled(followAmount.isEmpty)
+                            .disabled(followAmount.isEmpty || !isValidAmount)
                         }
                         .padding()
                         .optimizedGlassCard(style: .elevated)
@@ -573,6 +601,50 @@ struct VaultDetailView: View {
                         dismiss()
                     }
                     .foregroundColor(Theme.ColorPalette.primaryBlue)
+                }
+            }
+            .alert("Vault Followed!", isPresented: $showSuccessAlert) {
+                Button("OK") { dismiss() }
+            } message: {
+                Text("You are now following this vault. Check your portfolio for updated balance.")
+            }
+            .alert("Insufficient Funds", isPresented: $showInsufficientFundsAlert) {
+                Button("OK") { }
+            } message: {
+                Text("You don't have enough balance to follow this vault.")
+            }
+        }
+    }
+
+    private var isValidAmount: Bool {
+        guard let amount = Double(followAmount) else { return false }
+        return amount > 0 && amount <= balanceManager.currentBalance
+    }
+
+    private func followVault() {
+        guard let amount = Double(followAmount), amount > 0 else { return }
+
+        Task {
+            do {
+                let txHash = try await TransactionManager.shared.followVault(
+                    vaultId: vault.id,
+                    vaultName: vault.name,
+                    amount: amount
+                )
+
+                await MainActor.run {
+                    showSuccessAlert = true
+                    print("✅ Successfully followed vault: \(vault.name)")
+                    print("   Transaction: \(txHash)")
+                }
+            } catch TransactionError.insufficientBalance {
+                await MainActor.run {
+                    showInsufficientFundsAlert = true
+                }
+            } catch {
+                await MainActor.run {
+                    print("❌ Failed to follow vault: \(error.localizedDescription)")
+                    showInsufficientFundsAlert = true
                 }
             }
         }

@@ -27,6 +27,5 @@ echo "4. Save the Panora logo (teal P stripes) as:"
 echo "   → panora-logo.imageset/panora-logo.png"
 echo ""
 echo "5. Then run: cd /Users/ellis.osborn/Aptos/TradeLeague-SwiftUI && xcodebuild -project TradeLeague.xcodeproj -scheme TradeLeague build"
-echo ""
 echo "✨ The logos will then display properly in your app!"
 

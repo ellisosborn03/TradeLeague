@@ -1,28 +1,31 @@
 import SwiftUI
 
 extension Color {
-    // Primary colors from the React Native app
-    static let primaryBlue = Color(hex: "6C5CE7")
-    static let successGreen = Color(hex: "00B894")
+    // Primary colors - White and Orange theme
+    static let primaryBlue = Color(hex: "FF6B35") // Orange (replaces blue)
+    static let accentOrange = Color(hex: "FF6B35") // Primary orange
+    static let accentPurple = Color(hex: "FF6B35") // Use orange for purple accents too
+    static let successGreen = Color(hex: "4ECB71") // Bright green
     static let dangerRed = Color(hex: "FF6B6B")
     static let warningYellow = Color(hex: "FDCB6E")
 
-    // Background colors
-    static let darkBackground = Color(hex: "0A0E27")
-    static let surfaceColor = Color(hex: "151A3A")
-    static let surfaceLight = Color(hex: "1E2444")
-    static let borderColor = Color(hex: "2A3155")
+    // Background colors - White/Light theme
+    static let darkBackground = Color.white // White background
+    static let surfaceColor = Color(hex: "FFFFFF") // White surface
+    static let cardBackground = Color(hex: "F8F9FA") // Light gray for cards
+    static let surfaceLight = Color(hex: "F8F9FA")
+    static let borderColor = Color(hex: "E9ECEF")
 
-    // Text colors
-    static let primaryText = Color.white
-    static let secondaryText = Color(hex: "8B92B9")
-    static let tertiaryText = Color(hex: "6B7199")
+    // Text colors - Dark text on light background
+    static let primaryText = Color(hex: "1A1A1A") // Dark gray/black
+    static let secondaryText = Color(hex: "6C757D") // Medium gray
+    static let tertiaryText = Color(hex: "ADB5BD") // Light gray
 
     // Chart colors
-    static let chartGreen = Color(hex: "00B894")
+    static let chartGreen = Color(hex: "4ECB71")
     static let chartRed = Color(hex: "FF6B6B")
     static let chartBlue = Color(hex: "74B9FF")
-    static let chartPurple = Color(hex: "6C5CE7")
+    static let chartPurple = Color(hex: "FF6B35") // Orange for purple charts
 
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)

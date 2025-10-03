@@ -29,12 +29,12 @@ struct PredictView: View {
                                     .reveal(delay: 0.1)
 
                                 HStack(spacing: 8) {
-                                    Text("Powered by Panama Predictions")
+                                    Text("Powered by Kana Labs")
                                         .font(Theme.Typography.bodyS)
                                         .foregroundColor(Theme.ColorPalette.textSecondary)
                                         .reveal(delay: 0.2)
 
-                                    SponsorLogoView.small("Panama Predictions")
+                                    SponsorLogoView.small("Kana Labs")
                                         .reveal(delay: 0.3)
                                 }
                             }
@@ -83,12 +83,12 @@ struct PredictView: View {
     private func loadMarkets() {
         // Mock data - replace with actual API call
         markets = [
-            // APT first as requested
+            // Kana Labs Leveraged Prediction Markets
             PredictionMarket(
                 id: "3",
-                sponsor: "Aptos",
-                sponsorLogo: "aptos-logo",
-                question: "Will APT price reach $15 by end of week?",
+                sponsor: "Kana Labs",
+                sponsorLogo: "kanalabs",
+                question: "Will APT price reach $15 by end of week? 10x Leveraged",
                 outcomes: [
                     PredictionOutcome(index: 0, label: "Yes", probability: 0.65, totalStaked: 12500, color: "00B894"),
                     PredictionOutcome(index: 1, label: "No", probability: 0.35, totalStaked: 6750, color: "FF6B6B")
@@ -612,10 +612,31 @@ struct PredictionMarketDetailView: View {
               let selectedIndex = selectedOutcome,
               stake > 0 else { return }
 
-        if balanceManager.deductBalance(amount: stake, type: .prediction) {
-            showSuccessAlert = true
-        } else {
-            showInsufficientFundsAlert = true
+        Task {
+            do {
+                let txHash = try await TransactionManager.shared.placePrediction(
+                    marketId: market.id,
+                    question: market.question,
+                    outcomeIndex: selectedIndex,
+                    amount: stake
+                )
+
+                await MainActor.run {
+                    showSuccessAlert = true
+                    print("✅ Successfully placed prediction")
+                    print("   Market: \(market.question)")
+                    print("   Transaction: \(txHash)")
+                }
+            } catch TransactionError.insufficientBalance {
+                await MainActor.run {
+                    showInsufficientFundsAlert = true
+                }
+            } catch {
+                await MainActor.run {
+                    print("❌ Failed to place prediction: \(error.localizedDescription)")
+                    showInsufficientFundsAlert = true
+                }
+            }
         }
     }
 }

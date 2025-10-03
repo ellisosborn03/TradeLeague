@@ -21,6 +21,12 @@ struct ContentView: View {
                     Text("Predict")
                 }
 
+            AptosTestView()
+                .tabItem {
+                    Image(systemName: "dollarsign.circle.fill")
+                    Text("Aptos")
+                }
+
             ProfileView()
                 .tabItem {
                     Image(systemName: "person.circle.fill")

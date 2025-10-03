@@ -116,6 +116,18 @@ struct LeagueView: View {
         ]
 
         sponsoredLeagues = [
+            // Kana Labs Options Trading - Top League
+            SponsoredLeague(
+                id: "kanalabs",
+                sponsorName: "Kana Labs",
+                sponsorLogo: "kanalabs",
+                leagueName: "Kana Labs Options Trading",
+                prizePool: 15000,
+                entryFee: 150,
+                participants: samplePlayers,
+                isExpanded: false,
+                endDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()
+            ),
             // Circle Challenge
             SponsoredLeague(
                 id: "circle",
@@ -151,18 +163,6 @@ struct LeagueView: View {
                 participants: samplePlayers,
                 isExpanded: false,
                 endDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
-            ),
-            // Kana Labs Challenge
-            SponsoredLeague(
-                id: "kanalabs",
-                sponsorName: "Kana Labs",
-                sponsorLogo: "kanalabs",
-                leagueName: "Kana Labs Challenge",
-                prizePool: 5000,
-                entryFee: 50,
-                participants: samplePlayers,
-                isExpanded: false,
-                endDate: Calendar.current.date(byAdding: .day, value: 2, to: Date()) ?? Date()
             ),
             // Kofi Challenge
             SponsoredLeague(
@@ -1464,7 +1464,7 @@ struct LeagueJoinView: View {
         case "hyperion":
             return "Hybrid orderbook/AMM sprint: maximize volume-weighted PnL on approved pairs."
         case "kanalabs":
-            return "Execute cross-DEX routes via Kana Labs; score = (net PnL + routing efficiency bonus)."
+            return "Trade options using perps on Kana Labs. Master leveraged strategies and risk management to maximize returns."
         case "kofi":
             return "Stake on Aptos via Kofi. Highest net staking APY captured (slashing-adjusted) wins."
         case "merkle":
@@ -1485,7 +1485,7 @@ struct LeagueJoinView: View {
         case "circle": return "5"
         case "ekiden": return "18"
         case "hyperion": return "22"
-        case "kanalabs": return "31"
+        case "kanalabs": return "87"
         case "kofi": return "40"
         case "merkle": return "27"
         case "nodit": return "36"
@@ -1500,7 +1500,7 @@ struct LeagueJoinView: View {
         case "circle": return "4 days, 23 hr"
         case "ekiden": return "6 days, 5 hr"
         case "hyperion": return "3 days, 14 hr"
-        case "kanalabs": return "2 days, 19 hr"
+        case "kanalabs": return "7 days, 0 hr"
         case "kofi": return "5 days, 2 hr"
         case "merkle": return "1 day, 20 hr"
         case "nodit": return "6 days, 12 hr"
@@ -1511,12 +1511,31 @@ struct LeagueJoinView: View {
     }
 
     private func joinLeague() {
-        let entryAmount = 50.0 // Fixed $50 entry as requested
+        let entryAmount = league.entryFee
 
-        if balanceManager.deductBalance(amount: entryAmount, type: .league) {
-            showSuccessAlert = true
-        } else {
-            showInsufficientFundsAlert = true
+        Task {
+            do {
+                let txHash = try await TransactionManager.shared.joinLeague(
+                    leagueId: league.id,
+                    leagueName: league.leagueName,
+                    entryFee: entryAmount
+                )
+
+                await MainActor.run {
+                    showSuccessAlert = true
+                    print("✅ Successfully joined league: \(league.leagueName)")
+                    print("   Transaction: \(txHash)")
+                }
+            } catch TransactionError.insufficientBalance {
+                await MainActor.run {
+                    showInsufficientFundsAlert = true
+                }
+            } catch {
+                await MainActor.run {
+                    print("❌ Failed to join league: \(error.localizedDescription)")
+                    showInsufficientFundsAlert = true
+                }
+            }
         }
     }
 }

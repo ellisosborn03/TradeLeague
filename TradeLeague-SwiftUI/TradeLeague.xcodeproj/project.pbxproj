@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		433A1A1C2E8DEA96009C4401 /* AptosTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433A1A1B2E8DEA89009C4401 /* AptosTestView.swift */; };
+		433A1A1E2E8DEAA3009C4401 /* TransactionLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433A1A1D2E8DEA9A009C4401 /* TransactionLinkView.swift */; };
 		E01F5D2E2C9A8B6F004A2B1E /* TradeLeagueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01F5D2D2C9A8B6F004A2B1E /* TradeLeagueApp.swift */; };
 		E01F5D302C9A8B6F004A2B1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01F5D2F2C9A8B6F004A2B1E /* ContentView.swift */; };
 		E01F5D322C9A8B70004A2B1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E01F5D312C9A8B70004A2B1E /* Assets.xcassets */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		433A1A1B2E8DEA89009C4401 /* AptosTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AptosTestView.swift; sourceTree = "<group>"; };
+		433A1A1D2E8DEA9A009C4401 /* TransactionLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionLinkView.swift; sourceTree = "<group>"; };
 		E01F5D2A2C9A8B6F004A2B1E /* TradeLeague.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TradeLeague.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E01F5D2D2C9A8B6F004A2B1E /* TradeLeagueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradeLeagueApp.swift; sourceTree = "<group>"; };
 		E01F5D2F2C9A8B6F004A2B1E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -52,7 +56,7 @@
 		E01F5D212C9A8B6F004A2B1E = {
 			isa = PBXGroup;
 			children = (
-				E01F5D2C2C9A8B6F004A2B1E /* TradeLeague */,
+				E01F5D2C2C9A8B6F004A2B1E,
 				E01F5D2B2C9A8B6F004A2B1E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,7 +69,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E01F5D2C2C9A8B6F004A2B1E /* TradeLeague */ = {
+		E01F5D2C2C9A8B6F004A2B1E = {
 			isa = PBXGroup;
 			children = (
 				E01F5D2D2C9A8B6F004A2B1E /* TradeLeagueApp.swift */,
@@ -108,6 +112,8 @@
 		E01F5D4F2C9A8C1F004A2B1E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				433A1A1D2E8DEA9A009C4401 /* TransactionLinkView.swift */,
+				433A1A1B2E8DEA89009C4401 /* AptosTestView.swift */,
 				E01F5D412C9A8BAF004A2B1E /* LeagueView.swift */,
 				E01F5D432C9A8BBF004A2B1E /* TradeView.swift */,
 				E01F5D452C9A8BCF004A2B1E /* PredictView.swift */,
@@ -199,6 +205,7 @@
 			files = (
 				E01F5D4A2C9A8BEF004A2B1E /* AptosService.swift in Sources */,
 				E01F5D482C9A8BDF004A2B1E /* ProfileView.swift in Sources */,
+				433A1A1C2E8DEA96009C4401 /* AptosTestView.swift in Sources */,
 				E01F5D462C9A8BCF004A2B1E /* PredictView.swift in Sources */,
 				E01F5D442C9A8BBF004A2B1E /* TradeView.swift in Sources */,
 				E01F5D422C9A8BAF004A2B1E /* LeagueView.swift in Sources */,
@@ -207,6 +214,7 @@
 				E01F5D2E2C9A8B6F004A2B1E /* TradeLeagueApp.swift in Sources */,
 				E01F5D512C9A8C3F004A2B1E /* Theme.swift in Sources */,
 				E01F5D532C9A8C4F004A2B1E /* AnimationComponents.swift in Sources */,
+				433A1A1E2E8DEAA3009C4401 /* TransactionLinkView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
