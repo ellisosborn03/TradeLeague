@@ -12,6 +12,15 @@ TradeLeague is fantasy football for crypto, a social DeFi super app built on Apt
 
 **Options trading already existed, but Robinhood made it accessible.** In the same way, TradeLeague takes DeFi products such as perps, prediction markets, and vault strategies and delivers them through a mobile, easy-to-use app that billions of people are already familiar with.
 
+![Product 1](https://drive.google.com/uc?export=view&id=1tcEgrZBy_VtpXTG7h2mZjliVOA09cQGN)
+![Product 2](https://drive.google.com/uc?export=view&id=1DqH7UXSIfh0iRVpx8NMfYuUPn9WrU4Nl)
+![Product 3](https://drive.google.com/uc?export=view&id=17hpQnfzG5rXjI2J0CJwM7h6pTuWWHCvs)
+![Product 4](https://drive.google.com/uc?export=view&id=1tl_UJa4koa-G2gzmG7HvJu7yLukkLBZN)
+
+## Demo Video — Social DeFi Super App built on Aptos
+
+[![Watch the demo](https://drive.google.com/uc?export=view&id=1noGeyCn4gel6laIjnp8uyrlohbozxlrH)](https://drive.google.com/file/d/177pdVQdyb2IMxKwoFO4aLl_diwC5KKp_/view?usp=share_link)
+
 ### 🏆 Leagues: DeFi as a Sport
 
 A novel feature is **leagues**, where users join structured competitions that feel like fantasy sports for crypto. Each league has its own rules, live leaderboards, and rewards, letting friends and communities compete head-to-head. Alongside leagues, vault following and prediction markets give users more ways to engage with DeFi as a sport: sponsored competitions, social bragging rights, and real prizes for performance. This makes trading social, accessible, and fun in a way DeFi has never been.
@@ -72,17 +81,6 @@ Aptos/
 - **Vault Following**: Copy successful DeFi strategies with one tap
 - **Prediction Markets**: Sponsored prediction events with prizes
 - **Social Trading**: Activity feed, rankings, and trader profiles
-
-### Product Images
-
-![Product 1](https://drive.google.com/uc?export=view&id=1tcEgrZBy_VtpXTG7h2mZjliVOA09cQGN)
-![Product 2](https://drive.google.com/uc?export=view&id=1DqH7UXSIfh0iRVpx8NMfYuUPn9WrU4Nl)
-![Product 3](https://drive.google.com/uc?export=view&id=17hpQnfzG5rXjI2J0CJwM7h6pTuWWHCvs)
-![Product 4](https://drive.google.com/uc?export=view&id=1tl_UJa4koa-G2gzmG7HvJu7yLukkLBZN)
-
-## Demo Video — Social DeFi Super App built on Aptos
-
-[![Watch the demo](https://drive.google.com/uc?export=view&id=1noGeyCn4gel6laIjnp8uyrlohbozxlrH)](https://drive.google.com/file/d/177pdVQdyb2IMxKwoFO4aLl_diwC5KKp_/view?usp=share_link)
 
 ### Technical Highlights
 - **Aptos Keyless** - Account abstraction for seamless onboarding without seed phrases
