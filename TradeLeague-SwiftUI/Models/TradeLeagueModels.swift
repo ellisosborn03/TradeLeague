@@ -699,13 +699,13 @@ class TransactionManager: ObservableObject {
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
 
             // Use the actual wallet address and private key file
+            // --account is the receiver, --sender-account is optional (derived from private key)
             process.arguments = [
                 "aptos",
                 "account",
                 "transfer",
-                "--sender-account", walletAddress,
-                "--receiver-account", walletAddress, // Send to self
-                "--amount", "1",
+                "--account", walletAddress, // Send to self (receiver)
+                "--amount", "1", // 1 octa
                 "--assume-yes",
                 "--url", "https://fullnode.testnet.aptoslabs.com/v1",
                 "--private-key-file", "/Users/ellis.osborn/Aptos/TradeLeague/.aptos-wallets/wallet-a"
@@ -739,13 +739,17 @@ class TransactionManager: ObservableObject {
                     }
 
                     // Extract transaction hash from output
-                    // Common patterns: "hash: 0x..." or just "0x..." on its own line
+                    // Format 1: "Transaction submitted: https://explorer.aptoslabs.com/txn/0x..."
+                    // Format 2: "transaction_hash": "0x..."
+                    // Format 3: Just "0x..." on its own line
                     if let range = output.range(of: "0x[a-f0-9]{64}", options: .regularExpression) {
                         let txHash = String(output[range])
                         print("✅ [CLI] Extracted transaction hash: \(txHash)")
+                        print("   Explorer: https://explorer.aptoslabs.com/txn/\(txHash)?network=testnet")
                         continuation.resume(returning: txHash)
                     } else {
                         print("❌ [CLI] Could not extract transaction hash from output")
+                        print("   Output was: \(output)")
                         continuation.resume(throwing: TransactionError.transactionFailed)
                     }
                 }
