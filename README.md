@@ -1,4 +1,4 @@
-# TradeLeague: DeFi Social Super App
+# TradeLeague
 
 > Social DeFi super app built on Aptos where users trade, predict, and compete with friends through spot, perps, predictions, and copy trading.
 
