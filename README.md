@@ -94,14 +94,22 @@ Aptos/
 
 ## 📚 Documentation
 
-### Product Documentation
-- **[Product Requirements Doc](docs/product/PRD.md)** - Complete feature specifications
-- **[Demo Script](docs/product/DEMO_SCRIPT.md)** - Product walkthrough
-- **[Platform Integrations](docs/product/PLATFORM_INTEGRATIONS.md)** - DeFi platform partnerships
+**[📖 Complete Documentation →](docs/README.md)**
 
-### Development Guides
-- **[Mobile App Setup](docs/setup/mobile/)** - Mobile development setup
-- **[Sponsor Logos](docs/development/sponsor-logos/)** - UI customization guides
+### For Developers
+- **[🏗️ Architecture Guide](docs/ARCHITECTURE.md)** - System design and component architecture
+- **[🔧 Setup Guide](docs/SETUP.md)** - Complete development environment setup
+- **[📡 API Reference](docs/API.md)** - RESTful API and WebSocket documentation
+- **[🤝 Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute to the project
+
+### Product Documentation
+- **[📋 Product Requirements](docs/product/PRD.md)** - Complete feature specifications
+- **[🎬 Demo Script](docs/product/DEMO_SCRIPT.md)** - Product walkthrough
+- **[🔗 Platform Integrations](docs/product/PLATFORM_INTEGRATIONS.md)** - DeFi protocol partnerships
+
+### Setup Guides
+- **[📱 Mobile Development](docs/setup/mobile/)** - iOS and Android setup
+- **[🎨 UI Customization](docs/development/sponsor-logos/)** - Theming and branding
 
 ## 🛠 Technology Stack
 
