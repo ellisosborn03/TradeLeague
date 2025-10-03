@@ -8,7 +8,7 @@
 
 ## 🎯 Overview
 
-TradeLeague is fantasy football for crypto, a social DeFi super app built on Aptos. We transform complex financial primitives into intuitive, gamified mobile experiences where anyone can trade, predict, and compete with friends.
+TradeLeague is a social DeFi super app built on Aptos. We transform complex financial primitives into intuitive, gamified mobile experiences where anyone can trade, predict, and compete with friends.
 
 **Options trading already existed, but Robinhood made it accessible.** In the same way, TradeLeague takes DeFi products such as perps, prediction markets, and vault strategies and delivers them through a mobile, easy-to-use app that billions of people are already familiar with.
 
