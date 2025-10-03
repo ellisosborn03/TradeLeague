@@ -4,6 +4,10 @@
 
 **[@0xTradingLeague](https://twitter.com/0xTradingLeague)** | **[GitHub](https://github.com/ellisosborn03/TradeLeague)** | **[Demo Video](https://youtube.com/watch?v=ykivz0CzOUA)** | **[Pitch Deck](https://canva.com/design/DAGyRYsD7ss/ckNcDvvZfhWKFvmFIddv-Q/view?utm_content=DAGyRYsD7ss&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb8114c781f)**
 
+<a href="https://dorahacks.io/buidl/33564" target="_blank">
+  <img src="https://drive.google.com/uc?export=view&id=1K8ZGPBgjAKIJeiKj1TxvqxE4M1x22p7v" width="100%"/>
+</a>
+
 ---
 
 ## 🎯 Overview
