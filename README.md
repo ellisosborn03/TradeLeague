@@ -80,6 +80,9 @@ Aptos/
 ![Product 3](https://drive.google.com/uc?export=view&id=17hpQnfzG5rXjI2J0CJwM7h6pTuWWHCvs)
 ![Product 4](https://drive.google.com/uc?export=view&id=1tl_UJa4koa-G2gzmG7HvJu7yLukkLBZN)
 
+## Demo Video — Social DeFi Super App built on Aptos
+
+[![Watch the demo](https://drive.google.com/uc?export=view&id=1noGeyCn4gel6laIjnp8uyrlohbozxlrH)](https://drive.google.com/file/d/177pdVQdyb2IMxKwoFO4aLl_diwC5KKp_/view?usp=share_link)
 
 ### Technical Highlights
 - **Aptos Keyless** - Account abstraction for seamless onboarding without seed phrases
