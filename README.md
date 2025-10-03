@@ -188,8 +188,6 @@ TradeLeague is built for the **CTRL+Move hackathon** (August 4 - October 3, 2025
 - **Performance-Driven**: Built on Aptos's parallel execution and sub-second finality
 - **Ecosystem Integration**: Deep integration with Merkle Trade, Hyperion, Tapp, and Circle
 
-📄 **[View Complete Hackathon Strategy →](docs/hackathon/CTRL_MOVE_HACKATHON.md)**
-
 ## 🤝 Contributing
 
 For questions, collaboration opportunities, or feedback, please:
