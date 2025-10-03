@@ -1,6 +1,6 @@
-# TradeLeague: Fantasy Football for DeFi
+# TradeLeague: DeFi Social Super App
 
-> **Fantasy football for crypto** - a social DeFi super app built on Aptos where users trade, predict, and compete with friends through spot, perps, predictions, and copy trading.
+> Social DeFi super app built on Aptos where users trade, predict, and compete with friends through spot, perps, predictions, and copy trading.
 
 **[@0xTradingLeague](https://twitter.com/0xTradingLeague)** | **[GitHub](https://github.com/ellisosborn03/TradeLeague)** | **[Demo Video](https://youtube.com/watch?v=ykivz0CzOUA)** | **[Pitch Deck](https://canva.com/design/DAGyRYsD7ss/ckNcDvvZfhWKFvmFIddv-Q/view?utm_content=DAGyRYsD7ss&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb8114c781f)**
 
