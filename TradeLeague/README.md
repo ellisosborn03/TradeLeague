@@ -1,6 +1,6 @@
 # TradeLeague: Social DeFi Gaming on Aptos
 
-**TradeLeague** is a comprehensive social trading platform built on Aptos that gamifies DeFi participation through leagues, vault following, and prediction markets. This repository contains the complete implementation including React Native mobile app, Move smart contracts, Node.js backend API, and PostgreSQL database.
+**TradeLeague** is a comprehensive social trading platform built on Aptos that gamifies DeFi participation through leagues, vault following, and prediction markets. This repository contains the complete implementation including SwiftUI / React Native mobile app, Move smart contracts, Node.js backend API, and PostgreSQL database.
 
 ## 🚀 Quick Demo
 
