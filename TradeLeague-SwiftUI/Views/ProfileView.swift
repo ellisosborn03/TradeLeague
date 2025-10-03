@@ -720,43 +720,76 @@ struct TransactionCard: View {
     let transaction: Transaction
 
     var body: some View {
-        HStack {
-            // Transaction type icon
-            Circle()
-                .fill(transactionTypeColor.opacity(0.2))
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Image(systemName: transactionTypeIcon)
-                        .foregroundColor(transactionTypeColor)
-                )
+        VStack(spacing: 0) {
+            HStack {
+                // Transaction type icon
+                Circle()
+                    .fill(transactionTypeColor.opacity(0.2))
+                    .frame(width: 40, height: 40)
+                    .overlay(
+                        Image(systemName: transactionTypeIcon)
+                            .foregroundColor(transactionTypeColor)
+                    )
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(transaction.description)
-                    .font(.headline)
-                    .foregroundColor(Theme.ColorPalette.textPrimary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(transaction.description)
+                        .font(.headline)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
 
-                HStack {
-                    Text(transaction.type.rawValue)
-                        .font(.caption)
-                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                    HStack {
+                        Text(transaction.type.rawValue)
+                            .font(.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
 
-                    Text("•")
-                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                        Text("•")
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
 
-                    Text(transaction.timestamp, style: .relative)
-                        .font(.caption)
-                        .foregroundColor(Theme.ColorPalette.textSecondary)
+                        Text(transaction.timestamp, style: .relative)
+                            .font(.caption)
+                            .foregroundColor(Theme.ColorPalette.textSecondary)
+                    }
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("$\(Int(transaction.amount))")
+                        .font(.headline)
+                        .foregroundColor(Theme.ColorPalette.textPrimary)
+
+                    StatusBadge(status: transaction.status)
                 }
             }
 
-            Spacer()
-
-            VStack(alignment: .trailing) {
-                Text("$\(Int(transaction.amount))")
-                    .font(.headline)
-                    .foregroundColor(Theme.ColorPalette.textPrimary)
-
-                StatusBadge(status: transaction.status)
+            // Explorer link button for successful transactions with hash
+            if transaction.status == .success && !transaction.hash.isEmpty {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        let explorerLink = "https://explorer.aptoslabs.com/txn/\(transaction.hash)?network=testnet"
+                        if let url = URL(string: explorerLink) {
+                            #if os(iOS)
+                            UIApplication.shared.open(url)
+                            #elseif os(macOS)
+                            NSWorkspace.shared.open(url)
+                            #endif
+                        }
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "link.circle.fill")
+                                .font(.caption)
+                            Text("View on Explorer")
+                                .font(.caption)
+                                .fontWeight(.medium)
+                        }
+                        .foregroundColor(Theme.ColorPalette.primaryBlue)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Theme.ColorPalette.primaryBlue.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    .padding(.top, 8)
+                }
             }
         }
         .padding()
