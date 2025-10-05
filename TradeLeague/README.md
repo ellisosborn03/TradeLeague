@@ -1,378 +1,202 @@
-# TradeLeague: Social DeFi Gaming on Aptos
+# TradeLeague - Fantasy Football for DeFi
 
-**TradeLeague** is a comprehensive social trading platform built on Aptos that gamifies DeFi participation through leagues, vault following, and prediction markets. This repository contains the complete implementation including SwiftUI / React Native mobile app, Move smart contracts, Node.js backend API, and PostgreSQL database.
+> Social DeFi super app built on Aptos where users trade, predict, and compete with friends through spot, perps, predictions, and copy trading.
 
-## 🚀 Quick Demo
+**[@0xTradingLeague](https://twitter.com/0xTradingLeague)** | **[GitHub](https://github.com/ellisosborn03/TradeLeague)** | **[Demo Video](https://youtube.com/watch?v=ykivz0CzOUA)** | **[Pitch Deck](https://canva.com/design/DAGyRYsD7ss/ckNcDvvZfhWKFvmFIddv-Q/view?utm_content=DAGyRYsD7ss&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb8114c781f)**
 
-TradeLeague transforms complex DeFi into an intuitive, gamified mobile experience where users can:
+---
 
-- **Compete in Leagues**: Join sponsored leagues and climb leaderboards
-- **Follow Top Traders**: Copy successful vault strategies with one tap  
-- **Predict Markets**: Participate in sponsored prediction events
-- **Earn Rewards**: Get rewarded for performance, referrals, and participation
+## 🎯 Overview
 
-## 🏆 CTRL+Move Hackathon Integration
+TradeLeague is fantasy football for crypto, a social DeFi super app built on Aptos. We transform complex financial primitives into intuitive, gamified mobile experiences where anyone can trade, predict, and compete with friends.
 
-**TradeLeague is built for CTRL+Move** - the premier Aptos hackathon focused on real DeFi utility and breakthrough design (August 4 - October 3, 2025).
+**Options trading already existed, but Robinhood made it accessible.** In the same way, TradeLeague takes DeFi products such as perps, prediction markets, and vault strategies and delivers them through a mobile, easy-to-use app that billions of people are already familiar with.
 
-### Perfect Hackathon Alignment
-- ✅ **Real Utility**: Transforms complex DeFi into intuitive mobile experiences
-- ✅ **Breakthrough Design**: Gamified social trading with cross-platform competitions
-- ✅ **Performance-Driven**: Built on Aptos's parallel execution and sub-second finality
-- ✅ **Ecosystem Integration**: Deep integration with Merkle Trade, Hyperion, and Tapp Exchange
+### 🏆 Leagues: DeFi as a Sport
 
-### Featured Competitions
-- **Merkle Perpetuals Championship**: Weekly leveraged trading competitions with risk management scoring
-- **Hyperion CLMM Masters**: Monthly concentrated liquidity strategy competitions
-- **Tapp Innovation Sprints**: Bi-weekly custom hook development challenges
-- **Cross-Platform Grand Prix**: Monthly championship combining all platforms
+A novel feature is **leagues**, where users join structured competitions that feel like fantasy sports for crypto. Each league has its own rules, live leaderboards, and rewards, letting friends and communities compete head-to-head. Alongside leagues, vault following and prediction markets give users more ways to engage with DeFi as a sport: sponsored competitions, social bragging rights, and real prizes for performance. This makes trading social, accessible, and fun in a way DeFi has never been.
 
-📄 **[View Complete CTRL+Move Strategy →](../CTRL_MOVE_HACKATHON.md)**
+### ⚡ Built on Aptos
+
+TradeLeague is built natively on Aptos's parallel execution, sub-second finality, and low fees, delivering the speed and scalability needed for production-grade DeFi. We integrate directly with partners like **Merkle Trade**, **Hyperion**, **Tapp**, and **Circle** to showcase composability and real-world financial utility.
+
+**Just as fantasy football turned sports into a global phenomenon, TradeLeague will make DeFi social, competitive, and engaging for everyone.**
+
+## 📹 Demo & Resources
+
+![Product 1](https://drive.google.com/uc?export=view&id=1tcEgrZBy_VtpXTG7h2mZjliVOA09cQGN)
+![Product 2](https://drive.google.com/uc?export=view&id=1DqH7UXSIfh0iRVpx8NMfYuUPn9WrU4Nl)
+![Product 3](https://drive.google.com/uc?export=view&id=17hpQnfzG5rXjI2J0CJwM7h6pTuWWHCvs)
+![Product 4](https://drive.google.com/uc?export=view&id=1tl_UJa4koa-G2gzmG7HvJu7yLukkLBZN)
+
+## Demo Video 
+
+<a href="https://drive.google.com/file/d/177pdVQdyb2IMxKwoFO4aLl_diwC5KKp_/view?usp=share_link" target="_blank">
+  <img src="https://drive.google.com/uc?export=view&id=1noGeyCn4gel6laIjnp8uyrlohbozxlrH" width="320"/>
+</a>
+
+- **[Pitch Deck](https://canva.com/design/DAGyRYsD7ss/ckNcDvvZfhWKFvmFIddv-Q/view)** - Complete project presentation
+- **[GitHub Repository](https://github.com/ellisosborn03/TradeLeague)** - Open source code
+- **[Twitter](https://twitter.com/0xTradingLeague)** - Follow for updates
+
+## 🚀 Quick Start
+
+```bash
+# Install dependencies for mobile app
+cd TradeLeague
+npm install
+
+# Run on iOS
+npx react-native run-ios
+
+# Run on Android
+npx react-native run-android
+```
+
+## 📁 Project Structure
+
+```
+Aptos/
+├── TradeLeague/              # React Native mobile application
+│   ├── contracts/            # Move smart contracts
+│   ├── ios/                  # iOS native code
+│   └── README.md             # Mobile app documentation
+│
+├── TradeLeague-SwiftUI/      # Native iOS SwiftUI application
+│
+├── docs/                     # All documentation
+│   ├── hackathon/            # CTRL+Move hackathon materials
+│   ├── product/              # PRD, demos, and product specs
+│   ├── development/          # Development guides and notes
+│   └── setup/                # Setup and integration guides
+│
+└── scripts/                  # Utility scripts
+    ├── development/          # Development automation
+    └── deployment/           # Deployment and wallet management
+```
 
 ## 📱 Features
 
 ### Core Features
-- **League System**: Create/join competitive leagues with leaderboards
-- **Vault Following**: Copy trade successful DeFi strategies 
-- **Prediction Markets**: Bet on price movements and market outcomes
-- **Social Portfolio**: Track performance and share achievements
-- **Real-time Updates**: Live leaderboards and market data via WebSocket
+- **League System**: Competitive leagues with leaderboards and rewards
+- **Vault Following**: Copy successful DeFi strategies with one tap
+- **Prediction Markets**: Sponsored prediction events with prizes
+- **Social Trading**: Activity feed, rankings, and trader profiles
 
-### Sponsor Integrations
-- **Circle**: Programmable wallets and USDC infrastructure
-- **Hyperion**: CLMM liquidity strategies and composability
-- **Merkle Trade**: Perpetual futures trading
-- **Tapp Exchange**: Hook-based programmable liquidity
-- **Panora**: Price feeds and prediction data
-- **Kana Labs**: Cross-chain liquidity aggregation
-- **Nodit**: Enterprise Aptos infrastructure
-- **Ekiden**: On-chain derivatives platform
+### Technical Highlights
+- **Aptos Keyless** - Account abstraction for seamless onboarding without seed phrases
+- Cross-platform React Native mobile app
+- Move smart contracts on Aptos blockchain
+- Real-time leaderboards and activity feeds
+- Native iOS app with SwiftUI
+- PostgreSQL backend with Node.js API
 
-## 🏗️ Architecture
+## 📚 Documentation
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Native  │────│   Backend API   │────│ Aptos Testnet   │
-│   Mobile App    │    │   (Node.js)     │    │ Move Contracts  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │              ┌─────────────────┐             │
-         └──────────────│  PostgreSQL DB  │─────────────┘
-                        └─────────────────┘
-```
+### Product Documentation
+- **[Product Requirements Doc](docs/product/PRD.md)** - Complete feature specifications
+- **[Demo Script](docs/product/DEMO_SCRIPT.md)** - Product walkthrough
+- **[Platform Integrations](docs/product/PLATFORM_INTEGRATIONS.md)** - DeFi platform partnerships
 
-### Components
+### Development Guides
+- **[Mobile App Setup](docs/setup/mobile/)** - Mobile development setup
+- **[Sponsor Logos](docs/development/sponsor-logos/)** - UI customization guides
 
-1. **📱 React Native App** (`/TradeLeague/`)
-   - TypeScript-based mobile app with beautiful UI
-   - Tab navigation: League, Trade, Predict, You
-   - Real-time updates via WebSocket
-   - Aptos SDK integration
+## 🛠 Technology Stack
 
-2. **⛓️ Move Smart Contracts** (`/TradeLeague/contracts/`)
-   - `league_registry.move`: League creation and management
-   - `vault_manager.move`: Trading vault operations
-   - `prediction_market.move`: Prediction market logic
-   - `prize_router.move`: Reward distribution system
+**Frontend:**
+- React Native (Mobile)
+- SwiftUI (Native iOS)
+- TypeScript
 
-3. **🔧 Backend API** (`/TradeLeague/backend/`)
-   - Express.js REST API with TypeScript
-   - JWT authentication with wallet signatures
-   - Real-time WebSocket server
-   - Aptos blockchain event processing
+**Backend:**
+- Node.js / Express
+- PostgreSQL
+- Redis
 
-4. **💾 Database** (`/TradeLeague/backend/database/`)
-   - PostgreSQL with comprehensive schema
-   - 11 tables with proper relationships
-   - Automatic triggers and functions
-   - Performance optimized indexes
+**Blockchain:**
+- Aptos Move
+- Aptos SDK
+- [Aptos Keyless](https://aptos.dev/build/guides/aptos-keyless) - Account abstraction for passwordless auth
+- Petra Wallet integration
 
-## 🛠️ Setup & Installation
+## 🔧 Development Scripts
 
-### Prerequisites
-- Node.js 18+
-- React Native CLI
-- PostgreSQL 14+
-- iOS development setup (Xcode)
-- Aptos CLI (optional)
-
-### 1. Clone Repository
 ```bash
-git clone https://github.com/ellisosborn03/TradeLeague.git
-cd TradeLeague
+# Development automation
+./scripts/development/auto-commit.sh       # Auto-commit changes
+./scripts/development/claude-watcher.sh    # Watch for changes
+./scripts/development/add-sponsor-logos.sh # Update sponsor assets
+
+# Deployment
+./scripts/deployment/check-wallets.sh      # Verify wallet balances
 ```
 
-### 2. Setup Mobile App
+## 🌐 Integrated Platforms
+
+TradeLeague integrates with leading Aptos DeFi protocols:
+
+- **Merkle Trade** - Perpetual futures trading competitions
+- **Hyperion** - Concentrated liquidity market making
+- **Tapp Exchange** - Custom trading hook development
+
+## 📊 Smart Contract Architecture
+
+The Move smart contracts implement:
+- League management and scoring
+- Vault following and strategy replication
+- Prediction market resolution
+- Reward distribution
+- Referral tracking
+
+See `TradeLeague/contracts/` for contract source code.
+
+## 🚀 Deployment
+
+### Mobile App
 ```bash
 cd TradeLeague
-npm install
 
-# Install iOS dependencies
-cd ios && pod install && cd ..
-
-# Start Metro bundler
-npm start
-
-# Run on iOS simulator (in another terminal)
+# iOS
 npx react-native run-ios
+
+# Android
+npx react-native run-android
 ```
 
-### 3. Setup Backend
+### Smart Contracts
 ```bash
-cd backend
-npm install
-
-# Setup environment variables
-cp .env.example .env
-# Edit .env with your configuration
-
-# Build TypeScript
-npm run build
-
-# Start development server
-npm run dev
-```
-
-### 4. Setup Database
-```bash
-# Create PostgreSQL database
-createdb tradeleague
-
-# Run schema setup
-psql -d tradeleague -f backend/database/schema.sql
-```
-
-### 5. Deploy Smart Contracts (Optional)
-```bash
-cd contracts
-
-# Initialize Aptos CLI
-aptos init
-
-# Compile contracts
-aptos move compile
+cd TradeLeague/contracts
 
 # Deploy to testnet
-aptos move publish --named-addresses tradeleague=<your-address>
+aptos move publish --profile testnet
+
+# Deploy to mainnet
+aptos move publish --profile mainnet
 ```
 
-## 📋 Environment Configuration
+## 🏆 CTRL+Move Hackathon
 
-### Backend Environment Variables
-```env
-# Server
-PORT=3000
-NODE_ENV=development
-JWT_SECRET=your-secret-key
+TradeLeague is built for the **CTRL+Move hackathon** (August 4 - October 3, 2025), showcasing:
 
-# Database
-DB_HOST=localhost
-DB_NAME=tradeleague
-DB_USER=postgres
-DB_PASSWORD=your-password
+- **Real Utility**: Making DeFi accessible through mobile-first design
+- **Breakthrough Design**: Gamified social trading that feels like fantasy sports
+- **Performance-Driven**: Built on Aptos's parallel execution and sub-second finality
+- **Ecosystem Integration**: Deep integration with Merkle Trade, Hyperion, Tapp, and Circle
 
-# Aptos
-APTOS_FULLNODE_URL=https://fullnode.testnet.aptoslabs.com/v1
-TRADELEAGUE_MODULE_ADDRESS=0x1
-
-# Partners (get from respective platforms)
-CIRCLE_API_KEY=your-circle-key
-HYPERION_API_KEY=your-hyperion-key
-MERKLE_API_KEY=your-merkle-key
-# ... etc
-```
-
-## 🧪 Testing
-
-### Run Mobile App Tests
-```bash
-cd TradeLeague
-npm test
-```
-
-### Run Backend Tests
-```bash
-cd backend
-npm test
-```
-
-### Manual Testing Checklist
-- [ ] App launches and navigation works
-- [ ] User can create/join leagues
-- [ ] Vault following interface functional
-- [ ] Prediction markets display correctly
-- [ ] Portfolio tracking works
-- [ ] WebSocket real-time updates
-- [ ] Backend API endpoints respond
-- [ ] Database operations complete
-
-## 📚 API Documentation
-
-### Authentication
-```bash
-POST /api/auth/wallet-login
-POST /api/auth/create-account
-GET /api/auth/me
-```
-
-### Leagues
-```bash
-GET /api/leagues
-POST /api/leagues
-GET /api/leagues/:id
-POST /api/leagues/:id/join
-GET /api/leagues/:id/leaderboard
-```
-
-### Vaults
-```bash
-GET /api/vaults
-POST /api/vaults/:id/follow
-GET /api/vaults/:id/performance
-```
-
-### Predictions
-```bash
-GET /api/predictions
-POST /api/predictions/:id/predict
-GET /api/predictions/:id/odds
-```
-
-### Users
-```bash
-GET /api/users/profile
-GET /api/users/leaderboard
-```
-
-### WebSocket Events
-```bash
-# Subscribe to channels
-{"type": "subscribe", "channel": "leagues"}
-{"type": "subscribe", "channel": "vault:123"}
-{"type": "subscribe", "channel": "prediction:456"}
-
-# Receive updates
-{"type": "leaderboard_update", "data": {...}}
-{"type": "vault_update", "data": {...}}
-{"type": "market_update", "data": {...}}
-```
-
-## 🎨 Design System
-
-### Colors
-```typescript
-const Colors = {
-  primary: '#6C5CE7',    // TradeLeague Purple
-  secondary: '#00B894',   // Success Green  
-  danger: '#FF6B6B',     // Loss Red
-  background: '#0A0E27',  // Deep Navy
-  surface: '#151A3A',    // Card Background
-};
-```
-
-### Typography
-```typescript
-const Typography = {
-  h1: { fontSize: 32, fontWeight: '600' },
-  h2: { fontSize: 24, fontWeight: '600' },
-  body: { fontSize: 16, fontWeight: '400' },
-  caption: { fontSize: 12, fontWeight: '400' },
-};
-```
-
-## 🔗 Smart Contract Addresses
-
-### Testnet Deployments
-```
-League Registry: 0x1::tradeleague_league_registry
-Vault Manager: 0x1::tradeleague_vault_manager  
-Prediction Market: 0x1::tradeleague_prediction_market
-Prize Router: 0x1::tradeleague_prize_router
-```
+📄 **[View Complete Hackathon Strategy →](docs/hackathon/CTRL_MOVE_HACKATHON.md)**
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-### Development Guidelines
-- Follow TypeScript strict mode
-- Use ESLint and Prettier for code formatting
-- Write tests for new features
-- Update documentation
-- Follow Move coding standards for smart contracts
+For questions, collaboration opportunities, or feedback, please:
+- Open an issue on [GitHub](https://github.com/ellisosborn03/TradeLeague)
+- Follow us on [Twitter](https://twitter.com/0xTradingLeague)
+- Watch our [demo video](https://youtube.com/watch?v=ykivz0CzOUA)
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🏆 Hackathon Demo
-
-### 90-Second Demo Script
-
-**0:00-0:10** - App opens to League page with live leaderboard
-> "TradeLeague brings social trading to Aptos testnet"
-
-**0:10-0:25** - Join Circle League sponsored event  
-> "Compete in sponsored leagues with real prizes"
-
-**0:25-0:40** - Navigate to Trade tab, follow top-performing vault
-> "Copy successful traders with one tap"
-
-**0:40-0:55** - Enter Panora price prediction market
-> "Predict markets powered by ecosystem partners"
-
-**0:55-1:10** - Check portfolio gains in You tab
-> "Track performance and claim rewards"
-
-**1:10-1:25** - Generate social sharing card with QR code
-> "Invite friends to grow your league"
-
-**1:25-1:30** - Close with ecosystem integration highlights
-> "TradeLeague: Where DeFi meets social gaming"
-
-### Key Metrics for Judges
-- ✅ **Innovation**: Novel social approach to DeFi onboarding
-- ✅ **Technical Excellence**: Complete full-stack implementation
-- ✅ **User Experience**: Beautiful, intuitive mobile interface  
-- ✅ **Ecosystem Integration**: 8+ Aptos partner integrations
-- ✅ **Market Potential**: Clear path from testnet to mainnet
-
-## 🏅 Hackathon Bounty Alignment
-
-TradeLeague directly addresses multiple sponsor bounties in the CTRL+Move Hackathon:
-
-### Tapp Exchange - Next-Gen DeFi: Beyond AMMs ($2,000)
-- **Integration**: Custom hook builder for social trading mechanics
-- **Innovation**: IL protection hooks, yield optimizer hooks, copy-trading pools
-- **Value**: Visual interface for creating trading hooks with mobile-first UX
-
-### Kana Labs - Build Next-Gen Trading Tools with Kana Perps ($5,000)
-- **Integration**: Cross-chain arbitrage finder and leveraged prediction markets
-- **Innovation**: Touch market using perps, funding rate arbitrage, copy trading bot
-- **Value**: Portfolio dashboard with multi-chain asset management
-
-### Nodit - Aptos Infrastructure Challenge ($1,000)
-- **Integration**: Real-time leaderboards via WebSocket, transaction monitoring
-- **Innovation**: Event-driven league updates, comprehensive analytics dashboard
-- **Value**: Enterprise-grade infrastructure with 99.99% uptime for social features
-
-### Hyperion - Liquidity & Capital Efficiency Challenge ($2,000)
-- **Integration**: CLMM strategy competitions, auto-range vaults
-- **Innovation**: Composability solutions using Hyperion SDK for better returns
-- **Value**: Gamified concentrated liquidity with social following mechanics
-
-**Total Potential Bounty Value: $10,000**
-
-## 📞 Support
-
-- **GitHub Issues**: [Create an issue](https://github.com/ellisosborn03/TradeLeague/issues)
+Copyright © 2025 TradeLeague. All rights reserved.
 
 ---
 
-**Built with ❤️ for the Aptos ecosystem**
-
-*TradeLeague democratizes DeFi access by transforming complex financial primitives into an intuitive, gamified mobile experience. Join the revolution! 🚀*
+**Built for CTRL+Move Hackathon 2025** | **Powered by Aptos** | **[@0xTradingLeague](https://twitter.com/0xTradingLeague)**
