@@ -16,14 +16,15 @@ class TransactionManager: ObservableObject {
         type: TransactionType,
         amount: Double,
         hash: String,
-        description: String
+        description: String,
+        status: TransactionStatus = .success
     ) {
         let transaction = Transaction(
             id: UUID().uuidString,
             type: type,
             amount: amount,
             hash: hash,
-            status: .success,
+            status: status,
             timestamp: Date(),
             description: description
         )
@@ -35,16 +36,75 @@ class TransactionManager: ObservableObject {
         saveTransactions()
     }
 
+    /// Add a pending transaction and execute it on the blockchain
+    /// Returns the transaction ID for tracking
+    func addAndExecuteTransaction(
+        type: TransactionType,
+        amount: Double,
+        description: String
+    ) async throws -> String {
+        // Create pending transaction with temporary hash
+        let transactionId = UUID().uuidString
+        let pendingTransaction = Transaction(
+            id: transactionId,
+            type: type,
+            amount: amount,
+            hash: "", // Will be updated with actual hash
+            status: .pending,
+            timestamp: Date(),
+            description: description
+        )
+
+        // Add to beginning of array (most recent first)
+        await MainActor.run {
+            transactions.insert(pendingTransaction, at: 0)
+            saveTransactions()
+        }
+
+        do {
+            // Execute the actual blockchain transaction
+            let (hash, _) = try await AptosService.shared.sendPayment(amountInAPT: amount)
+
+            // Update transaction with actual hash and success status
+            await MainActor.run {
+                updateTransaction(id: transactionId, hash: hash, status: .success)
+            }
+
+            return transactionId
+        } catch {
+            // Update transaction to failed status
+            await MainActor.run {
+                updateTransaction(id: transactionId, hash: "", status: .failed)
+            }
+            throw error
+        }
+    }
+
+    /// Update an existing transaction's status and hash
+    func updateTransaction(id: String, hash: String, status: TransactionStatus) {
+        if let index = transactions.firstIndex(where: { $0.id == id }) {
+            let updatedTransaction = Transaction(
+                id: transactions[index].id,
+                type: transactions[index].type,
+                amount: transactions[index].amount,
+                hash: hash.isEmpty ? transactions[index].hash : hash,
+                status: status,
+                timestamp: transactions[index].timestamp,
+                description: transactions[index].description
+            )
+            transactions[index] = updatedTransaction
+            saveTransactions()
+        }
+    }
+
     /// Load transactions from storage
     private func loadTransactions() {
-        // Try to load from UserDefaults
-        if let data = UserDefaults.standard.data(forKey: "userTransactions"),
-           let decoded = try? JSONDecoder().decode([Transaction].self, from: data) {
-            transactions = decoded
-        } else {
-            // Load mock data for demo
-            loadMockTransactions()
-        }
+        // Clear any old mock transactions from UserDefaults
+        // This ensures we start fresh with only real blockchain transactions
+        UserDefaults.standard.removeObject(forKey: "userTransactions")
+
+        // Start with empty transactions - only real blockchain transactions will be added
+        transactions = []
     }
 
     /// Save transactions to storage
@@ -56,44 +116,8 @@ class TransactionManager: ObservableObject {
 
     /// Load mock transactions for demo
     private func loadMockTransactions() {
-        transactions = [
-            Transaction(
-                id: "1",
-                type: .follow,
-                amount: 1000,
-                hash: "0x2d1bb97c5448f347dbd6b290fca2d51fa4da660fced328bd81d8c4dde8c2eec4",
-                status: .success,
-                timestamp: Date(),
-                description: "Followed Hyperion LP Strategy"
-            ),
-            Transaction(
-                id: "2",
-                type: .prediction,
-                amount: 250,
-                hash: "0x3a2cc8e76559d458ebd7a391849d99745ccf755c4f6c2526979d27c1dd9f3ec5",
-                status: .success,
-                timestamp: Calendar.current.date(byAdding: .hour, value: -2, to: Date()) ?? Date(),
-                description: "Predicted APT price increase"
-            ),
-            Transaction(
-                id: "3",
-                type: .deposit,
-                amount: 500,
-                hash: "0x5b3dd9f8770ad459fce8b4b2839e88856ddf866e5f7d3527a80e26c2fe8a4bc6",
-                status: .success,
-                timestamp: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
-                description: "Deposited to account"
-            ),
-            Transaction(
-                id: "4",
-                type: .reward,
-                amount: 150,
-                hash: "0x7c4ee9c68770bd570efe9c5f3a3f1891769af966ef8c4638b71e37d1de9b5dc7",
-                status: .success,
-                timestamp: Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date(),
-                description: "League reward claimed"
-            )
-        ]
+        // Start with empty transactions - only show real blockchain transactions
+        transactions = []
     }
 
     /// Clear all transactions (for testing)

@@ -382,8 +382,11 @@ struct PredictionCard: View {
 struct PredictionMarketDetailView: View {
     let market: PredictionMarket
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var transactionManager = TransactionManager.shared
     @State private var selectedOutcome: Int?
     @State private var stakeAmount = ""
+    @State private var isPlacing = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationView {
@@ -486,17 +489,32 @@ struct PredictionMarketDetailView: View {
                                 }
 
                                 Button {
-                                    // Make prediction action
+                                    Task {
+                                        await placePrediction()
+                                    }
                                 } label: {
-                                    Text("Place Prediction")
-                                        .font(.headline)
-                                        .foregroundColor(.white)
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(Color.primaryBlue)
-                                        .cornerRadius(12)
+                                    HStack {
+                                        if isPlacing {
+                                            ProgressView()
+                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        } else {
+                                            Text("Place Prediction")
+                                                .font(.headline)
+                                        }
+                                    }
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(isPlacing || stakeAmount.isEmpty || selectedOutcome == nil ? Color.gray : Color.primaryBlue)
+                                    .cornerRadius(12)
                                 }
-                                .disabled(stakeAmount.isEmpty || selectedOutcome == nil)
+                                .disabled(stakeAmount.isEmpty || selectedOutcome == nil || isPlacing)
+
+                                if let error = errorMessage {
+                                    Text(error)
+                                        .font(.caption)
+                                        .foregroundColor(.dangerRed)
+                                }
                             }
                             .padding()
                             .background(Color.surfaceColor)
@@ -516,6 +534,40 @@ struct PredictionMarketDetailView: View {
                 }
             }
         }
+    }
+
+    private func placePrediction() async {
+        guard let stake = Double(stakeAmount), stake > 0 else {
+            errorMessage = "Please enter a valid amount"
+            return
+        }
+
+        guard let outcome = selectedOutcome else {
+            errorMessage = "Please select an outcome"
+            return
+        }
+
+        isPlacing = true
+        errorMessage = nil
+
+        do {
+            let outcomeLabel = market.outcomes[outcome].label
+            // Execute real transaction on Aptos testnet
+            _ = try await transactionManager.addAndExecuteTransaction(
+                type: .prediction,
+                amount: stake,
+                description: "Predicted \"\(outcomeLabel)\" for: \(market.question)"
+            )
+
+            // Close the detail view after successful prediction
+            await MainActor.run {
+                dismiss()
+            }
+        } catch {
+            errorMessage = "Failed to place prediction: \(error.localizedDescription)"
+        }
+
+        isPlacing = false
     }
 }
 

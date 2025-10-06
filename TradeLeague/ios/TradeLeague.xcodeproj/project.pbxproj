@@ -14,6 +14,9 @@
 		761780F32CA45674006654EE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780F22CA45674006654EE /* Colors.swift */; };
 		761780F52CA45674006654EE /* TradeLeagueModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780F42CA45674006654EE /* TradeLeagueModels.swift */; };
 		761780F72CA45674006654EE /* AptosService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780F62CA45674006654EE /* AptosService.swift */; };
+		761781012CA45674006654EE /* TransactionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761781002CA45674006654EE /* TransactionManager.swift */; };
+		761781032CA45674006654EE /* AptosTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761781022CA45674006654EE /* AptosTestView.swift */; };
+		761781052CA45674006654EE /* TransactionLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761781042CA45674006654EE /* TransactionLinkView.swift */; };
 		761780F92CA45674006654EE /* LeagueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780F82CA45674006654EE /* LeagueView.swift */; };
 		761780FB2CA45674006654EE /* PredictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780FA2CA45674006654EE /* PredictView.swift */; };
 		761780FD2CA45674006654EE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780FC2CA45674006654EE /* ProfileView.swift */; };
@@ -33,6 +36,9 @@
 		761780F22CA45674006654EE /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = TradeLeague/Core/Colors.swift; sourceTree = "<group>"; };
 		761780F42CA45674006654EE /* TradeLeagueModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TradeLeagueModels.swift; path = TradeLeague/Models/TradeLeagueModels.swift; sourceTree = "<group>"; };
 		761780F62CA45674006654EE /* AptosService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AptosService.swift; path = TradeLeague/Services/AptosService.swift; sourceTree = "<group>"; };
+		761781002CA45674006654EE /* TransactionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TransactionManager.swift; path = TradeLeague/Services/TransactionManager.swift; sourceTree = "<group>"; };
+		761781022CA45674006654EE /* AptosTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AptosTestView.swift; path = TradeLeague/Views/AptosTestView.swift; sourceTree = "<group>"; };
+		761781042CA45674006654EE /* TransactionLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TransactionLinkView.swift; path = TradeLeague/Views/TransactionLinkView.swift; sourceTree = "<group>"; };
 		761780F82CA45674006654EE /* LeagueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LeagueView.swift; path = TradeLeague/Views/LeagueView.swift; sourceTree = "<group>"; };
 		761780FA2CA45674006654EE /* PredictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PredictView.swift; path = TradeLeague/Views/PredictView.swift; sourceTree = "<group>"; };
 		761780FC2CA45674006654EE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = TradeLeague/Views/ProfileView.swift; sourceTree = "<group>"; };
@@ -89,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				761780F62CA45674006654EE /* AptosService.swift */,
+				761781002CA45674006654EE /* TransactionManager.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -96,10 +103,12 @@
 		76178103 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				761781022CA45674006654EE /* AptosTestView.swift */,
 				761780F82CA45674006654EE /* LeagueView.swift */,
 				761780FA2CA45674006654EE /* PredictView.swift */,
 				761780FC2CA45674006654EE /* ProfileView.swift */,
 				761780FE2CA45674006654EE /* TradeView.swift */,
+				761781042CA45674006654EE /* TransactionLinkView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -208,6 +217,9 @@
 				761780F32CA45674006654EE /* Colors.swift in Sources */,
 				761780F52CA45674006654EE /* TradeLeagueModels.swift in Sources */,
 				761780F72CA45674006654EE /* AptosService.swift in Sources */,
+				761781012CA45674006654EE /* TransactionManager.swift in Sources */,
+				761781032CA45674006654EE /* AptosTestView.swift in Sources */,
+				761781052CA45674006654EE /* TransactionLinkView.swift in Sources */,
 				761780F92CA45674006654EE /* LeagueView.swift in Sources */,
 				761780FB2CA45674006654EE /* PredictView.swift in Sources */,
 				761780FD2CA45674006654EE /* ProfileView.swift in Sources */,

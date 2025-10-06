@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 #if canImport(UIKit)
 import UIKit
@@ -594,14 +595,16 @@ class TransactionManager: ObservableObject {
             let explorerLink = "https://explorer.aptoslabs.com/txn/\(txHash)?network=testnet"
 
             // Log detailed transaction information
+            let amountInAPT = amount / 1000.0
             print("📡 [TESTNET LOG]")
             print("   Network: Aptos Testnet")
             print("   RPC Endpoint: \(fullnodeURL)")
             print("   Transaction Hash: \(txHash)")
             print("   Explorer Link: \(explorerLink)")
             print("   Type: \(type)")
-            print("   Amount: \(amount) USDC")
+            print("   Amount: $\(amount) USD → \(amountInAPT) APT")
             print("   From: \(walletAddress)")
+            print("   To: 0xadd13b17d2ed6eba21fd5a44849c88734ccf644b3f5b1415978d16b99294de2a")
             print("   Metadata: \(metadata)")
             print("   Timestamp: \(Date())")
             print("   Estimated Gas: ~0.0001 APT")
@@ -611,45 +614,42 @@ class TransactionManager: ObservableObject {
 
             return txHash
         } catch {
-            print("⚠️ [TESTNET] Failed to submit real transaction, error: \(error.localizedDescription)")
-            print("   Falling back to reference transaction for testing")
-
-            // Fallback to a real reference transaction on testnet
-            // This ensures the explorer link always works
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-            let referenceHash = "0x356260af4216300eb97401c50b6a16b65a16c434daf5e19d8f683bdeb13317aa"
-            let explorerLink = "https://explorer.aptoslabs.com/txn/\(referenceHash)?network=testnet"
-
-            print("📡 [REFERENCE LOG]")
-            print("   Using reference transaction hash: \(referenceHash)")
-            print("   Explorer Link: \(explorerLink)")
-            print("   Note: This is a real testnet transaction used for demonstration")
-            print("🔗 View reference transaction: \(explorerLink)")
-            print("---")
-
-            return referenceHash
+            print("❌ [TESTNET] Transaction failed: \(error.localizedDescription)")
+            throw error
         }
     }
 
-    // MARK: - Real Testnet Transaction
+    // MARK: - Real Testnet Transaction using REST API + Ed25519 Signing
     private func submitRealTransaction(type: String, amount: Double, metadata: [String: String]) async throws -> String {
         print("🔐 [TX] Loading wallet credentials...")
 
-        // Load private key from wallet file
+        // Wallet A (sender) private key
         let privateKeyHex = "B37A61F467D0D226B671BFC8A842FB3036F7BE8B55BEAA66C168154053B40A0D"
+        // Wallet B (receiver)
+        let receiverAddress = "0xadd13b17d2ed6eba21fd5a44849c88734ccf644b3f5b1415978d16b99294de2a"
 
         print("🔐 [TX] Wallet loaded successfully")
         print("   Address: \(walletAddress)")
 
-        // Create transaction payload for a simple coin transfer
-        // This creates a memo transaction on testnet to log the app action
+        // Convert USD amount to APT, then to Octas
+        // $1000 = 1 APT, so $100 = 0.1 APT
+        // 1 APT = 100,000,000 Octas
+        let amountInAPT = amount / 1000.0
+        let amountInOctas = UInt64(amountInAPT * 100_000_000)
+
+        print("💵 [TX] Amount conversion:")
+        print("   USD: $\(amount)")
+        print("   APT: \(amountInAPT)")
+        print("   Octas: \(amountInOctas)")
+
+        // Create transaction payload - transfer from Wallet A to Wallet B
         let payload: [String: Any] = [
             "type": "entry_function_payload",
             "function": "0x1::aptos_account::transfer",
             "type_arguments": [],
             "arguments": [
-                walletAddress, // Send to self (memo transaction)
-                "1" // 0.00000001 APT (minimal amount)
+                receiverAddress, // Send to Wallet B
+                String(amountInOctas)
             ]
         ]
 
@@ -678,103 +678,167 @@ class TransactionManager: ObservableObject {
             "payload": payload
         ]
 
-        // For now, we'll use a simple approach - submit via aptos CLI
-        // This ensures proper signing with the private key
-        print("🚀 [TX] Submitting signed transaction to testnet...")
+        print("🚀 [TX] Encoding and signing transaction...")
 
-        // Create a temporary transaction file
-        let txJSON = try JSONSerialization.data(withJSONObject: transaction, options: .prettyPrinted)
-        let tempDir = FileManager.default.temporaryDirectory
-        let txFile = tempDir.appendingPathComponent("tx_\(UUID().uuidString).json")
-        try txJSON.write(to: txFile)
+        do {
+            // Step 1: Encode the transaction
+            print("📝 [TX] Step 1: Encoding transaction...")
+            let encodedTxn = try await encodeTransaction(transaction: transaction)
+            print("✅ [TX] Transaction encoded successfully")
+            print("   Encoded size: \(encodedTxn.count) bytes")
 
-        // Submit using aptos CLI (this properly signs with the private key)
-        let result = try await submitViaAptosCLI(amount: amount, type: type, metadata: metadata)
+            // Step 2: Sign the transaction with Ed25519
+            print("🔐 [TX] Step 2: Signing transaction...")
+            let signature = try signTransaction(encodedData: encodedTxn, privateKeyHex: privateKeyHex)
+            print("✅ [TX] Transaction signed successfully")
+            print("   Public key: \(signature.publicKey)")
+            print("   Signature: \(signature.signature.prefix(20))...")
 
-        // Clean up temp file
-        try? FileManager.default.removeItem(at: txFile)
+            // Step 3: Submit the signed transaction
+            print("📤 [TX] Step 3: Submitting signed transaction...")
+            let txHash = try await submitSignedTransaction(
+                transaction: transaction,
+                publicKey: signature.publicKey,
+                signature: signature.signature
+            )
 
-        print("✅ [TX] Transaction submitted successfully!")
-        print("   Hash: \(result)")
+            print("✅ [TX] Transaction submitted successfully!")
+            print("   Hash: \(txHash)")
 
-        return result
+            return txHash
+        } catch {
+            print("❌ [TX] Transaction failed at some step")
+            print("   Error: \(error)")
+            print("   Error description: \(error.localizedDescription)")
+            throw error
+        }
     }
 
-    private func submitViaAptosCLI(amount: Double, type: String, metadata: [String: String]) async throws -> String {
-        // Use aptos CLI to submit transaction with proper signing
-        // This creates a simple transfer transaction as a "memo" on chain
+    /// Encode transaction using Aptos node
+    private func encodeTransaction(transaction: [String: Any]) async throws -> Data {
+        let url = URL(string: "\(fullnodeURL)/transactions/encode_submission")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        #if os(macOS)
-        return try await withCheckedThrowingContinuation { continuation in
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        let jsonData = try JSONSerialization.data(withJSONObject: transaction)
+        request.httpBody = jsonData
 
-            // Use the actual wallet address and private key file
-            // --account is the receiver, --sender-account is optional (derived from private key)
-            process.arguments = [
-                "aptos",
-                "account",
-                "transfer",
-                "--account", walletAddress, // Send to self (receiver)
-                "--amount", "1", // 1 octa
-                "--assume-yes",
-                "--url", "https://fullnode.testnet.aptoslabs.com/v1",
-                "--private-key-file", "/Users/ellis.osborn/Aptos/TradeLeague/.aptos-wallets/wallet-a"
-            ]
+        print("📡 [ENCODE] Sending encode request to: \(url)")
+        print("📦 [ENCODE] Transaction payload: \(String(data: jsonData, encoding: .utf8) ?? "N/A")")
 
-            let outputPipe = Pipe()
-            let errorPipe = Pipe()
-            process.standardOutput = outputPipe
-            process.standardError = errorPipe
+        let (data, response) = try await URLSession.shared.data(for: request)
 
-            print("🔧 [CLI] Executing aptos transfer command...")
-            print("   From: \(walletAddress)")
-            print("   To: \(walletAddress) (self)")
-            print("   Amount: 1 octa (0.00000001 APT)")
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ [ENCODE] Invalid response type")
+            throw TransactionError.networkError
+        }
 
-            do {
-                try process.run()
+        print("📥 [ENCODE] Response status: \(httpResponse.statusCode)")
 
-                DispatchQueue.global().async {
-                    process.waitUntilExit()
+        guard httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            print("❌ [ENCODE] Failed to encode transaction")
+            print("   Status code: \(httpResponse.statusCode)")
+            print("   Error body: \(errorBody)")
+            throw TransactionError.transactionFailed
+        }
 
-                    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                    let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-
-                    let output = String(data: outputData, encoding: .utf8) ?? ""
-                    let error = String(data: errorData, encoding: .utf8) ?? ""
-
-                    print("📤 [CLI] Output: \(output)")
-                    if !error.isEmpty {
-                        print("⚠️ [CLI] Error: \(error)")
-                    }
-
-                    // Extract transaction hash from output
-                    // Format 1: "Transaction submitted: https://explorer.aptoslabs.com/txn/0x..."
-                    // Format 2: "transaction_hash": "0x..."
-                    // Format 3: Just "0x..." on its own line
-                    if let range = output.range(of: "0x[a-f0-9]{64}", options: .regularExpression) {
-                        let txHash = String(output[range])
-                        print("✅ [CLI] Extracted transaction hash: \(txHash)")
-                        print("   Explorer: https://explorer.aptoslabs.com/txn/\(txHash)?network=testnet")
-                        continuation.resume(returning: txHash)
-                    } else {
-                        print("❌ [CLI] Could not extract transaction hash from output")
-                        print("   Output was: \(output)")
-                        continuation.resume(throwing: TransactionError.transactionFailed)
-                    }
-                }
-            } catch {
-                print("❌ [CLI] Failed to execute process: \(error)")
-                continuation.resume(throwing: error)
+        // The response is a hex string, convert to Data
+        if let hexString = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "") {
+            print("✅ [ENCODE] Received hex string: \(hexString.prefix(40))...")
+            let cleanHex = hexString.hasPrefix("0x") ? String(hexString.dropFirst(2)) : hexString
+            if let encodedData = Data(hexString: cleanHex) {
+                return encodedData
+            } else {
+                print("❌ [ENCODE] Failed to convert hex string to Data")
+                throw TransactionError.transactionFailed
             }
         }
-        #else
-        // iOS doesn't support Process - throw error to use fallback simulation
-        print("⚠️ [CLI] Process execution not available on iOS - using simulated transaction")
-        throw TransactionError.networkError
-        #endif
+
+        print("❌ [ENCODE] Response is not a valid hex string")
+        return data
     }
+
+    /// Sign transaction with Ed25519 private key using CryptoKit
+    private func signTransaction(encodedData: Data, privateKeyHex: String) throws -> (publicKey: String, signature: String) {
+        guard let privateKeyData = Data(hexString: privateKeyHex) else {
+            throw TransactionError.transactionFailed
+        }
+
+        let signingKey = try Curve25519.Signing.PrivateKey(rawRepresentation: privateKeyData)
+        let signature = try signingKey.signature(for: encodedData)
+        let publicKey = signingKey.publicKey
+
+        return (
+            publicKey: "0x" + publicKey.rawRepresentation.hexEncodedString(),
+            signature: "0x" + signature.hexEncodedString()
+        )
+    }
+
+    /// Submit signed transaction to Aptos testnet
+    private func submitSignedTransaction(
+        transaction: [String: Any],
+        publicKey: String,
+        signature: String
+    ) async throws -> String {
+        let signedTransaction: [String: Any] = [
+            "sender": transaction["sender"]!,
+            "sequence_number": transaction["sequence_number"]!,
+            "max_gas_amount": transaction["max_gas_amount"]!,
+            "gas_unit_price": transaction["gas_unit_price"]!,
+            "expiration_timestamp_secs": transaction["expiration_timestamp_secs"]!,
+            "payload": transaction["payload"]!,
+            "signature": [
+                "type": "ed25519_signature",
+                "public_key": publicKey,
+                "signature": signature
+            ]
+        ]
+
+        let url = URL(string: "\(fullnodeURL)/transactions")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let jsonData = try JSONSerialization.data(withJSONObject: signedTransaction)
+        request.httpBody = jsonData
+
+        print("📡 [SUBMIT] Sending transaction to: \(url)")
+        print("📦 [SUBMIT] Signed transaction size: \(jsonData.count) bytes")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ [SUBMIT] Invalid response type")
+            throw TransactionError.networkError
+        }
+
+        print("📥 [SUBMIT] Response status: \(httpResponse.statusCode)")
+
+        if httpResponse.statusCode != 200 && httpResponse.statusCode != 202 {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            print("❌ [SUBMIT] Transaction submission failed")
+            print("   Status code: \(httpResponse.statusCode)")
+            print("   Error body: \(errorBody)")
+            throw TransactionError.transactionFailed
+        }
+
+        let responseBody = String(data: data, encoding: .utf8) ?? "N/A"
+        print("📥 [SUBMIT] Response body: \(responseBody)")
+
+        let result = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let hash = result?["hash"] as? String else {
+            print("❌ [SUBMIT] No transaction hash in response")
+            print("   Response: \(result ?? [:])")
+            throw TransactionError.transactionFailed
+        }
+
+        print("✅ [SUBMIT] Transaction hash extracted: \(hash)")
+
+        return hash
+    }
+
 
     // MARK: - Transaction History
 
@@ -812,5 +876,28 @@ enum TransactionError: LocalizedError {
         case .transactionFailed:
             return "Transaction failed"
         }
+    }
+}
+// MARK: - Data Extensions for Hex Conversion
+extension Data {
+    init?(hexString: String) {
+        let cleanedHex = hexString.replacingOccurrences(of: "0x", with: "")
+        let len = cleanedHex.count / 2
+        var data = Data(capacity: len)
+        for i in 0..<len {
+            let j = cleanedHex.index(cleanedHex.startIndex, offsetBy: i*2)
+            let k = cleanedHex.index(j, offsetBy: 2)
+            let bytes = cleanedHex[j..<k]
+            if var num = UInt8(bytes, radix: 16) {
+                data.append(&num, count: 1)
+            } else {
+                return nil
+            }
+        }
+        self = data
+    }
+
+    func hexEncodedString() -> String {
+        return map { String(format: "%02hhx", $0) }.joined()
     }
 }

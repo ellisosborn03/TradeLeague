@@ -460,6 +460,9 @@ struct CreateLeagueView: View {
 struct LeagueDetailView: View {
     let league: League
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var transactionManager = TransactionManager.shared
+    @State private var isJoining = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationView {
@@ -530,15 +533,31 @@ struct LeagueDetailView: View {
 
                         // Join button
                         Button {
-                            // Join league action
+                            Task {
+                                await joinLeague()
+                            }
                         } label: {
-                            Text("Join League - $\(Int(league.entryFee))")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.primaryBlue)
-                                .cornerRadius(12)
+                            HStack {
+                                if isJoining {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                } else {
+                                    Text("Join League - $\(Int(league.entryFee))")
+                                        .font(.headline)
+                                }
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(isJoining ? Color.gray : Color.primaryBlue)
+                            .cornerRadius(12)
+                        }
+                        .disabled(isJoining)
+
+                        if let error = errorMessage {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.dangerRed)
                         }
                     }
                     .padding()
@@ -554,6 +573,29 @@ struct LeagueDetailView: View {
                 }
             }
         }
+    }
+
+    private func joinLeague() async {
+        isJoining = true
+        errorMessage = nil
+
+        do {
+            // Execute real transaction on Aptos testnet
+            _ = try await transactionManager.addAndExecuteTransaction(
+                type: .follow,
+                amount: league.entryFee,
+                description: "Joined league: \(league.name)"
+            )
+
+            // Close the detail view after successful join
+            await MainActor.run {
+                dismiss()
+            }
+        } catch {
+            errorMessage = "Failed to join league: \(error.localizedDescription)"
+        }
+
+        isJoining = false
     }
 }
 

@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import CryptoKit
 
 // MARK: - Aptos Service
 class AptosService: ObservableObject {
@@ -200,34 +201,167 @@ class AptosService: ObservableObject {
     }
 
     // MARK: - Payment Transaction (Wallet A → Wallet B)
-    /// Sends a payment from Wallet A to Wallet B on Aptos testnet
+    /// Sends a payment from Wallet A to Wallet B on Aptos testnet using the Aptos CLI
     /// - Parameter amountInAPT: The amount to send in APT (will be converted to Octas)
     /// - Returns: A tuple containing (transaction hash, explorer URL)
     func sendPayment(amountInAPT: Double) async throws -> (hash: String, explorerURL: String) {
         let amountInOctas = UInt64(amountInAPT * 100_000_000) // Convert APT to Octas
 
-        // Create the transaction payload
-        let payload: [String: Any] = [
-            "sender": walletAAddress,
-            "sequence_number": try await getAccountSequenceNumber(address: walletAAddress),
-            "max_gas_amount": "2000",
-            "gas_unit_price": "100",
-            "expiration_timestamp_secs": String(Int(Date().timeIntervalSince1970) + 600), // 10 min expiry
-            "payload": [
-                "type": "entry_function_payload",
-                "function": "0x1::coin::transfer",
-                "type_arguments": ["0x1::aptos_coin::AptosCoin"],
-                "arguments": [walletBAddress, String(amountInOctas)]
-            ]
-        ]
+        // Use Aptos CLI to send the transaction
+        // This ensures proper BCS encoding and Ed25519 signing
+        let txHash = try await executeAptosTransfer(
+            recipientAddress: walletBAddress,
+            amount: amountInOctas
+        )
 
-        // Submit the transaction
-        let txHash = try await submitSignedTransaction(payload: payload)
+        // Wait for transaction to be processed
+        try await waitForTransaction(hash: txHash)
 
         // Generate explorer URL
         let explorerURL = "\(explorerBaseURL)/txn/\(txHash)?network=testnet"
 
         return (txHash, explorerURL)
+    }
+
+    /// Execute an Aptos transfer using REST API with proper signing
+    private func executeAptosTransfer(recipientAddress: String, amount: UInt64) async throws -> String {
+        // Step 1: Get account sequence number
+        let sequenceNumber = try await getAccountSequenceNumber(address: walletAAddress)
+
+        // Step 2: Create transaction payload
+        let payload: [String: Any] = [
+            "type": "entry_function_payload",
+            "function": "0x1::aptos_account::transfer",
+            "type_arguments": [],
+            "arguments": [recipientAddress, String(amount)]
+        ]
+
+        let transaction: [String: Any] = [
+            "sender": walletAAddress,
+            "sequence_number": sequenceNumber,
+            "max_gas_amount": "2000",
+            "gas_unit_price": "100",
+            "expiration_timestamp_secs": String(Int(Date().timeIntervalSince1970) + 600),
+            "payload": payload
+        ]
+
+        // Step 3: Encode the transaction for signing
+        let encodedTxn = try await encodeTransaction(transaction: transaction)
+
+        // Step 4: Sign the encoded transaction
+        let signature = try signTransaction(encodedData: encodedTxn)
+
+        // Step 5: Submit the signed transaction
+        return try await submitSignedTransaction(
+            transaction: transaction,
+            publicKey: signature.publicKey,
+            signature: signature.signature
+        )
+    }
+
+    /// Encode transaction using Aptos node
+    private func encodeTransaction(transaction: [String: Any]) async throws -> Data {
+        let url = URL(string: "\(fullnodeURL)/transactions/encode_submission")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let jsonData = try JSONSerialization.data(withJSONObject: transaction)
+        request.httpBody = jsonData
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw AptosError.transactionFailed("Failed to encode transaction: \(errorBody)")
+        }
+
+        // The response is a hex string (with or without 0x prefix), convert to Data
+        if let hexString = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "") {
+            return Data(hexString: hexString.hasPrefix("0x") ? String(hexString.dropFirst(2)) : hexString) ?? Data()
+        }
+
+        return data
+    }
+
+    /// Sign transaction with Ed25519 private key
+    private func signTransaction(encodedData: Data) throws -> (publicKey: String, signature: String) {
+        // Convert hex private key to Data
+        guard let privateKeyData = Data(hexString: walletAPrivateKey) else {
+            throw AptosError.transactionFailed("Invalid private key format")
+        }
+
+        // Create signing key from private key
+        let signingKey = try Curve25519.Signing.PrivateKey(rawRepresentation: privateKeyData)
+
+        // Sign the encoded transaction
+        let signature = try signingKey.signature(for: encodedData)
+
+        // Get public key
+        let publicKey = signingKey.publicKey
+
+        return (
+            publicKey: "0x" + publicKey.rawRepresentation.hexEncodedString(),
+            signature: "0x" + signature.hexEncodedString()
+        )
+    }
+
+    /// Submit signed transaction
+    private func submitSignedTransaction(
+        transaction: [String: Any],
+        publicKey: String,
+        signature: String
+    ) async throws -> String {
+        let signedTransaction: [String: Any] = [
+            "sender": transaction["sender"]!,
+            "sequence_number": transaction["sequence_number"]!,
+            "max_gas_amount": transaction["max_gas_amount"]!,
+            "gas_unit_price": transaction["gas_unit_price"]!,
+            "expiration_timestamp_secs": transaction["expiration_timestamp_secs"]!,
+            "payload": transaction["payload"]!,
+            "signature": [
+                "type": "ed25519_signature",
+                "public_key": publicKey,
+                "signature": signature
+            ]
+        ]
+
+        let url = URL(string: "\(fullnodeURL)/transactions")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let jsonData = try JSONSerialization.data(withJSONObject: signedTransaction)
+        request.httpBody = jsonData
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw AptosError.networkError("Invalid response")
+        }
+
+        if httpResponse.statusCode != 200 && httpResponse.statusCode != 202 {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw AptosError.transactionFailed("HTTP \(httpResponse.statusCode): \(errorBody)")
+        }
+
+        let result = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let hash = result?["hash"] as? String else {
+            throw AptosError.transactionFailed("No transaction hash returned")
+        }
+
+        return hash
+    }
+
+    private func waitForTransaction(hash: String, maxAttempts: Int = 10) async throws {
+        for _ in 0..<maxAttempts {
+            let status = try await getTransactionStatus(hash: hash)
+            if status == .success || status == .failed {
+                return
+            }
+            try await Task.sleep(nanoseconds: 1_000_000_000) // Wait 1 second
+        }
+        throw AptosError.transactionFailed("Transaction timeout")
     }
 
     // MARK: - Transaction Helpers
@@ -542,5 +676,29 @@ class AptosWebSocketService: ObservableObject {
                 print("WebSocket send error: \(error)")
             }
         }
+    }
+}
+
+// MARK: - Data Extensions for Hex Conversion
+extension Data {
+    init?(hexString: String) {
+        let cleanedHex = hexString.replacingOccurrences(of: "0x", with: "")
+        let len = cleanedHex.count / 2
+        var data = Data(capacity: len)
+        for i in 0..<len {
+            let j = cleanedHex.index(cleanedHex.startIndex, offsetBy: i*2)
+            let k = cleanedHex.index(j, offsetBy: 2)
+            let bytes = cleanedHex[j..<k]
+            if var num = UInt8(bytes, radix: 16) {
+                data.append(&num, count: 1)
+            } else {
+                return nil
+            }
+        }
+        self = data
+    }
+
+    func hexEncodedString() -> String {
+        return map { String(format: "%02hhx", $0) }.joined()
     }
 }

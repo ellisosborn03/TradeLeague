@@ -617,8 +617,8 @@ struct TransactionCard: View {
                 }
             }
 
-            // Transaction link - clickable to view on Aptos testnet explorer
-            if !transaction.hash.isEmpty {
+            // Transaction link - clickable to view on Aptos testnet explorer (only when success)
+            if transaction.status == .success && !transaction.hash.isEmpty {
                 HStack(spacing: 6) {
                     Link(destination: URL(string: aptosService.getExplorerURL(forTransaction: transaction.hash))!) {
                         HStack(spacing: 4) {
@@ -641,6 +641,27 @@ struct TransactionCard: View {
                         .font(.system(.caption2, design: .monospaced))
                         .foregroundColor(.secondaryText)
 
+                    Spacer()
+                }
+                .padding(.top, 4)
+            } else if transaction.status == .pending {
+                HStack(spacing: 6) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Processing transaction on Aptos testnet...")
+                        .font(.caption)
+                        .foregroundColor(.secondaryText)
+                    Spacer()
+                }
+                .padding(.top, 4)
+            } else if transaction.status == .failed {
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                        .foregroundColor(.dangerRed)
+                    Text("Transaction failed")
+                        .font(.caption)
+                        .foregroundColor(.dangerRed)
                     Spacer()
                 }
                 .padding(.top, 4)

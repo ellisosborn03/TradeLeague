@@ -414,7 +414,10 @@ struct PerformanceMetric: View {
 struct VaultDetailView: View {
     let vault: Vault
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var transactionManager = TransactionManager.shared
     @State private var followAmount = ""
+    @State private var isFollowing = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationView {
@@ -510,17 +513,32 @@ struct VaultDetailView: View {
                                 .foregroundColor(.secondaryText)
 
                             Button {
-                                // Follow vault action
+                                Task {
+                                    await followVault()
+                                }
                             } label: {
-                                Text("Follow Vault")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.primaryBlue)
-                                    .cornerRadius(12)
+                                HStack {
+                                    if isFollowing {
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    } else {
+                                        Text("Follow Vault")
+                                            .font(.headline)
+                                    }
+                                }
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(isFollowing || followAmount.isEmpty ? Color.gray : Color.primaryBlue)
+                                .cornerRadius(12)
                             }
-                            .disabled(followAmount.isEmpty)
+                            .disabled(followAmount.isEmpty || isFollowing)
+
+                            if let error = errorMessage {
+                                Text(error)
+                                    .font(.caption)
+                                    .foregroundColor(.dangerRed)
+                            }
                         }
                         .padding()
                         .background(Color.surfaceColor)
@@ -539,6 +557,34 @@ struct VaultDetailView: View {
                 }
             }
         }
+    }
+
+    private func followVault() async {
+        guard let amount = Double(followAmount), amount > 0 else {
+            errorMessage = "Please enter a valid amount"
+            return
+        }
+
+        isFollowing = true
+        errorMessage = nil
+
+        do {
+            // Execute real transaction on Aptos testnet
+            _ = try await transactionManager.addAndExecuteTransaction(
+                type: .follow,
+                amount: amount,
+                description: "Followed vault: \(vault.name)"
+            )
+
+            // Close the detail view after successful follow
+            await MainActor.run {
+                dismiss()
+            }
+        } catch {
+            errorMessage = "Failed to follow vault: \(error.localizedDescription)"
+        }
+
+        isFollowing = false
     }
 }
 

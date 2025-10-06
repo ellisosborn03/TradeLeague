@@ -126,7 +126,7 @@ struct TransactionSuccessView: View {
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color.accentPurple.opacity(0.3), lineWidth: 1)
-        }
+        )
         .padding()
     }
 }

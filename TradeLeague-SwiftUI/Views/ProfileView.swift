@@ -31,7 +31,7 @@ struct ProfileView: View {
                         VStack(spacing: 0) {
                             CustomSegmentToggle(
                                 options: [0, 1, 2],
-                                optionLabels: [0: "LEAGUES", 1: "HOLDINGS", 2: "ACTIVITY"],
+                                optionLabels: [0: "ACTIVITY", 1: "LEAGUES", 2: "HOLDINGS"],
                                 selection: $selectedSegment
                             )
                             .padding(.horizontal)
@@ -39,11 +39,11 @@ struct ProfileView: View {
                             // Content based on selected segment
                             Group {
                                 if selectedSegment == 0 {
-                                    RewardsView(rewards: portfolio?.rewards ?? [])
-                                } else if selectedSegment == 1 {
-                                    HoldingsView(portfolio: portfolio)
-                                } else {
                                     ActivityView(transactions: transactionManager.transactions)
+                                } else if selectedSegment == 1 {
+                                    RewardsView(rewards: portfolio?.rewards ?? [])
+                                } else {
+                                    HoldingsView(portfolio: portfolio)
                                 }
                             }
                             .padding(.top)

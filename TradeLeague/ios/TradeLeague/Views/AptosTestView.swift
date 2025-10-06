@@ -246,12 +246,12 @@ struct AptosTestView: View {
             let (hash, url) = try await aptosService.sendPayment(amountInAPT: amount)
             lastTransaction = (hash, url)
 
-            // Add to activity feed
+            // Add to activity feed - use withdraw type since we're sending money out
             transactionManager.addTransaction(
-                type: .deposit,
+                type: .withdraw,
                 amount: amount,
                 hash: hash,
-                description: "Test payment: \(amount) APT"
+                description: "Sent \(amount) APT from Wallet A to Wallet B"
             )
 
             showSuccess = true

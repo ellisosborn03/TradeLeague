@@ -84,7 +84,7 @@ Aptos/
 - **Social Trading**: Activity feed, rankings, and trader profiles
 
 ### Technical Highlights
-- **Aptos Keyless** - Account abstraction for seamless onboarding without seed phrases
+- **Aptos Keyless** - Account abstraction for seamless onboarding without seed phrases. In future implementations, users will authenticate via phone number or passkey through OpenID Connect providers, with their blockchain accounts derived automatically from their identity—eliminating the need to store or manage private keys while maintaining full access through app settings.
 - Cross-platform React Native mobile app
 - Move smart contracts on Aptos blockchain
 - Real-time leaderboards and activity feeds
