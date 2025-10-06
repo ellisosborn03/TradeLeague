@@ -122,7 +122,7 @@ Aptos/
 **Blockchain:**
 - Aptos Move
 - Aptos SDK
-- [Aptos Keyless](https://aptos.dev/build/guides/aptos-keyless) - Account abstraction for passwordless auth
+- [Aptos Keyless](https://aptos.dev/build/guides/aptos-keyless) - Account abstraction for seamless onboarding without seed phrases. In future implementations, users will authenticate via phone number or passkey through OpenID Connect providers, with their blockchain accounts derived automatically from their identity—eliminating the need to store or manage private keys while maintaining full access through app settings. This leverages Aptos's native keyless architecture to provide Web2-level UX with Web3 security.
 - Petra Wallet integration
 
 ## Development Scripts
