@@ -21,7 +21,7 @@ TradeLeague is a social DeFi super app built on Aptos. We transform complex fina
 
 A novel feature is **leagues**, where users join structured competitions that feel like fantasy sports for crypto. Each league has its own rules, live leaderboards, and rewards, letting friends and communities compete head-to-head. Alongside leagues, vault following and prediction markets give users more ways to engage with DeFi as a sport: sponsored competitions, social bragging rights, and real prizes for performance. This makes trading social, accessible, and fun in a way DeFi has never been.
 
-### ⚡ Built on Aptos
+### Built on Aptos
 
 TradeLeague is built natively on Aptos's parallel execution, sub-second finality, and low fees, delivering the speed and scalability needed for production-grade DeFi. We integrate directly with partners like **Merkle Trade**, **Hyperion**, **Tapp**, and **Circle** to showcase composability and real-world financial utility.
 
