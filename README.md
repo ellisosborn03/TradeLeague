@@ -11,23 +11,23 @@
 
 ---
 
-## 🎯 Overview
+## Overview
 
 TradeLeague is a social DeFi super app built on Aptos. We transform complex financial primitives into intuitive, gamified mobile experiences where anyone can trade, predict, and compete with friends.
 
 **Options trading already existed, but Robinhood made it accessible.** In the same way, TradeLeague takes DeFi products such as perps, prediction markets, and vault strategies and delivers them through a mobile, easy-to-use app that billions of people are already familiar with.
 
-### 🏆 Leagues: DeFi as a Sport
+### Leagues: DeFi as a Sport
 
 A novel feature is **leagues**, where users join structured competitions that feel like fantasy sports for crypto. Each league has its own rules, live leaderboards, and rewards, letting friends and communities compete head-to-head. Alongside leagues, vault following and prediction markets give users more ways to engage with DeFi as a sport: sponsored competitions, social bragging rights, and real prizes for performance. This makes trading social, accessible, and fun in a way DeFi has never been.
 
-### ⚡ Built on Aptos
+### Built on Aptos
 
 TradeLeague is built natively on Aptos's parallel execution, sub-second finality, and low fees, delivering the speed and scalability needed for production-grade DeFi. We integrate directly with partners like **Merkle Trade**, **Hyperion**, **Tapp**, and **Circle** to showcase composability and real-world financial utility.
 
 **Just as fantasy football turned sports into a global phenomenon, TradeLeague will make DeFi social, competitive, and engaging for everyone.**
 
-## 📹 Demo & Resources
+## Demo & Resources
 
 ![Product 1](https://drive.google.com/uc?export=view&id=1tcEgrZBy_VtpXTG7h2mZjliVOA09cQGN)
 ![Product 2](https://drive.google.com/uc?export=view&id=1DqH7UXSIfh0iRVpx8NMfYuUPn9WrU4Nl)
@@ -44,7 +44,7 @@ TradeLeague is built natively on Aptos's parallel execution, sub-second finality
 - **[GitHub Repository](https://github.com/ellisosborn03/TradeLeague)** - Open source code
 - **[Twitter](https://twitter.com/0xTradingLeague)** - Follow for updates
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies for mobile app
@@ -58,7 +58,7 @@ npx react-native run-ios
 npx react-native run-android
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Aptos/
@@ -80,7 +80,7 @@ Aptos/
     └── deployment/           # Deployment and wallet management
 ```
 
-## 📱 Features
+## Features
 
 ### Core Features
 - **League System**: Competitive leagues with leaderboards and rewards
@@ -96,7 +96,7 @@ Aptos/
 - Native iOS app with SwiftUI
 - PostgreSQL backend with Node.js API
 
-## 📚 Documentation
+## Documentation
 
 ### Product Documentation
 - **[Product Requirements Doc](docs/product/PRD.md)** - Complete feature specifications
@@ -107,7 +107,7 @@ Aptos/
 - **[Mobile App Setup](docs/setup/mobile/)** - Mobile development setup
 - **[Sponsor Logos](docs/development/sponsor-logos/)** - UI customization guides
 
-## 🛠 Technology Stack
+## Technology Stack
 
 **Frontend:**
 - React Native (Mobile)
@@ -125,7 +125,7 @@ Aptos/
 - [Aptos Keyless](https://aptos.dev/build/guides/aptos-keyless) - Account abstraction for passwordless auth
 - Petra Wallet integration
 
-## 🔧 Development Scripts
+## Development Scripts
 
 ```bash
 # Development automation
@@ -137,7 +137,7 @@ Aptos/
 ./scripts/deployment/check-wallets.sh      # Verify wallet balances
 ```
 
-## 🌐 Integrated Platforms
+##� Integrated Platforms
 
 TradeLeague integrates with leading Aptos DeFi protocols:
 
@@ -145,7 +145,7 @@ TradeLeague integrates with leading Aptos DeFi protocols:
 - **Hyperion** - Concentrated liquidity market making
 - **Tapp Exchange** - Custom trading hook development
 
-## 📊 Smart Contract Architecture
+## Smart Contract Architecture
 
 The Move smart contracts implement:
 - League management and scoring
@@ -156,7 +156,7 @@ The Move smart contracts implement:
 
 See `TradeLeague/contracts/` for contract source code.
 
-## 🚀 Deployment
+## Deployment
 
 ### Mobile App
 ```bash
@@ -180,7 +180,7 @@ aptos move publish --profile testnet
 aptos move publish --profile mainnet
 ```
 
-## 🏆 CTRL+Move Hackathon
+## CTRL+Move Hackathon
 
 TradeLeague is built for the **CTRL+Move hackathon** (August 4 - October 3, 2025), showcasing:
 
@@ -189,14 +189,14 @@ TradeLeague is built for the **CTRL+Move hackathon** (August 4 - October 3, 2025
 - **Performance-Driven**: Built on Aptos's parallel execution and sub-second finality
 - **Ecosystem Integration**: Deep integration with Merkle Trade, Hyperion, Tapp, and Circle
 
-## 🤝 Contributing
+## Contributing
 
 For questions, collaboration opportunities, or feedback, please:
 - Open an issue on [GitHub](https://github.com/ellisosborn03/TradeLeague)
 - Follow us on [Twitter](https://twitter.com/0xTradingLeague)
 - Watch our [demo video](https://youtube.com/watch?v=ykivz0CzOUA)
 
-## 📄 License
+## License
 
 Copyright © 2025 TradeLeague. All rights reserved.
 
